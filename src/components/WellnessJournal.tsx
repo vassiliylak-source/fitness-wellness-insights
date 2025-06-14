@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -16,6 +17,7 @@ import {
   AlertTriangle
 } from "lucide-react";
 import ScaleInput from "./ScaleInput";
+import BreathingExercises from "./BreathingExercises";
 import { useJournalEntries } from "@/hooks/useJournalEntries";
 import { useWellnessAnalysis } from "@/hooks/useWellnessAnalysis";
 
@@ -59,6 +61,9 @@ const WellnessJournal = () => {
           If you're experiencing persistent health concerns, please consult with a qualified healthcare provider or therapist.
         </AlertDescription>
       </Alert>
+
+      {/* Breathing Exercises Section */}
+      <BreathingExercises />
 
       {/* Journal Entry Form */}
       <Card>
