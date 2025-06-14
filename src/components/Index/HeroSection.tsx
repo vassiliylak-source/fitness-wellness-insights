@@ -21,28 +21,6 @@ const HeroSection = () => {
             <span className="text-yellow-300 font-semibold"> pro-level insights </span>
             from data analysis plus mindfulness tools for complete well-being
           </p>
-          <div className="flex flex-wrap justify-center gap-3 mb-8">
-            <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
-              <Heart className="h-4 w-4 mr-2" />
-              Heart Rate Analysis
-            </Badge>
-            <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
-              <Wind className="h-4 w-4 mr-2" />
-              Guided Breathing
-            </Badge>
-            <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
-              <BookOpen className="h-4 w-4 mr-2" />
-              Wellness Journaling
-            </Badge>
-            <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
-              <Clock className="h-4 w-4 mr-2" />
-              Sleep & Recovery
-            </Badge>
-            <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
-              <TrendingUp className="h-4 w-4 mr-2" />
-              Pattern Recognition
-            </Badge>
-          </div>
         </div>
       </div>
     </div>
