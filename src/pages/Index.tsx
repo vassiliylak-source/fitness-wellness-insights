@@ -1,21 +1,21 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Upload, Activity, Heart, Brain, TrendingUp, Clock, Zap, BookOpen, Sparkles } from "lucide-react";
+import { Upload, Activity, Heart, Brain, TrendingUp, Clock, Zap, BookOpen, Sparkles, Wind } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import PhotoUpload from "@/components/PhotoUpload";
 import InsightsDashboard from "@/components/InsightsDashboard";
 import MetricsOverview from "@/components/MetricsOverview";
 import WellnessJournal from "@/components/WellnessJournal";
+import BreathingExercises from "@/components/BreathingExercises";
 
 const Index = () => {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [showInsights, setShowInsights] = useState(false);
-  const [activeFeature, setActiveFeature] = useState<'screenshot' | 'journal'>('screenshot');
+  const [activeFeature, setActiveFeature] = useState<'screenshot' | 'breathing' | 'journal'>('screenshot');
   const { toast } = useToast();
 
   const handleImageUpload = async (file: File) => {
@@ -61,14 +61,18 @@ const Index = () => {
               Complete Fitness & Wellness Platform
             </h1>
             <p className="text-xl md:text-2xl mb-8 text-blue-100 max-w-3xl mx-auto">
-              Decode your fitness screenshots AND track holistic wellness. Get 
+              Decode your fitness screenshots, practice guided breathing, AND track holistic wellness. Get 
               <span className="text-yellow-300 font-semibold"> pro-level insights </span>
-              from data analysis plus daily reflection tools for complete well-being
+              from data analysis plus mindfulness tools for complete well-being
             </p>
             <div className="flex flex-wrap justify-center gap-3 mb-8">
               <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
                 <Heart className="h-4 w-4 mr-2" />
                 Heart Rate Analysis
+              </Badge>
+              <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
+                <Wind className="h-4 w-4 mr-2" />
+                Guided Breathing
               </Badge>
               <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
                 <BookOpen className="h-4 w-4 mr-2" />
@@ -98,6 +102,14 @@ const Index = () => {
             >
               <Upload className="h-4 w-4" />
               Screenshot Analysis
+            </Button>
+            <Button
+              onClick={() => setActiveFeature('breathing')}
+              variant={activeFeature === 'breathing' ? 'default' : 'ghost'}
+              className="flex items-center gap-2"
+            >
+              <Wind className="h-4 w-4" />
+              4-6 Breathing
             </Button>
             <Button
               onClick={() => setActiveFeature('journal')}
@@ -180,6 +192,8 @@ const Index = () => {
               </div>
             )}
           </div>
+        ) : activeFeature === 'breathing' ? (
+          <BreathingExercises />
         ) : (
           <WellnessJournal />
         )}
@@ -192,7 +206,7 @@ const Index = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid md:grid-cols-2 gap-8">
+            <div className="grid md:grid-cols-3 gap-8">
               <div className="text-center">
                 <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Upload className="h-8 w-8 text-blue-600" />
@@ -200,6 +214,15 @@ const Index = () => {
                 <h3 className="text-lg font-semibold mb-2">Screenshot Analysis</h3>
                 <p className="text-gray-600">
                   Upload fitness app screenshots for instant AI-powered insights on metrics, patterns, and performance
+                </p>
+              </div>
+              <div className="text-center">
+                <div className="w-16 h-16 bg-cyan-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Wind className="h-8 w-8 text-cyan-600" />
+                </div>
+                <h3 className="text-lg font-semibold mb-2">4-6 Breathing</h3>
+                <p className="text-gray-600">
+                  Guided breathing exercises with visual cues to reduce stress, promote relaxation, and improve focus
                 </p>
               </div>
               <div className="text-center">

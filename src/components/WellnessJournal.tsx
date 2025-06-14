@@ -17,7 +17,6 @@ import {
   AlertTriangle
 } from "lucide-react";
 import ScaleInput from "./ScaleInput";
-import BreathingExercises from "./BreathingExercises";
 import { useJournalEntries } from "@/hooks/useJournalEntries";
 import { useWellnessAnalysis } from "@/hooks/useWellnessAnalysis";
 
@@ -61,9 +60,6 @@ const WellnessJournal = () => {
           If you're experiencing persistent health concerns, please consult with a qualified healthcare provider or therapist.
         </AlertDescription>
       </Alert>
-
-      {/* Breathing Exercises Section */}
-      <BreathingExercises />
 
       {/* Journal Entry Form */}
       <Card>
