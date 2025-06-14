@@ -1,7 +1,8 @@
 
 import { useCallback, useState } from "react";
-import { Upload, Image as ImageIcon, X } from "lucide-react";
+import { Upload, Image as ImageIcon, X, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { cn } from "@/lib/utils";
 
 interface PhotoUploadProps {
@@ -11,6 +12,23 @@ interface PhotoUploadProps {
 const PhotoUpload = ({ onImageUpload }: PhotoUploadProps) => {
   const [isDragOver, setIsDragOver] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  // File validation constants
+  const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+  const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+
+  const validateFile = (file: File): string | null => {
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      return "Please upload a JPEG, PNG, or GIF image file.";
+    }
+    
+    if (file.size > MAX_FILE_SIZE) {
+      return "File size must be less than 10MB.";
+    }
+    
+    return null;
+  };
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -25,11 +43,17 @@ const PhotoUpload = ({ onImageUpload }: PhotoUploadProps) => {
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setIsDragOver(false);
+    setError(null);
     
     const files = Array.from(e.dataTransfer.files);
     const imageFile = files.find(file => file.type.startsWith('image/'));
     
     if (imageFile) {
+      const validationError = validateFile(imageFile);
+      if (validationError) {
+        setError(validationError);
+        return;
+      }
       handleFileSelect(imageFile);
     }
   }, []);
@@ -37,12 +61,18 @@ const PhotoUpload = ({ onImageUpload }: PhotoUploadProps) => {
   const handleFileSelect = (file: File) => {
     const url = URL.createObjectURL(file);
     setPreviewUrl(url);
+    setError(null);
     onImageUpload(file);
   };
 
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      const validationError = validateFile(file);
+      if (validationError) {
+        setError(validationError);
+        return;
+      }
       handleFileSelect(file);
     }
   };
@@ -52,10 +82,18 @@ const PhotoUpload = ({ onImageUpload }: PhotoUploadProps) => {
       URL.revokeObjectURL(previewUrl);
       setPreviewUrl(null);
     }
+    setError(null);
   };
 
   return (
     <div className="w-full max-w-2xl mx-auto">
+      {error && (
+        <Alert variant="destructive" className="mb-4">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+      
       {!previewUrl ? (
         <div
           className={cn(
@@ -70,7 +108,7 @@ const PhotoUpload = ({ onImageUpload }: PhotoUploadProps) => {
         >
           <input
             type="file"
-            accept="image/*"
+            accept="image/jpeg,image/jpg,image/png,image/gif"
             onChange={handleFileInputChange}
             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
           />
@@ -95,8 +133,11 @@ const PhotoUpload = ({ onImageUpload }: PhotoUploadProps) => {
               </Button>
             </div>
             
-            <div className="text-sm text-gray-500">
-              Supports: Apple Health, Strava, Garmin, Fitbit, and more
+            <div className="text-sm text-gray-500 space-y-1">
+              <div>Supports: Apple Health, Strava, Garmin, Fitbit, and more</div>
+              <div className="text-xs text-gray-400">
+                Accepted formats: JPEG, PNG, GIF • Max size: 10MB
+              </div>
             </div>
           </div>
         </div>
