@@ -14,7 +14,7 @@ const HeroSection = () => {
             </div>
           </div>
           <h1 className="text-4xl md:text-6xl font-bold mb-6 animate-fade-in">
-            Complete Fitness & Wellness Platform
+            Fitness & Wellness Platform
           </h1>
           <p className="text-xl md:text-2xl mb-8 text-blue-100 max-w-3xl mx-auto">
             Decode your fitness screenshots, practice guided breathing, AND track holistic wellness. Get 
