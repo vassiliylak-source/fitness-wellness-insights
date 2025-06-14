@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -193,11 +192,26 @@ const Index = () => {
         <HowItWorksSection />
       </div>
 
-      {/* Copyright Footer */}
-      <footer className="bg-gray-50 border-t border-gray-200 py-6 mt-12">
+      {/* Donation Footer */}
+      <footer className="bg-gray-50 border-t border-gray-200 py-8 mt-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center text-gray-600">
-            <p>&copy; {new Date().getFullYear()} Vassiliy Lakhonin. All rights reserved.</p>
+          <div className="text-center space-y-4">
+            <p className="text-gray-700">
+              💜 If you find this wellness tracker helpful and would like to show appreciation, you're welcome to buy Vassiliy a coffee via a small donation:
+            </p>
+            <div className="flex justify-center">
+              <a 
+                href="https://paypal.me/vaskenzy" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+              >
+                ☕ Buy me a coffee
+              </a>
+            </div>
+            <p className="text-gray-600">
+              Thank you for your support!
+            </p>
           </div>
         </div>
       </footer>
