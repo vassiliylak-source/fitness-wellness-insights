@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -265,6 +264,31 @@ const WellnessJournal = () => {
           </CardContent>
         </Card>
       )}
+
+      {/* Support Section */}
+      <Card className="bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
+        <CardContent className="pt-6">
+          <div className="text-center space-y-3">
+            <p className="text-sm text-gray-700">
+              💜 If you find this wellness tracker helpful and would like to show appreciation,
+              you're welcome to buy Vassiliy a coffee via a small donation:
+            </p>
+            <div className="flex justify-center">
+              <a 
+                href="https://paypal.me/vaskenzy" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+              >
+                ☕ Buy me a coffee
+              </a>
+            </div>
+            <p className="text-xs text-gray-600">
+              Thank you for your support!
+            </p>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
