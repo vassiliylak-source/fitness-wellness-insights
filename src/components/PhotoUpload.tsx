@@ -1,8 +1,7 @@
 
 import { useCallback, useState } from "react";
-import { Upload, Image as ImageIcon, X, AlertTriangle } from "lucide-react";
+import { Upload, Image as ImageIcon, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { cn } from "@/lib/utils";
 
 interface PhotoUploadProps {
@@ -12,23 +11,6 @@ interface PhotoUploadProps {
 const PhotoUpload = ({ onImageUpload }: PhotoUploadProps) => {
   const [isDragOver, setIsDragOver] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [validationError, setValidationError] = useState<string | null>(null);
-
-  // File validation settings
-  const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
-  const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-
-  const validateFile = (file: File): string | null => {
-    if (!ALLOWED_TYPES.includes(file.type)) {
-      return `File type not supported. Please upload: ${ALLOWED_TYPES.map(type => type.split('/')[1]).join(', ').toUpperCase()}`;
-    }
-    
-    if (file.size > MAX_FILE_SIZE) {
-      return `File size too large. Maximum size is ${MAX_FILE_SIZE / (1024 * 1024)}MB`;
-    }
-    
-    return null;
-  };
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -53,13 +35,6 @@ const PhotoUpload = ({ onImageUpload }: PhotoUploadProps) => {
   }, []);
 
   const handleFileSelect = (file: File) => {
-    const error = validateFile(file);
-    if (error) {
-      setValidationError(error);
-      return;
-    }
-
-    setValidationError(null);
     const url = URL.createObjectURL(file);
     setPreviewUrl(url);
     onImageUpload(file);
@@ -77,20 +52,10 @@ const PhotoUpload = ({ onImageUpload }: PhotoUploadProps) => {
       URL.revokeObjectURL(previewUrl);
       setPreviewUrl(null);
     }
-    setValidationError(null);
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto space-y-4">
-      {validationError && (
-        <Alert className="border-red-200 bg-red-50">
-          <AlertTriangle className="h-4 w-4 text-red-600" />
-          <AlertDescription className="text-red-800">
-            {validationError}
-          </AlertDescription>
-        </Alert>
-      )}
-
+    <div className="w-full max-w-2xl mx-auto">
       {!previewUrl ? (
         <div
           className={cn(
@@ -130,11 +95,8 @@ const PhotoUpload = ({ onImageUpload }: PhotoUploadProps) => {
               </Button>
             </div>
             
-            <div className="text-sm text-gray-500 space-y-1">
-              <div>Supports: Apple Health, Strava, Garmin, Fitbit, and more</div>
-              <div className="text-xs">
-                Max file size: 10MB • Formats: JPEG, PNG, GIF, WebP
-              </div>
+            <div className="text-sm text-gray-500">
+              Supports: Apple Health, Strava, Garmin, Fitbit, and more
             </div>
           </div>
         </div>

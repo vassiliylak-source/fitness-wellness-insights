@@ -10,8 +10,6 @@ import InsightsDashboard from "@/components/InsightsDashboard";
 import MetricsOverview from "@/components/MetricsOverview";
 import WellnessJournal from "@/components/WellnessJournal";
 import BreathingExercises from "@/components/BreathingExercises";
-import DataPrivacyNotice from "@/components/DataPrivacyNotice";
-import ProductionSecurityGuide from "@/components/ProductionSecurityGuide";
 
 const Index = () => {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
@@ -122,11 +120,6 @@ const Index = () => {
               Wellness Journal
             </Button>
           </div>
-        </div>
-
-        {/* Data Privacy Notice */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
-          <DataPrivacyNotice />
         </div>
 
         {/* Content based on active feature */}
@@ -244,9 +237,6 @@ const Index = () => {
             </div>
           </CardContent>
         </Card>
-
-        {/* Production Security Guide */}
-        <ProductionSecurityGuide />
       </div>
 
       {/* Copyright Footer */}
