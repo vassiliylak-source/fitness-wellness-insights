@@ -2,6 +2,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { 
   Heart, 
   Moon, 
@@ -12,7 +13,8 @@ import {
   TrendingUp,
   BookOpen,
   Sparkles,
-  Loader2
+  Loader2,
+  AlertTriangle
 } from "lucide-react";
 import ScaleInput from "./ScaleInput";
 import { useJournalEntries } from "@/hooks/useJournalEntries";
@@ -48,6 +50,16 @@ const WellnessJournal = () => {
           </CardDescription>
         </CardHeader>
       </Card>
+
+      {/* Important Health Disclaimer */}
+      <Alert className="border-amber-200 bg-amber-50">
+        <AlertTriangle className="h-4 w-4 text-amber-600" />
+        <AlertDescription className="text-amber-800">
+          <strong>Health Disclaimer:</strong> This wellness journal is for self-reflection purposes only. 
+          AI analysis can make mistakes and should not replace professional medical or mental health advice. 
+          If you're experiencing persistent health concerns, please consult with a qualified healthcare provider or therapist.
+        </AlertDescription>
+      </Alert>
 
       {/* Journal Entry Form */}
       <Card>
@@ -223,6 +235,13 @@ const WellnessJournal = () => {
                 💡 Tip: Keep journaling consistently to get more accurate and valuable insights!
               </p>
             </div>
+            <Alert className="mt-4">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertDescription className="text-sm">
+                <strong>Remember:</strong> AI can make mistakes. These insights are for general wellness reflection only. 
+                For health concerns, always consult with a qualified healthcare provider or therapist.
+              </AlertDescription>
+            </Alert>
           </div>
         </CardContent>
       </Card>

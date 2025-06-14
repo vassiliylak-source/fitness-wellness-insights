@@ -41,6 +41,8 @@ export const useWellnessAnalysis = () => {
 Your recovery scores suggest ${savedEntries.reduce((sum, entry) => sum + entry.recovery, 0) / savedEntries.length > 6 ? 'good body awareness and rest practices' : 'need for more intentional recovery time'}
 
 Keep tracking consistently to build deeper insights! 🙏
+
+⚠️ **Important Disclaimer:** This AI analysis is for informational purposes only and should not replace professional medical or mental health advice. If you're experiencing persistent wellness concerns, please consult with a qualified healthcare provider or therapist.
       `;
       
       setAnalysisResults(mockAnalysis);
