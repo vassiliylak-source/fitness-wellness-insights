@@ -58,15 +58,15 @@ export const useJournalEntries = () => {
     doc.setFontSize(12);
     
     const metrics = [
-      { label: 'Mood', value: entry.mood, emoji: '😊' },
-      { label: 'Energy Level', value: entry.energy, emoji: '⚡' },
-      { label: 'Stress Level', value: entry.stress, emoji: '😌' },
-      { label: 'Sleep Quality', value: entry.sleep, emoji: '🌙' },
-      { label: 'Recovery', value: entry.recovery, emoji: '💚' }
+      { label: 'Mood', value: entry.mood },
+      { label: 'Energy Level', value: entry.energy },
+      { label: 'Stress Level', value: entry.stress },
+      { label: 'Sleep Quality', value: entry.sleep },
+      { label: 'Recovery', value: entry.recovery }
     ];
 
     metrics.forEach(metric => {
-      doc.text(`${metric.emoji} ${metric.label}: ${metric.value}/10`, margin, yPosition);
+      doc.text(`${metric.label}: ${metric.value}/10`, margin, yPosition);
       yPosition += 10;
     });
 
