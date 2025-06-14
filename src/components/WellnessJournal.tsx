@@ -1,10 +1,7 @@
 
-import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
-import { useToast } from "@/hooks/use-toast";
 import { 
   Heart, 
   Moon, 
@@ -17,158 +14,24 @@ import {
   Sparkles,
   Loader2
 } from "lucide-react";
-
-interface JournalEntry {
-  date: string;
-  mood: number;
-  energy: number;
-  stress: number;
-  sleep: number;
-  recovery: number;
-  notes: string;
-  goals: string;
-  gratitude: string;
-}
+import ScaleInput from "./ScaleInput";
+import { useJournalEntries } from "@/hooks/useJournalEntries";
+import { useWellnessAnalysis } from "@/hooks/useWellnessAnalysis";
 
 const WellnessJournal = () => {
-  const [currentEntry, setCurrentEntry] = useState<JournalEntry>({
-    date: new Date().toISOString().split('T')[0],
-    mood: 5,
-    energy: 5,
-    stress: 5,
-    sleep: 5,
-    recovery: 5,
-    notes: '',
-    goals: '',
-    gratitude: ''
-  });
-  
-  const [savedEntries, setSavedEntries] = useState<JournalEntry[]>([]);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [analysisResults, setAnalysisResults] = useState<string | null>(null);
-  const { toast } = useToast();
+  const {
+    currentEntry,
+    savedEntries,
+    handleScaleChange,
+    handleTextChange,
+    saveEntry
+  } = useJournalEntries();
 
-  const handleScaleChange = (field: keyof JournalEntry, value: number) => {
-    setCurrentEntry(prev => ({ ...prev, [field]: value }));
-  };
-
-  const handleTextChange = (field: keyof JournalEntry, value: string) => {
-    setCurrentEntry(prev => ({ ...prev, [field]: value }));
-  };
-
-  const saveEntry = () => {
-    const newEntries = [...savedEntries, currentEntry];
-    setSavedEntries(newEntries);
-    localStorage.setItem('wellness-entries', JSON.stringify(newEntries));
-    
-    toast({
-      title: "Entry saved! 🌟",
-      description: "Your wellness data has been recorded for today.",
-    });
-
-    // Reset for next entry
-    setCurrentEntry({
-      date: new Date().toISOString().split('T')[0],
-      mood: 5,
-      energy: 5,
-      stress: 5,
-      sleep: 5,
-      recovery: 5,
-      notes: '',
-      goals: '',
-      gratitude: ''
-    });
-  };
-
-  const performAIAnalysis = async () => {
-    if (savedEntries.length === 0) {
-      toast({
-        title: "No data to analyze",
-        description: "Please save at least one journal entry before analyzing.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    setIsAnalyzing(true);
-    
-    try {
-      // Simulate AI analysis with mock insights
-      await new Promise(resolve => setTimeout(resolve, 3000));
-      
-      const mockAnalysis = `
-**🌟 Wellness Insights Analysis**
-
-**Overall Patterns:**
-• Your average mood score is ${Math.round(savedEntries.reduce((sum, entry) => sum + entry.mood, 0) / savedEntries.length)}/10 - showing ${savedEntries.reduce((sum, entry) => sum + entry.mood, 0) / savedEntries.length > 6 ? 'positive' : 'room for improvement'} emotional well-being
-• Energy levels tend to ${savedEntries.some(entry => entry.energy > 6) ? 'fluctuate with good peaks' : 'stay moderate - consider sleep and nutrition optimization'}
-• Stress management appears ${savedEntries.reduce((sum, entry) => sum + entry.stress, 0) / savedEntries.length < 6 ? 'well-controlled' : 'to need attention'}
-
-**Key Recommendations:**
-• Focus on consistency in sleep quality (current average: ${Math.round(savedEntries.reduce((sum, entry) => sum + entry.sleep, 0) / savedEntries.length)}/10)
-• Consider mindfulness practices to maintain emotional balance
-• Track patterns between energy levels and daily activities
-
-**Recovery Focus:**
-Your recovery scores suggest ${savedEntries.reduce((sum, entry) => sum + entry.recovery, 0) / savedEntries.length > 6 ? 'good body awareness and rest practices' : 'need for more intentional recovery time'}
-
-Keep tracking consistently to build deeper insights! 🙏
-      `;
-      
-      setAnalysisResults(mockAnalysis);
-      
-      toast({
-        title: "AI Analysis Complete! 🤖",
-        description: "Your wellness insights are ready below.",
-      });
-    } catch (error) {
-      toast({
-        title: "Analysis failed",
-        description: "Please try again later.",
-        variant: "destructive"
-      });
-    } finally {
-      setIsAnalyzing(false);
-    }
-  };
-
-  const ScaleInput = ({ 
-    label, 
-    value, 
-    onChange, 
-    icon: Icon,
-    lowLabel = "Low",
-    highLabel = "High"
-  }: {
-    label: string;
-    value: number;
-    onChange: (value: number) => void;
-    icon: any;
-    lowLabel?: string;
-    highLabel?: string;
-  }) => (
-    <div className="space-y-3">
-      <div className="flex items-center gap-2">
-        <Icon className="h-5 w-5 text-blue-600" />
-        <span className="font-medium">{label}</span>
-        <Badge variant="outline" className="ml-auto">
-          {value}/10
-        </Badge>
-      </div>
-      <div className="flex items-center gap-2">
-        <span className="text-xs text-gray-500">{lowLabel}</span>
-        <input
-          type="range"
-          min="1"
-          max="10"
-          value={value}
-          onChange={(e) => onChange(Number(e.target.value))}
-          className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-        />
-        <span className="text-xs text-gray-500">{highLabel}</span>
-      </div>
-    </div>
-  );
+  const {
+    isAnalyzing,
+    analysisResults,
+    performAIAnalysis
+  } = useWellnessAnalysis();
 
   return (
     <div className="space-y-6">
@@ -295,7 +158,7 @@ Keep tracking consistently to build deeper insights! 🙏
             </Button>
             {savedEntries.length > 0 && (
               <Button 
-                onClick={performAIAnalysis} 
+                onClick={() => performAIAnalysis(savedEntries)} 
                 variant="outline"
                 disabled={isAnalyzing}
               >
