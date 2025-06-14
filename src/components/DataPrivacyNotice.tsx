@@ -1,7 +1,6 @@
 
 import { Shield, Lock, Monitor } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 
 const DataPrivacyNotice = () => {
   return (
@@ -46,18 +45,6 @@ const DataPrivacyNotice = () => {
               <p className="text-xs text-purple-700">Your data never leaves your device</p>
             </div>
           </div>
-        </div>
-        
-        <div className="flex flex-wrap gap-2 pt-2">
-          <Badge variant="outline" className="text-xs bg-white/50">
-            No Server Storage
-          </Badge>
-          <Badge variant="outline" className="text-xs bg-white/50">
-            No Third-party Sharing
-          </Badge>
-          <Badge variant="outline" className="text-xs bg-white/50">
-            GDPR Compliant
-          </Badge>
         </div>
       </CardContent>
     </Card>
