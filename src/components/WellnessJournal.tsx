@@ -1,0 +1,319 @@
+
+import { useState } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/use-toast";
+import { 
+  Heart, 
+  Moon, 
+  Zap, 
+  Brain, 
+  Smile, 
+  Download, 
+  Upload,
+  Calendar,
+  TrendingUp,
+  BookOpen
+} from "lucide-react";
+
+interface JournalEntry {
+  date: string;
+  mood: number;
+  energy: number;
+  stress: number;
+  sleep: number;
+  recovery: number;
+  notes: string;
+  goals: string;
+  gratitude: string;
+}
+
+const WellnessJournal = () => {
+  const [currentEntry, setCurrentEntry] = useState<JournalEntry>({
+    date: new Date().toISOString().split('T')[0],
+    mood: 5,
+    energy: 5,
+    stress: 5,
+    sleep: 5,
+    recovery: 5,
+    notes: '',
+    goals: '',
+    gratitude: ''
+  });
+  
+  const [savedEntries, setSavedEntries] = useState<JournalEntry[]>([]);
+  const { toast } = useToast();
+
+  const handleScaleChange = (field: keyof JournalEntry, value: number) => {
+    setCurrentEntry(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleTextChange = (field: keyof JournalEntry, value: string) => {
+    setCurrentEntry(prev => ({ ...prev, [field]: value }));
+  };
+
+  const saveEntry = () => {
+    const newEntries = [...savedEntries, currentEntry];
+    setSavedEntries(newEntries);
+    localStorage.setItem('wellness-entries', JSON.stringify(newEntries));
+    
+    toast({
+      title: "Entry saved! 🌟",
+      description: "Your wellness data has been recorded for today.",
+    });
+
+    // Reset for next entry
+    setCurrentEntry({
+      date: new Date().toISOString().split('T')[0],
+      mood: 5,
+      energy: 5,
+      stress: 5,
+      sleep: 5,
+      recovery: 5,
+      notes: '',
+      goals: '',
+      gratitude: ''
+    });
+  };
+
+  const exportEntries = () => {
+    const dataStr = JSON.stringify(savedEntries, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `wellness-journal-${new Date().toISOString().split('T')[0]}.json`;
+    link.click();
+    
+    toast({
+      title: "Journal exported! 📊",
+      description: "Upload to Perplexity for AI insights and recommendations.",
+    });
+  };
+
+  const ScaleInput = ({ 
+    label, 
+    value, 
+    onChange, 
+    icon: Icon,
+    lowLabel = "Low",
+    highLabel = "High"
+  }: {
+    label: string;
+    value: number;
+    onChange: (value: number) => void;
+    icon: any;
+    lowLabel?: string;
+    highLabel?: string;
+  }) => (
+    <div className="space-y-3">
+      <div className="flex items-center gap-2">
+        <Icon className="h-5 w-5 text-blue-600" />
+        <span className="font-medium">{label}</span>
+        <Badge variant="outline" className="ml-auto">
+          {value}/10
+        </Badge>
+      </div>
+      <div className="flex items-center gap-2">
+        <span className="text-xs text-gray-500">{lowLabel}</span>
+        <input
+          type="range"
+          min="1"
+          max="10"
+          value={value}
+          onChange={(e) => onChange(Number(e.target.value))}
+          className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+        />
+        <span className="text-xs text-gray-500">{highLabel}</span>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <Card className="bg-gradient-to-r from-green-50 to-blue-50 border-green-200">
+        <CardHeader className="text-center">
+          <CardTitle className="flex items-center justify-center gap-2 text-2xl text-gray-800">
+            <BookOpen className="h-6 w-6 text-green-600" />
+            Daily Recovery & Wellness Journal
+          </CardTitle>
+          <CardDescription className="text-lg">
+            🧘 Track wellness inside and out. Go beyond metrics to reflect on how you feel, 
+            spot patterns, and support recovery from burnout, training fatigue, or daily stress.
+          </CardDescription>
+        </CardHeader>
+      </Card>
+
+      {/* Journal Entry Form */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Calendar className="h-5 w-5" />
+            Today's Entry - {new Date().toLocaleDateString()}
+          </CardTitle>
+          <CardDescription>
+            Rate your wellness on a scale of 1-10 and add your reflections
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* Wellness Scales */}
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="space-y-4">
+              <ScaleInput
+                label="Mood"
+                value={currentEntry.mood}
+                onChange={(value) => handleScaleChange('mood', value)}
+                icon={Smile}
+                lowLabel="😔 Low"
+                highLabel="😊 Great"
+              />
+              
+              <ScaleInput
+                label="Energy Level"
+                value={currentEntry.energy}
+                onChange={(value) => handleScaleChange('energy', value)}
+                icon={Zap}
+                lowLabel="⚡ Drained"
+                highLabel="🔋 Energized"
+              />
+
+              <ScaleInput
+                label="Stress Level"
+                value={currentEntry.stress}
+                onChange={(value) => handleScaleChange('stress', value)}
+                icon={Brain}
+                lowLabel="😌 Calm"
+                highLabel="😰 Stressed"
+              />
+            </div>
+
+            <div className="space-y-4">
+              <ScaleInput
+                label="Sleep Quality"
+                value={currentEntry.sleep}
+                onChange={(value) => handleScaleChange('sleep', value)}
+                icon={Moon}
+                lowLabel="😴 Poor"
+                highLabel="🌙 Excellent"
+              />
+
+              <ScaleInput
+                label="Recovery"
+                value={currentEntry.recovery}
+                onChange={(value) => handleScaleChange('recovery', value)}
+                icon={Heart}
+                lowLabel="🔴 Fatigued"
+                highLabel="🟢 Recovered"
+              />
+            </div>
+          </div>
+
+          {/* Text Reflections */}
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Daily Notes & Reflections
+              </label>
+              <Textarea
+                placeholder="How are you feeling today? What's on your mind? Any physical sensations or emotional insights..."
+                value={currentEntry.notes}
+                onChange={(e) => handleTextChange('notes', e.target.value)}
+                className="min-h-[100px]"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Goals & Intentions
+              </label>
+              <Textarea
+                placeholder="What do you want to focus on today? Any recovery or wellness goals..."
+                value={currentEntry.goals}
+                onChange={(e) => handleTextChange('goals', e.target.value)}
+                className="min-h-[80px]"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Gratitude & Wins
+              </label>
+              <Textarea
+                placeholder="What are you grateful for? Any small wins or positive moments..."
+                value={currentEntry.gratitude}
+                onChange={(e) => handleTextChange('gratitude', e.target.value)}
+                className="min-h-[80px]"
+              />
+            </div>
+          </div>
+
+          <div className="flex gap-3">
+            <Button onClick={saveEntry} className="flex-1">
+              Save Today's Entry
+            </Button>
+            {savedEntries.length > 0 && (
+              <Button onClick={exportEntries} variant="outline">
+                <Download className="h-4 w-4 mr-2" />
+                Export for AI Analysis
+              </Button>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* AI Integration Info */}
+      <Card className="bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <TrendingUp className="h-5 w-5 text-purple-600" />
+            Maximize Your Journaling with AI
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            <p className="text-gray-700">
+              📊 <strong>Export your entries</strong> and upload them to Perplexity for deeper insights:
+            </p>
+            <ul className="list-disc list-inside space-y-1 text-gray-600 ml-4">
+              <li>Discover mood and energy patterns over time</li>
+              <li>Get personalized recovery recommendations</li>
+              <li>Identify triggers for stress or low energy</li>
+              <li>Receive gentle suggestions to enhance well-being</li>
+              <li>Track progress toward your wellness goals</li>
+            </ul>
+            <div className="mt-4 p-3 bg-white rounded-lg border border-purple-200">
+              <p className="text-sm text-purple-700 font-medium">
+                💡 Tip: Upload weekly or monthly exports to spot long-term trends and get the most valuable insights!
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Recent Entries Summary */}
+      {savedEntries.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5" />
+              Your Wellness Journey ({savedEntries.length} entries)
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-center text-gray-600">
+              <p>Keep tracking consistently to build insights! 🌱</p>
+              <p className="text-sm mt-2">
+                Your data is stored locally and privately. Export anytime for AI analysis.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+};
+
+export default WellnessJournal;
