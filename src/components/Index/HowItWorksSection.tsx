@@ -9,6 +9,27 @@ const HowItWorksSection = () => {
         <CardTitle className="text-2xl text-center text-gray-800">
           Complete Wellness Platform
         </CardTitle>
+        
+        {/* Support Section */}
+        <div className="text-center space-y-3 pt-4">
+          <p className="text-sm text-gray-700">
+            💜 If you find this wellness tracker helpful and would like to show appreciation,
+            you're welcome to buy Vassiliy a coffee via a small donation:
+          </p>
+          <div className="flex justify-center">
+            <a 
+              href="https://paypal.me/vaskenzy" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+            >
+              ☕ Buy me a coffee
+            </a>
+          </div>
+          <p className="text-xs text-gray-600">
+            Thank you for your support!
+          </p>
+        </div>
       </CardHeader>
       <CardContent>
         <div className="grid md:grid-cols-3 gap-8">
