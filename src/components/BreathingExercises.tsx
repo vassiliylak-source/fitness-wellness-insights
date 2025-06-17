@@ -2,19 +2,16 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Wind, Play, Pause, RotateCcw } from "lucide-react";
-
 const BreathingExercises = () => {
   const [isActive, setIsActive] = useState(false);
   const [phase, setPhase] = useState<'inhale' | 'exhale'>('inhale');
   const [count, setCount] = useState(4);
   const [cycle, setCycle] = useState(0);
-
   useEffect(() => {
     let interval: NodeJS.Timeout;
-
     if (isActive) {
       interval = setInterval(() => {
-        setCount((prevCount) => {
+        setCount(prevCount => {
           if (phase === 'inhale' && prevCount <= 1) {
             setPhase('exhale');
             return 6;
@@ -27,31 +24,25 @@ const BreathingExercises = () => {
         });
       }, 1000);
     }
-
     return () => clearInterval(interval);
   }, [isActive, phase]);
-
   const toggleBreathing = () => {
     setIsActive(!isActive);
   };
-
   const resetBreathing = () => {
     setIsActive(false);
     setPhase('inhale');
     setCount(4);
     setCycle(0);
   };
-
   const getCircleScale = () => {
     if (phase === 'inhale') {
-      return 1.5 - (count / 4) * 0.5; // Grows from 1 to 1.5
+      return 1.5 - count / 4 * 0.5; // Grows from 1 to 1.5
     } else {
-      return 1 + (count / 6) * 0.5; // Shrinks from 1.5 to 1
+      return 1 + count / 6 * 0.5; // Shrinks from 1.5 to 1
     }
   };
-
-  return (
-    <div className="space-y-6">
+  return <div className="space-y-6">
       <Card className="bg-gradient-to-r from-blue-50 to-cyan-50 border-blue-200">
         <CardHeader className="text-center">
           <CardTitle className="flex items-center justify-center gap-2 text-2xl text-gray-800">
@@ -66,26 +57,15 @@ const BreathingExercises = () => {
           {/* Breathing Animation Circle */}
           <div className="flex justify-center">
             <div className="relative w-64 h-64 flex items-center justify-center">
-              <div
-                className={`w-32 h-32 rounded-full border-4 transition-all duration-1000 ease-in-out ${
-                  phase === 'inhale' 
-                    ? 'border-blue-500 bg-blue-100' 
-                    : 'border-cyan-500 bg-cyan-100'
-                }`}
-                style={{
-                  transform: `scale(${getCircleScale()})`,
-                }}
-              >
+              <div className={`w-32 h-32 rounded-full border-4 transition-all duration-1000 ease-in-out ${phase === 'inhale' ? 'border-blue-500 bg-blue-100' : 'border-cyan-500 bg-cyan-100'}`} style={{
+              transform: `scale(${getCircleScale()})`
+            }}>
                 <div className="w-full h-full flex items-center justify-center">
                   <div className="text-center">
-                    <div className={`text-2xl font-bold ${
-                      phase === 'inhale' ? 'text-blue-700' : 'text-cyan-700'
-                    }`}>
+                    <div className={`text-2xl font-bold ${phase === 'inhale' ? 'text-blue-700' : 'text-cyan-700'}`}>
                       {count}
                     </div>
-                    <div className={`text-sm font-medium ${
-                      phase === 'inhale' ? 'text-blue-600' : 'text-cyan-600'
-                    }`}>
+                    <div className={`text-sm font-medium ${phase === 'inhale' ? 'text-blue-600' : 'text-cyan-600'}`}>
                       {phase === 'inhale' ? 'Inhale' : 'Exhale'}
                     </div>
                   </div>
@@ -97,51 +77,30 @@ const BreathingExercises = () => {
           {/* Status Display */}
           <div className="text-center space-y-2">
             <div className="text-lg font-medium text-gray-700">
-              {isActive ? (
-                <>
+              {isActive ? <>
                   <span className={phase === 'inhale' ? 'text-blue-600' : 'text-cyan-600'}>
                     {phase === 'inhale' ? 'Breathe In' : 'Breathe Out'}
                   </span>
                   <span className="text-gray-500 ml-2">• Cycle {cycle + 1}</span>
-                </>
-              ) : (
-                'Ready to begin'
-              )}
+                </> : 'Ready to begin'}
             </div>
-            {!isActive && cycle > 0 && (
-              <div className="text-sm text-gray-600">
+            {!isActive && cycle > 0 && <div className="text-sm text-gray-600">
                 Completed {cycle} breathing cycles
-              </div>
-            )}
+              </div>}
           </div>
 
           {/* Controls */}
           <div className="flex justify-center gap-4">
-            <Button
-              onClick={toggleBreathing}
-              className={`flex items-center gap-2 ${
-                isActive 
-                  ? 'bg-red-500 hover:bg-red-600' 
-                  : 'bg-blue-500 hover:bg-blue-600'
-              }`}
-            >
-              {isActive ? (
-                <>
+            <Button onClick={toggleBreathing} className={`flex items-center gap-2 ${isActive ? 'bg-red-500 hover:bg-red-600' : 'bg-blue-500 hover:bg-blue-600'}`}>
+              {isActive ? <>
                   <Pause className="h-4 w-4" />
                   Pause
-                </>
-              ) : (
-                <>
+                </> : <>
                   <Play className="h-4 w-4" />
                   Start
-                </>
-              )}
+                </>}
             </Button>
-            <Button
-              onClick={resetBreathing}
-              variant="outline"
-              className="flex items-center gap-2"
-            >
+            <Button onClick={resetBreathing} variant="outline" className="flex items-center gap-2">
               <RotateCcw className="h-4 w-4" />
               Reset
             </Button>
@@ -175,17 +134,9 @@ const BreathingExercises = () => {
       <Card className="bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
         <CardContent className="pt-6">
           <div className="text-center space-y-3">
-            <p className="text-sm text-gray-700">
-              💜 If you find this wellness tracker helpful and would like to show appreciation,
-              you're welcome to buy Vassiliy a coffee via a small donation:
-            </p>
+            <p className="text-sm text-gray-700">Enjoying this app? If you'd like to support the creator, consider treating them to a coffee with a small donation:</p>
             <div className="flex justify-center">
-              <a 
-                href="https://paypal.me/vaskenzy" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
-              >
+              <a href="https://paypal.me/vaskenzy" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
                 ☕ Buy me a coffee
               </a>
             </div>
@@ -195,8 +146,6 @@ const BreathingExercises = () => {
           </div>
         </CardContent>
       </Card>
-    </div>
-  );
+    </div>;
 };
-
 export default BreathingExercises;
