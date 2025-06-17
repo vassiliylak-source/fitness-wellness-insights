@@ -213,10 +213,14 @@ const Index = () => {
     );
   };
 
-  // ... existing return statement and footer
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
       <HeroSection />
+
+      {/* Complete Wellness Platform - moved up after hero section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <HowItWorksSection />
+      </div>
 
       {/* Data Privacy Notice */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -234,8 +238,6 @@ const Index = () => {
         {activeFeature === 'screenshot' && renderScreenshotContent()}
         {activeFeature === 'breathing' && <BreathingExercises />}
         {activeFeature === 'journal' && <WellnessJournal />}
-
-        <HowItWorksSection />
       </div>
 
       {/* Copyright Footer */}
