@@ -32,7 +32,8 @@ const HowItWorksSection = () => {
               <BookOpen className="h-12 w-12 text-green-600" />
             </div>
             <h3 className="text-2xl font-bold mb-4 text-green-800">Wellness Journal</h3>
-            <p className="text-gray-600 text-lg leading-relaxed">Monitor your mood, energy, stress, and recovery each day. Export PDFs to analyze patterns and get personalized recommendations</p>
+            <p className="text-gray-600 text-lg leading-relaxed">Monitor your mood, energy, stress, and recovery each day. Export your entries to dive deeper into patterns
+          </p>
           </div>
         </div>
       </CardContent>
