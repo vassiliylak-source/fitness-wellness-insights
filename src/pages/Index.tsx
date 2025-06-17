@@ -15,7 +15,6 @@ import DataPrivacyNotice from "@/components/DataPrivacyNotice";
 import HeroSection from "@/components/Index/HeroSection";
 import FeatureNavigation from "@/components/Index/FeatureNavigation";
 import HowItWorksSection from "@/components/Index/HowItWorksSection";
-
 const Index = () => {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -23,8 +22,9 @@ const Index = () => {
   // Added state for analysis result
   const [analysisResult, setAnalysisResult] = useState<ImageAnalysisResult | null>(null);
   const [activeFeature, setActiveFeature] = useState<'screenshot' | 'breathing' | 'journal'>('screenshot');
-  const { toast } = useToast();
-
+  const {
+    toast
+  } = useToast();
   const handleImageUpload = async (file: File) => {
     const imageUrl = URL.createObjectURL(file);
     setUploadedImage(imageUrl);
@@ -33,7 +33,7 @@ const Index = () => {
     setAnalysisResult(null);
     toast({
       title: "Image uploaded successfully!",
-      description: "Analyzing your image with OCR...",
+      description: "Analyzing your image with OCR..."
     });
     try {
       // Call to analyze image
@@ -43,7 +43,7 @@ const Index = () => {
         setShowInsights(true);
         toast({
           title: "Analysis complete! 🎯",
-          description: "Your fitness insights are ready.",
+          description: "Your fitness insights are ready."
         });
       } else {
         toast({
@@ -63,18 +63,15 @@ const Index = () => {
       setIsAnalyzing(false);
     }
   };
-
   const resetAnalysis = () => {
     setUploadedImage(null);
     setShowInsights(false);
     setIsAnalyzing(false);
     setAnalysisResult(null);
   };
-
   const renderScreenshotContent = () => {
     if (!showInsights) {
-      return (
-        <div className="space-y-8">
+      return <div className="space-y-8">
           {/* Upload Section */}
           <Card className="border-2 border-dashed border-blue-200 bg-gradient-to-r from-blue-50 to-purple-50">
             <CardHeader className="text-center">
@@ -89,25 +86,14 @@ const Index = () => {
             <CardContent>
               <PhotoUpload onImageUpload={handleImageUpload} />
               
-              {uploadedImage && (
-                <div className="mt-6 text-center">
-                  <img 
-                    src={uploadedImage} 
-                    alt="Uploaded fitness data" 
-                    className="max-w-md mx-auto rounded-lg shadow-lg"
-                  />
-                  <Button 
-                    onClick={resetAnalysis}
-                    variant="outline" 
-                    className="mt-4"
-                  >
+              {uploadedImage && <div className="mt-6 text-center">
+                  <img src={uploadedImage} alt="Uploaded fitness data" className="max-w-md mx-auto rounded-lg shadow-lg" />
+                  <Button onClick={resetAnalysis} variant="outline" className="mt-4">
                     Upload Different Image
                   </Button>
-                </div>
-              )}
+                </div>}
 
-              {isAnalyzing && (
-                <div className="mt-8 space-y-4">
+              {isAnalyzing && <div className="mt-8 space-y-4">
                   <div className="flex items-center justify-center gap-2">
                     <Brain className="h-5 w-5 text-blue-600 animate-pulse" />
                     <span className="text-lg font-medium">Analyzing image with OCR...</span>
@@ -116,12 +102,10 @@ const Index = () => {
                   <div className="text-center text-sm text-gray-600">
                     Reading text and detecting fitness metrics
                   </div>
-                </div>
-              )}
+                </div>}
 
               {/* Show error message if analysis result shows not a fitness data */}
-              {analysisResult && !analysisResult.isFitnessData && (
-                <div className="mt-8 p-6 bg-red-50 border border-red-200 rounded-lg">
+              {analysisResult && !analysisResult.isFitnessData && <div className="mt-8 p-6 bg-red-50 border border-red-200 rounded-lg">
                   <div className="text-center space-y-3">
                     <div className="text-red-600 text-lg font-medium">
                       ❌ Not a Fitness Screenshot
@@ -134,8 +118,7 @@ const Index = () => {
                       <p>Apple Health, Strava, Garmin Connect, Fitbit, Samsung Health, Google Fit, and more</p>
                     </div>
                   </div>
-                </div>
-              )}
+                </div>}
             </CardContent>
           </Card>
 
@@ -145,17 +128,9 @@ const Index = () => {
           <Card className="bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
             <CardContent className="pt-6">
               <div className="text-center space-y-3">
-                <p className="text-sm text-gray-700">
-                  💜 If you find this wellness tracker helpful and would like to show appreciation,
-                  you're welcome to buy Vassiliy a coffee via a small donation:
-                </p>
+                <p className="text-sm text-gray-700">💖Enjoying this app? If you'd like to support the creator, consider treating them to a coffee with a small donation:</p>
                 <div className="flex justify-center">
-                  <a 
-                    href="https://paypal.me/vaskenzy" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
-                  >
+                  <a href="https://paypal.me/vaskenzy" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
                     ☕ Buy me a coffee
                   </a>
                 </div>
@@ -165,12 +140,9 @@ const Index = () => {
               </div>
             </CardContent>
           </Card>
-        </div>
-      );
+        </div>;
     }
-
-    return (
-      <div className="space-y-8">
+    return <div className="space-y-8">
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold text-gray-800 mb-4">
             Your Fitness Insights Are Ready! 🎯
@@ -180,10 +152,7 @@ const Index = () => {
           </Button>
         </div>
         {/* Pass analysisResult to InsightsDashboard component */}
-        <InsightsDashboard 
-          uploadedImage={uploadedImage} 
-          analysisResult={analysisResult}
-        />
+        <InsightsDashboard uploadedImage={uploadedImage} analysisResult={analysisResult} />
 
         {/* Support Section */}
         <Card className="bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
@@ -194,12 +163,7 @@ const Index = () => {
                 you're welcome to buy Vassiliy a coffee via a small donation:
               </p>
               <div className="flex justify-center">
-                <a 
-                  href="https://paypal.me/vaskenzy" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
-                >
+                <a href="https://paypal.me/vaskenzy" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
                   ☕ Buy me a coffee
                 </a>
               </div>
@@ -209,12 +173,9 @@ const Index = () => {
             </div>
           </CardContent>
         </Card>
-      </div>
-    );
+      </div>;
   };
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
+  return <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
       <HeroSection />
 
       {/* Complete Wellness Platform - moved up after hero section */}
@@ -229,10 +190,7 @@ const Index = () => {
 
       {/* Feature Selection and Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <FeatureNavigation 
-          activeFeature={activeFeature} 
-          onFeatureChange={setActiveFeature} 
-        />
+        <FeatureNavigation activeFeature={activeFeature} onFeatureChange={setActiveFeature} />
 
         {/* Content based on active feature */}
         {activeFeature === 'screenshot' && renderScreenshotContent()}
@@ -248,8 +206,6 @@ const Index = () => {
           </div>
         </div>
       </footer>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
