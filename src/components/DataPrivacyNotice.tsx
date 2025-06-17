@@ -1,8 +1,19 @@
+
 import { Shield, Lock, Monitor } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+
 const DataPrivacyNotice = () => {
-  return <Card className="bg-gradient-to-r from-green-50 to-blue-50 border-green-200">
-      
+  return (
+    <Card className="bg-gradient-to-r from-green-50 to-blue-50 border-green-200">
+      <CardHeader className="pb-4">
+        <CardTitle className="flex items-center gap-2 text-green-800">
+          <Shield className="h-5 w-5" />
+          Your Privacy is Protected
+        </CardTitle>
+        <CardDescription className="text-green-700">
+          Complete data privacy with local-only processing
+        </CardDescription>
+      </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid md:grid-cols-3 gap-4">
           <div className="flex items-start gap-3">
@@ -36,6 +47,8 @@ const DataPrivacyNotice = () => {
           </div>
         </div>
       </CardContent>
-    </Card>;
+    </Card>
+  );
 };
+
 export default DataPrivacyNotice;
