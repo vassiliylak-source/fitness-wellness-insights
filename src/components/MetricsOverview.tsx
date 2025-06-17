@@ -41,9 +41,7 @@ const MetricsOverview = () => {
   }];
   return <div className="space-y-6">
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">
-          What We Analyze
-        </h2>
+        <h2 className="text-2xl font-bold text-gray-800 mb-2">What It Assesses </h2>
         <p className="text-gray-600">The app understands all major fitness metrics and provides actionable insights</p>
       </div>
 
