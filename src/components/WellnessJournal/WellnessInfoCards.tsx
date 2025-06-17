@@ -34,13 +34,7 @@ const WellnessInfoCards = ({
                 💡 Tip: Keep journaling consistently to get more accurate and valuable insights!
               </p>
             </div>
-            <Alert className="mt-4">
-              <AlertTriangle className="h-4 w-4" />
-              <AlertDescription className="text-sm">
-                <strong>Remember:</strong> AI can make mistakes. These insights are for general wellness reflection only. 
-                For health concerns, always consult with a qualified healthcare provider or therapist.
-              </AlertDescription>
-            </Alert>
+            
           </div>
         </CardContent>
       </Card>
