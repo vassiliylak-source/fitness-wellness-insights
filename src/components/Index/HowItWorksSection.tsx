@@ -1,10 +1,7 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Upload, Wind, BookOpen } from "lucide-react";
-
 const HowItWorksSection = () => {
-  return (
-    <Card className="mt-12 bg-gradient-to-r from-green-50 to-blue-50 border-green-200">
+  return <Card className="mt-12 bg-gradient-to-r from-green-50 to-blue-50 border-green-200">
       <CardHeader>
         <CardTitle className="text-3xl text-center text-gray-800 mb-8">
           Complete Wellness Platform
@@ -35,14 +32,10 @@ const HowItWorksSection = () => {
               <BookOpen className="h-12 w-12 text-green-600" />
             </div>
             <h3 className="text-2xl font-bold mb-4 text-green-800">Wellness Journal</h3>
-            <p className="text-gray-600 text-lg leading-relaxed">
-              Track mood, energy, stress, and recovery daily. Export for AI analysis to discover patterns and get recommendations
-            </p>
+            <p className="text-gray-600 text-lg leading-relaxed">Monitor your mood, energy, stress, and recovery each day. Export PDFs to analyze patterns and get personalized recommendations</p>
           </div>
         </div>
       </CardContent>
-    </Card>
-  );
+    </Card>;
 };
-
 export default HowItWorksSection;
