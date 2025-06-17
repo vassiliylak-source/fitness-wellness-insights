@@ -1,10 +1,11 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Upload, Brain } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+// Added import for image analysis
+import { analyzeImage, ImageAnalysisResult } from "@/services/imageAnalysis";
 import PhotoUpload from "@/components/PhotoUpload";
 import InsightsDashboard from "@/components/InsightsDashboard";
 import MetricsOverview from "@/components/MetricsOverview";
@@ -19,6 +20,8 @@ const Index = () => {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [showInsights, setShowInsights] = useState(false);
+  // Added state for analysis result
+  const [analysisResult, setAnalysisResult] = useState<ImageAnalysisResult | null>(null);
   const [activeFeature, setActiveFeature] = useState<'screenshot' | 'breathing' | 'journal'>('screenshot');
   const { toast } = useToast();
 
@@ -26,27 +29,46 @@ const Index = () => {
     const imageUrl = URL.createObjectURL(file);
     setUploadedImage(imageUrl);
     setIsAnalyzing(true);
-    
+    setShowInsights(false);
+    setAnalysisResult(null);
     toast({
       title: "Image uploaded successfully!",
-      description: "Analyzing your fitness data...",
+      description: "Analyzing your image with OCR...",
     });
-
-    // Simulate AI analysis
-    setTimeout(() => {
-      setIsAnalyzing(false);
-      setShowInsights(true);
+    try {
+      // Call to analyze image
+      const result = await analyzeImage(file);
+      setAnalysisResult(result);
+      if (result.isFitnessData) {
+        setShowInsights(true);
+        toast({
+          title: "Analysis complete! 🎯",
+          description: "Your fitness insights are ready.",
+        });
+      } else {
+        toast({
+          title: "Analysis complete",
+          description: result.error || "This doesn't appear to be a fitness screenshot.",
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      console.error('Analysis failed:', error);
       toast({
-        title: "Analysis complete!",
-        description: "Your pro-level insights are ready.",
+        title: "Analysis failed",
+        description: "There was an error analyzing your image. Please try again.",
+        variant: "destructive"
       });
-    }, 3000);
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   const resetAnalysis = () => {
     setUploadedImage(null);
     setShowInsights(false);
     setIsAnalyzing(false);
+    setAnalysisResult(null);
   };
 
   const renderScreenshotContent = () => {
@@ -88,11 +110,29 @@ const Index = () => {
                 <div className="mt-8 space-y-4">
                   <div className="flex items-center justify-center gap-2">
                     <Brain className="h-5 w-5 text-blue-600 animate-pulse" />
-                    <span className="text-lg font-medium">AI is analyzing your data...</span>
+                    <span className="text-lg font-medium">Analyzing image with OCR...</span>
                   </div>
                   <Progress value={66} className="w-full max-w-md mx-auto" />
                   <div className="text-center text-sm text-gray-600">
-                    Processing metrics, patterns, and generating insights
+                    Reading text and detecting fitness metrics
+                  </div>
+                </div>
+              )}
+
+              {/* Show error message if analysis result shows not a fitness data */}
+              {analysisResult && !analysisResult.isFitnessData && (
+                <div className="mt-8 p-6 bg-red-50 border border-red-200 rounded-lg">
+                  <div className="text-center space-y-3">
+                    <div className="text-red-600 text-lg font-medium">
+                      ❌ Not a Fitness Screenshot
+                    </div>
+                    <p className="text-red-700">
+                      {analysisResult.error}
+                    </p>
+                    <div className="text-sm text-red-600">
+                      <p className="font-medium mb-2">Supported apps include:</p>
+                      <p>Apple Health, Strava, Garmin Connect, Fitbit, Samsung Health, Google Fit, and more</p>
+                    </div>
                   </div>
                 </div>
               )}
@@ -139,7 +179,11 @@ const Index = () => {
             Analyze Another Image
           </Button>
         </div>
-        <InsightsDashboard uploadedImage={uploadedImage} />
+        {/* Pass analysisResult to InsightsDashboard component */}
+        <InsightsDashboard 
+          uploadedImage={uploadedImage} 
+          analysisResult={analysisResult}
+        />
 
         {/* Support Section */}
         <Card className="bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
@@ -169,6 +213,7 @@ const Index = () => {
     );
   };
 
+  // ... existing return statement and footer
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
       <HeroSection />

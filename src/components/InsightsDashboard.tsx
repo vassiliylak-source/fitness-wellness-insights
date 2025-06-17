@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -12,21 +11,30 @@ import {
   Target,
   AlertTriangle,
   CheckCircle,
-  Moon
+  Moon,
+  Upload
 } from "lucide-react";
+
+import { ImageAnalysisResult } from "@/services/imageAnalysis";
 
 interface InsightsDashboardProps {
   uploadedImage: string | null;
+  analysisResult?: ImageAnalysisResult | null;
 }
 
-const InsightsDashboard = ({ uploadedImage }: InsightsDashboardProps) => {
-  // Mock data - in a real app, this would come from AI analysis
+const InsightsDashboard = ({ uploadedImage, analysisResult }: InsightsDashboardProps) => {
+  // Use real data from OCR analysis when available, fallback to mock data
+  const fitnessData = analysisResult?.fitnessData;
+  
+  // Enhanced mock data with real OCR data integration
   const insights = {
     heartRate: {
-      current: 68,
-      zone: "Resting",
+      current: fitnessData?.heartRate || 68,
+      zone: fitnessData?.heartRate ? (fitnessData.heartRate > 100 ? "Active" : "Resting") : "Resting",
       trend: "stable",
-      recommendation: "Your resting heart rate is excellent for your age group."
+      recommendation: fitnessData?.heartRate 
+        ? `Your heart rate of ${fitnessData.heartRate} BPM indicates ${fitnessData.heartRate > 100 ? 'active exercise' : 'good resting state'}.`
+        : "Your resting heart rate is excellent for your age group."
     },
     vo2Max: {
       current: 45,
@@ -40,11 +48,27 @@ const InsightsDashboard = ({ uploadedImage }: InsightsDashboardProps) => {
       remSleep: 22,
       recommendation: "Great sleep quality! Consider maintaining your current sleep schedule."
     },
-    cadence: {
-      current: 168,
-      optimal: 180,
-      trend: "improving",
-      recommendation: "Increase your cadence by 5-10 steps per minute for better efficiency."
+    steps: {
+      current: fitnessData?.steps || 0,
+      goal: 10000,
+      hasRealData: !!fitnessData?.steps,
+      recommendation: fitnessData?.steps 
+        ? `You've taken ${fitnessData.steps.toLocaleString()} steps. ${fitnessData.steps >= 10000 ? 'Great job reaching your goal!' : 'Keep moving to reach your daily goal!'}`
+        : "Step data not detected in the uploaded image."
+    },
+    calories: {
+      current: fitnessData?.calories || 0,
+      hasRealData: !!fitnessData?.calories,
+      recommendation: fitnessData?.calories 
+        ? `You've burned ${fitnessData.calories} calories during this activity.`
+        : "Calorie data not detected in the uploaded image."
+    },
+    distance: {
+      current: fitnessData?.distance || 0,
+      hasRealData: !!fitnessData?.distance,
+      recommendation: fitnessData?.distance 
+        ? `You covered ${fitnessData.distance} ${fitnessData.distance > 5 ? 'km' : 'miles'} in this workout.`
+        : "Distance data not detected in the uploaded image."
     }
   };
 
@@ -58,6 +82,13 @@ const InsightsDashboard = ({ uploadedImage }: InsightsDashboardProps) => {
         <p className="text-gray-600">
           Here are your personalized fitness insights based on your data
         </p>
+        {analysisResult?.fitnessData?.detectedMetrics && (
+          <div className="mt-2">
+            <p className="text-sm text-green-600">
+              Detected metrics: {analysisResult.fitnessData.detectedMetrics.join(', ')}
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Original Image */}
@@ -76,145 +107,218 @@ const InsightsDashboard = ({ uploadedImage }: InsightsDashboardProps) => {
         </Card>
       )}
 
-      {/* Key Insights Grid */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {/* Heart Rate */}
-        <Card className="border-red-200 bg-red-50">
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <Heart className="h-6 w-6 text-red-600" />
-              <Badge variant="secondary" className="bg-red-100">
-                {insights.heartRate.zone}
-              </Badge>
-            </div>
-            <CardTitle className="text-2xl">{insights.heartRate.current} BPM</CardTitle>
-            <CardDescription>Resting Heart Rate</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-2 mb-2">
-              <CheckCircle className="h-4 w-4 text-green-600" />
-              <span className="text-sm text-green-700">Excellent</span>
-            </div>
-            <Progress value={85} className="mb-2" />
-            <p className="text-sm text-gray-600">{insights.heartRate.recommendation}</p>
-          </CardContent>
-        </Card>
+      {/* Real Data Metrics (when available) */}
+      {fitnessData && (
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {fitnessData.steps && (
+            <Card className="border-green-200 bg-green-50">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <Activity className="h-6 w-6 text-green-600" />
+                  <Badge variant="secondary" className="bg-green-100">
+                    Real Data
+                  </Badge>
+                </div>
+                <CardTitle className="text-2xl">{fitnessData.steps.toLocaleString()}</CardTitle>
+                <CardDescription>Steps</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Progress value={(fitnessData.steps / 10000) * 100} className="mb-2" />
+                <p className="text-sm text-gray-600">{insights.steps.recommendation}</p>
+              </CardContent>
+            </Card>
+          )}
 
-        {/* VO2 Max */}
-        <Card className="border-blue-200 bg-blue-50">
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <Zap className="h-6 w-6 text-blue-600" />
-              <Badge variant="secondary" className="bg-blue-100">
-                <TrendingUp className="h-3 w-3 mr-1" />
-                Improving
-              </Badge>
-            </div>
-            <CardTitle className="text-2xl">{insights.vo2Max.current}</CardTitle>
-            <CardDescription>VO2 Max (ml/kg/min)</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-2 mb-2">
-              <Target className="h-4 w-4 text-blue-600" />
-              <span className="text-sm text-blue-700">{insights.vo2Max.percentile}th percentile</span>
-            </div>
-            <Progress value={insights.vo2Max.percentile} className="mb-2" />
-            <p className="text-sm text-gray-600">{insights.vo2Max.recommendation}</p>
-          </CardContent>
-        </Card>
+          {fitnessData.calories && (
+            <Card className="border-orange-200 bg-orange-50">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <Zap className="h-6 w-6 text-orange-600" />
+                  <Badge variant="secondary" className="bg-orange-100">
+                    Real Data
+                  </Badge>
+                </div>
+                <CardTitle className="text-2xl">{fitnessData.calories}</CardTitle>
+                <CardDescription>Calories Burned</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-600">{insights.calories.recommendation}</p>
+              </CardContent>
+            </Card>
+          )}
 
-        {/* Sleep Quality */}
-        <Card className="border-purple-200 bg-purple-50">
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <Moon className="h-6 w-6 text-purple-600" />
-              <Badge variant="secondary" className="bg-purple-100">
-                Quality Sleep
-              </Badge>
-            </div>
-            <CardTitle className="text-2xl">{insights.sleep.quality}%</CardTitle>
-            <CardDescription>Sleep Quality Score</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-1 mb-2">
-              <div className="flex justify-between text-sm">
-                <span>Deep Sleep:</span>
-                <span className="font-medium">{insights.sleep.deepSleep}%</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span>REM Sleep:</span>
-                <span className="font-medium">{insights.sleep.remSleep}%</span>
-              </div>
-            </div>
-            <Progress value={insights.sleep.quality} className="mb-2" />
-            <p className="text-sm text-gray-600">{insights.sleep.recommendation}</p>
-          </CardContent>
-        </Card>
+          {fitnessData.distance && (
+            <Card className="border-blue-200 bg-blue-50">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <Target className="h-6 w-6 text-blue-600" />
+                  <Badge variant="secondary" className="bg-blue-100">
+                    Real Data
+                  </Badge>
+                </div>
+                <CardTitle className="text-2xl">{fitnessData.distance}</CardTitle>
+                <CardDescription>Distance</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-600">{insights.distance.recommendation}</p>
+              </CardContent>
+            </Card>
+          )}
 
-        {/* Cadence */}
-        <Card className="border-green-200 bg-green-50">
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <Activity className="h-6 w-6 text-green-600" />
-              <Badge variant="secondary" className="bg-yellow-100">
-                <AlertTriangle className="h-3 w-3 mr-1" />
-                Room to improve
-              </Badge>
-            </div>
-            <CardTitle className="text-2xl">{insights.cadence.current}</CardTitle>
-            <CardDescription>Steps per minute</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-2 mb-2">
-              <Target className="h-4 w-4 text-green-600" />
-              <span className="text-sm text-green-700">Target: {insights.cadence.optimal} SPM</span>
-            </div>
-            <Progress value={(insights.cadence.current / insights.cadence.optimal) * 100} className="mb-2" />
-            <p className="text-sm text-gray-600">{insights.cadence.recommendation}</p>
-          </CardContent>
-        </Card>
-      </div>
+          {fitnessData.heartRate && (
+            <Card className="border-red-200 bg-red-50">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <Heart className="h-6 w-6 text-red-600" />
+                  <Badge variant="secondary" className="bg-red-100">
+                    {insights.heartRate.zone}
+                  </Badge>
+                </div>
+                <CardTitle className="text-2xl">{fitnessData.heartRate} BPM</CardTitle>
+                <CardDescription>Heart Rate</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-600">{insights.heartRate.recommendation}</p>
+              </CardContent>
+            </Card>
+          )}
+
+          {fitnessData.pace && (
+            <Card className="border-purple-200 bg-purple-50">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <Clock className="h-6 w-6 text-purple-600" />
+                  <Badge variant="secondary" className="bg-purple-100">
+                    Real Data
+                  </Badge>
+                </div>
+                <CardTitle className="text-2xl">{fitnessData.pace}</CardTitle>
+                <CardDescription>Pace</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-600">Great pacing for your workout!</p>
+              </CardContent>
+            </Card>
+          )}
+
+          {fitnessData.duration && (
+            <Card className="border-indigo-200 bg-indigo-50">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <Clock className="h-6 w-6 text-indigo-600" />
+                  <Badge variant="secondary" className="bg-indigo-100">
+                    Real Data
+                  </Badge>
+                </div>
+                <CardTitle className="text-2xl">{fitnessData.duration}</CardTitle>
+                <CardDescription>Duration</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-600">Excellent workout duration!</p>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      )}
 
       {/* Detailed Recommendations */}
       <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <TrendingUp className="h-5 w-5 text-blue-600" />
-            Pro-Level Recommendations
+            {fitnessData ? 'Personalized Recommendations' : 'Sample Recommendations'}
           </CardTitle>
-          <CardDescription>Personalized advice based on your current fitness data</CardDescription>
+          <CardDescription>
+            {fitnessData 
+              ? 'Based on your actual fitness data' 
+              : 'Upload a fitness screenshot to get personalized insights'
+            }
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <div className="flex items-start gap-3 p-4 bg-white rounded-lg">
-              <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                <CheckCircle className="h-4 w-4 text-green-600" />
-              </div>
-              <div>
-                <h4 className="font-semibold text-green-800">Cardiovascular Health</h4>
-                <p className="text-sm text-gray-700">Your heart rate metrics indicate excellent cardiovascular fitness. Maintain your current training intensity.</p>
-              </div>
-            </div>
-            
-            <div className="flex items-start gap-3 p-4 bg-white rounded-lg">
-              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                <Zap className="h-4 w-4 text-blue-600" />
-              </div>
-              <div>
-                <h4 className="font-semibold text-blue-800">Endurance Training</h4>
-                <p className="text-sm text-gray-700">Your VO2 Max is trending upward. Consider adding 1-2 high-intensity interval sessions weekly to maximize gains.</p>
-              </div>
-            </div>
-            
-            <div className="flex items-start gap-3 p-4 bg-white rounded-lg">
-              <div className="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
-                <Clock className="h-4 w-4 text-yellow-600" />
-              </div>
-              <div>
-                <h4 className="font-semibold text-yellow-800">Running Efficiency</h4>
-                <p className="text-sm text-gray-700">Increase your cadence gradually to 175-180 SPM. This will reduce injury risk and improve running economy.</p>
-              </div>
-            </div>
+            {fitnessData ? (
+              // Real recommendations based on detected data
+              <>
+                {fitnessData.steps && (
+                  <div className="flex items-start gap-3 p-4 bg-white rounded-lg">
+                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                      <Activity className="h-4 w-4 text-green-600" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-green-800">Step Progress</h4>
+                      <p className="text-sm text-gray-700">
+                        {fitnessData.steps >= 10000 
+                          ? 'Excellent! You\'ve exceeded your daily step goal. Maintain this level of activity for optimal health.'
+                          : `You're ${(10000 - fitnessData.steps).toLocaleString()} steps away from your daily goal. Try taking a walk or using stairs.`
+                        }
+                      </p>
+                    </div>
+                  </div>
+                )}
+                
+                {fitnessData.heartRate && (
+                  <div className="flex items-start gap-3 p-4 bg-white rounded-lg">
+                    <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+                      <Heart className="h-4 w-4 text-red-600" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-red-800">Heart Rate Analysis</h4>
+                      <p className="text-sm text-gray-700">
+                        {fitnessData.heartRate > 100 
+                          ? 'Your elevated heart rate indicates active exercise. Great work on maintaining intensity!'
+                          : 'Your heart rate shows you were in a comfortable zone. Consider adding some high-intensity intervals.'
+                        }
+                      </p>
+                    </div>
+                  </div>
+                )}
+                
+                {fitnessData.calories && (
+                  <div className="flex items-start gap-3 p-4 bg-white rounded-lg">
+                    <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
+                      <Zap className="h-4 w-4 text-orange-600" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-orange-800">Calorie Burn</h4>
+                      <p className="text-sm text-gray-700">
+                        You burned {fitnessData.calories} calories. {fitnessData.calories > 300 
+                          ? 'Excellent calorie burn for this session!'
+                          : 'Consider extending your workout or increasing intensity for higher calorie burn.'
+                        }
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </>
+            ) : (
+              // Default recommendations when no real data available
+              <>
+                <div className="flex items-start gap-3 p-4 bg-white rounded-lg">
+                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                    <Upload className="h-4 w-4 text-blue-600" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-blue-800">Upload Your Data</h4>
+                    <p className="text-sm text-gray-700">
+                      To get personalized insights, upload a clear screenshot from your fitness app showing your workout data, steps, calories, or other metrics.
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-3 p-4 bg-white rounded-lg">
+                  <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                    <CheckCircle className="h-4 w-4 text-green-600" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-green-800">Supported Apps</h4>
+                    <p className="text-sm text-gray-700">
+                      Works with Apple Health, Strava, Garmin Connect, Fitbit, Samsung Health, Google Fit, and most other fitness apps.
+                    </p>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </CardContent>
       </Card>
