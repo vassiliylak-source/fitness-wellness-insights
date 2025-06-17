@@ -1,16 +1,14 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { TrendingUp, AlertTriangle } from "lucide-react";
 import { JournalEntry } from "@/types/wellness";
-
 interface WellnessInfoCardsProps {
   savedEntries: JournalEntry[];
 }
-
-const WellnessInfoCards = ({ savedEntries }: WellnessInfoCardsProps) => {
-  return (
-    <>
+const WellnessInfoCards = ({
+  savedEntries
+}: WellnessInfoCardsProps) => {
+  return <>
       {/* AI Integration Info */}
       <Card className="bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200">
         <CardHeader>
@@ -48,8 +46,7 @@ const WellnessInfoCards = ({ savedEntries }: WellnessInfoCardsProps) => {
       </Card>
 
       {/* Recent Entries Summary */}
-      {savedEntries.length > 0 && (
-        <Card>
+      {savedEntries.length > 0 && <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <TrendingUp className="h-5 w-5" />
@@ -64,24 +61,15 @@ const WellnessInfoCards = ({ savedEntries }: WellnessInfoCardsProps) => {
               </p>
             </div>
           </CardContent>
-        </Card>
-      )}
+        </Card>}
 
       {/* Support Section */}
       <Card className="bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
         <CardContent className="pt-6">
           <div className="text-center space-y-3">
-            <p className="text-sm text-gray-700">
-              💜 If you find this wellness tracker helpful and would like to show appreciation,
-              you're welcome to buy Vassiliy a coffee via a small donation:
-            </p>
+            <p className="text-sm text-gray-700">💜 Enjoying this app? If you'd like to support the creator, consider treating them to a coffee with a small donation:</p>
             <div className="flex justify-center">
-              <a 
-                href="https://paypal.me/vaskenzy" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
-              >
+              <a href="https://paypal.me/vaskenzy" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
                 ☕ Buy me a coffee
               </a>
             </div>
@@ -91,8 +79,6 @@ const WellnessInfoCards = ({ savedEntries }: WellnessInfoCardsProps) => {
           </div>
         </CardContent>
       </Card>
-    </>
-  );
+    </>;
 };
-
 export default WellnessInfoCards;
