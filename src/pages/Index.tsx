@@ -125,22 +125,6 @@ const Index = () => {
 
           <MetricsOverview />
 
-          {/* Health Disclaimer */}
-          <Card className="bg-amber-50 border-amber-200">
-            <CardContent className="pt-6">
-              <div className="flex items-start gap-3">
-                <AlertTriangle className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
-                <div>
-                  <h4 className="font-semibold text-amber-800 mb-2">Health Disclaimer</h4>
-                  <p className="text-sm text-amber-700">
-                    AI analysis can make mistakes and should not replace professional medical or mental health advice. 
-                    If you're experiencing persistent health concerns, please consult with a qualified healthcare provider or therapist.
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
           {/* Support Section */}
           <Card className="bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
             <CardContent className="pt-6">
@@ -170,22 +154,6 @@ const Index = () => {
         </div>
         {/* Pass analysisResult to InsightsDashboard component */}
         <InsightsDashboard uploadedImage={uploadedImage} analysisResult={analysisResult} />
-
-        {/* Health Disclaimer */}
-        <Card className="bg-amber-50 border-amber-200">
-          <CardContent className="pt-6">
-            <div className="flex items-start gap-3">
-              <AlertTriangle className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
-              <div>
-                <h4 className="font-semibold text-amber-800 mb-2">Health Disclaimer</h4>
-                <p className="text-sm text-amber-700">
-                  AI analysis can make mistakes and should not replace professional medical or mental health advice. 
-                  If you're experiencing persistent health concerns, please consult with a qualified healthcare provider or therapist.
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
 
         {/* Support Section */}
         <Card className="bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
@@ -219,6 +187,24 @@ const Index = () => {
       {/* Data Privacy Notice */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-[18px]">
         <DataPrivacyNotice />
+      </div>
+
+      {/* Health Disclaimer */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-[18px]">
+        <Card className="bg-amber-50 border-amber-200">
+          <CardContent className="pt-6">
+            <div className="flex items-start gap-3">
+              <AlertTriangle className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
+              <div>
+                <h4 className="font-semibold text-amber-800 mb-2">Health Disclaimer</h4>
+                <p className="text-sm text-amber-700">
+                  AI analysis can make mistakes and should not replace professional medical or mental health advice. 
+                  If you're experiencing persistent health concerns, please consult with a qualified healthcare provider or therapist.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Feature Selection and Content */}
