@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Upload, Brain } from "lucide-react";
+import { Upload, Brain, AlertTriangle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 // Added import for image analysis
 import { analyzeImage, ImageAnalysisResult } from "@/services/imageAnalysis";
@@ -15,6 +15,7 @@ import DataPrivacyNotice from "@/components/DataPrivacyNotice";
 import HeroSection from "@/components/Index/HeroSection";
 import FeatureNavigation from "@/components/Index/FeatureNavigation";
 import HowItWorksSection from "@/components/Index/HowItWorksSection";
+
 const Index = () => {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -124,6 +125,22 @@ const Index = () => {
 
           <MetricsOverview />
 
+          {/* Health Disclaimer */}
+          <Card className="bg-amber-50 border-amber-200">
+            <CardContent className="pt-6">
+              <div className="flex items-start gap-3">
+                <AlertTriangle className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
+                <div>
+                  <h4 className="font-semibold text-amber-800 mb-2">Health Disclaimer</h4>
+                  <p className="text-sm text-amber-700">
+                    AI analysis can make mistakes and should not replace professional medical or mental health advice. 
+                    If you're experiencing persistent health concerns, please consult with a qualified healthcare provider or therapist.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Support Section */}
           <Card className="bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
             <CardContent className="pt-6">
@@ -153,6 +170,22 @@ const Index = () => {
         </div>
         {/* Pass analysisResult to InsightsDashboard component */}
         <InsightsDashboard uploadedImage={uploadedImage} analysisResult={analysisResult} />
+
+        {/* Health Disclaimer */}
+        <Card className="bg-amber-50 border-amber-200">
+          <CardContent className="pt-6">
+            <div className="flex items-start gap-3">
+              <AlertTriangle className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
+              <div>
+                <h4 className="font-semibold text-amber-800 mb-2">Health Disclaimer</h4>
+                <p className="text-sm text-amber-700">
+                  AI analysis can make mistakes and should not replace professional medical or mental health advice. 
+                  If you're experiencing persistent health concerns, please consult with a qualified healthcare provider or therapist.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Support Section */}
         <Card className="bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
@@ -208,4 +241,5 @@ const Index = () => {
       </footer>
     </div>;
 };
+
 export default Index;
