@@ -1,6 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Upload, Wind, BookOpen } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface FeatureNavigationProps {
   activeFeature: 'screenshot' | 'breathing' | 'journal';
@@ -8,6 +9,8 @@ interface FeatureNavigationProps {
 }
 
 const FeatureNavigation = ({ activeFeature, onFeatureChange }: FeatureNavigationProps) => {
+  const { t } = useLanguage();
+  
   return (
     <div className="flex justify-center mb-12">
       <div className="flex bg-white rounded-xl shadow-lg p-2 border-2 border-gray-100">
@@ -17,7 +20,7 @@ const FeatureNavigation = ({ activeFeature, onFeatureChange }: FeatureNavigation
           className="flex items-center gap-3 px-8 py-4 text-lg font-semibold rounded-lg transition-all duration-200 hover:scale-105"
         >
           <Upload className="h-6 w-6" />
-          Screenshot Analysis
+          {t('nav.screenshot')}
         </Button>
         <Button
           onClick={() => onFeatureChange('breathing')}
@@ -25,7 +28,7 @@ const FeatureNavigation = ({ activeFeature, onFeatureChange }: FeatureNavigation
           className="flex items-center gap-3 px-8 py-4 text-lg font-semibold rounded-lg transition-all duration-200 hover:scale-105"
         >
           <Wind className="h-6 w-6" />
-          4-6 Breathing
+          {t('nav.breathing')}
         </Button>
         <Button
           onClick={() => onFeatureChange('journal')}
@@ -33,7 +36,7 @@ const FeatureNavigation = ({ activeFeature, onFeatureChange }: FeatureNavigation
           className="flex items-center gap-3 px-8 py-4 text-lg font-semibold rounded-lg transition-all duration-200 hover:scale-105"
         >
           <BookOpen className="h-6 w-6" />
-          Wellness Journal
+          {t('nav.journal')}
         </Button>
       </div>
     </div>
