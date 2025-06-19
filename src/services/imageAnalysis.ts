@@ -1,3 +1,4 @@
+
 import { createWorker, PSM } from 'tesseract.js';
 
 export interface FitnessData {
@@ -45,7 +46,7 @@ export const analyzeImage = async (imageFile: File): Promise<ImageAnalysisResult
     // Configure Tesseract for better fitness app text recognition
     await worker.setParameters({
       tessedit_char_whitelist: '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz .,:/%-',
-      tessedit_pageseg_mode: PSM.UNIFORM_BLOCK, // Use PSM enum instead of number
+      tessedit_pageseg_mode: PSM.SINGLE_BLOCK, // Use correct PSM enum value
       preserve_interword_spaces: '1',
     });
     
