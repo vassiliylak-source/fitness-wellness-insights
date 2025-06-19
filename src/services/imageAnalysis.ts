@@ -46,7 +46,7 @@ export const analyzeImage = async (imageFile: File): Promise<ImageAnalysisResult
     // Configure Tesseract for better fitness app text recognition
     await worker.setParameters({
       tessedit_char_whitelist: '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz .,:/%-',
-      tessedit_pageseg_mode: '6', // Uniform block of text
+      tessedit_pageseg_mode: 6, // Use number instead of string
       preserve_interword_spaces: '1',
     });
     
