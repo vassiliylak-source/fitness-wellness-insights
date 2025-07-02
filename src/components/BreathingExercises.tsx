@@ -57,59 +57,19 @@ const BreathingExercises = () => {
           {/* Breathing Animation Circle */}
           <div className="flex justify-center">
             <div className="relative w-64 h-64 flex items-center justify-center">
-              {/* Outer glow ring */}
-              <div className={`absolute w-48 h-48 rounded-full transition-all duration-1000 ease-in-out ${
-                phase === 'inhale' 
-                  ? 'bg-blue-200/30 animate-pulse' 
-                  : 'bg-cyan-200/30'
-              }`} 
-              style={{
-                transform: `scale(${getCircleScale() * 1.2})`
-              }}>
-              </div>
-              
-              {/* Main breathing circle */}
-              <div className={`w-32 h-32 rounded-full border-8 transition-all duration-1000 ease-in-out shadow-2xl ${
-                phase === 'inhale' 
-                  ? 'border-blue-500 bg-gradient-to-br from-blue-100 to-blue-200 shadow-blue-500/50' 
-                  : 'border-cyan-500 bg-gradient-to-br from-cyan-100 to-cyan-200 shadow-cyan-500/50'
-              }`} 
-              style={{
-                transform: `scale(${getCircleScale()})`,
-                boxShadow: `0 0 30px ${phase === 'inhale' ? 'rgba(59, 130, 246, 0.5)' : 'rgba(6, 182, 212, 0.5)'}`
-              }}>
+              <div className={`w-32 h-32 rounded-full border-4 transition-all duration-1000 ease-in-out ${phase === 'inhale' ? 'border-blue-500 bg-blue-100' : 'border-cyan-500 bg-cyan-100'}`} style={{
+              transform: `scale(${getCircleScale()})`
+            }}>
                 <div className="w-full h-full flex items-center justify-center">
                   <div className="text-center">
-                    <div className={`text-3xl font-black transition-colors duration-500 ${
-                      phase === 'inhale' ? 'text-blue-700' : 'text-cyan-700'
-                    }`}>
+                    <div className={`text-2xl font-bold ${phase === 'inhale' ? 'text-blue-700' : 'text-cyan-700'}`}>
                       {count}
                     </div>
-                    <div className={`text-base font-bold uppercase tracking-wider transition-colors duration-500 ${
-                      phase === 'inhale' ? 'text-blue-600' : 'text-cyan-600'
-                    }`}>
+                    <div className={`text-sm font-medium ${phase === 'inhale' ? 'text-blue-600' : 'text-cyan-600'}`}>
                       {phase === 'inhale' ? 'Inhale' : 'Exhale'}
                     </div>
                   </div>
                 </div>
-              </div>
-              
-              {/* Floating particles */}
-              <div className={`absolute inset-0 pointer-events-none ${isActive ? 'block' : 'hidden'}`}>
-                {[...Array(6)].map((_, i) => (
-                  <div
-                    key={i}
-                    className={`absolute w-2 h-2 rounded-full transition-all duration-1000 ${
-                      phase === 'inhale' ? 'bg-blue-400' : 'bg-cyan-400'
-                    }`}
-                    style={{
-                      top: `${20 + Math.sin(i * 60 * Math.PI / 180) * 40}%`,
-                      left: `${50 + Math.cos(i * 60 * Math.PI / 180) * 40}%`,
-                      transform: `scale(${phase === 'inhale' ? 0.5 + count * 0.125 : 1.5 - count * 0.125})`,
-                      opacity: phase === 'inhale' ? 0.3 + count * 0.175 : 1 - count * 0.125
-                    }}
-                  />
-                ))}
               </div>
             </div>
           </div>
