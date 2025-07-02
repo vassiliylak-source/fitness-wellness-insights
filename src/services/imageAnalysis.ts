@@ -45,43 +45,64 @@ export const analyzeImage = async (imageFile: File): Promise<ImageAnalysisResult
     
     // Configure Tesseract for better fitness app text recognition
     await worker.setParameters({
-      tessedit_char_whitelist: '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz .,:/%-',
-      tessedit_pageseg_mode: PSM.SINGLE_BLOCK, // Use correct PSM enum value
+      tessedit_char_whitelist: '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz .,:/%-()[]{}|',
+      tessedit_pageseg_mode: PSM.AUTO, // Better automatic page segmentation
       preserve_interword_spaces: '1',
+      tessedit_ocr_engine_mode: '3', // Use both neural networks and classic engine
     });
     
-    // Perform OCR on the image
-    const { data: { text } } = await worker.recognize(imageFile);
+    // Perform OCR on the image with better configuration
+    const { data: { text, confidence } } = await worker.recognize(imageFile);
     
     await worker.terminate();
     
     console.log('OCR completed. Raw extracted text:', text);
+    console.log('OCR confidence:', confidence);
     
     // Clean and normalize the extracted text
     const normalizedText = text.toLowerCase().trim();
     
-    // More lenient fitness data detection
+    // Improved fitness data detection with multiple criteria
     const detectedKeywords = FITNESS_KEYWORDS.filter(keyword => 
       normalizedText.includes(keyword.toLowerCase())
     );
     
-    // Check for fitness-related numbers even if keywords are missing
-    const hasNumbers = FITNESS_NUMBER_PATTERNS.some(pattern => 
-      pattern.test(text)
+    // Check for fitness-related numbers with better patterns
+    const hasNumbers = FITNESS_NUMBER_PATTERNS.some(pattern => {
+      pattern.lastIndex = 0; // Reset regex state
+      return pattern.test(text);
+    });
+    
+    // Enhanced detection criteria
+    const hasTimeFormat = /\d{1,2}:\d{2}/.test(text);
+    const hasLargeNumbers = /\b\d{3,}\b/.test(text);
+    const hasDecimalNumbers = /\d+\.\d+/.test(text);
+    const hasUnits = /\b(km|mi|cal|bpm|mph|kph)\b/i.test(text);
+    
+    // More comprehensive fitness data detection
+    const isFitnessData = (
+      detectedKeywords.length >= 2 || 
+      (detectedKeywords.length >= 1 && (hasTimeFormat || hasLargeNumbers || hasUnits)) ||
+      (hasNumbers && hasUnits && text.length > 15) ||
+      (confidence > 50 && hasTimeFormat && hasLargeNumbers)
     );
     
-    // More lenient detection - either keywords OR numbers that look like fitness data
-    const isFitnessData = detectedKeywords.length >= 1 || (hasNumbers && text.length > 10);
-    
-    console.log('Detected keywords:', detectedKeywords);
-    console.log('Has fitness-like numbers:', hasNumbers);
-    console.log('Is fitness data:', isFitnessData);
+    console.log('Analysis results:', {
+      detectedKeywords,
+      hasNumbers,
+      hasTimeFormat,
+      hasLargeNumbers,
+      hasDecimalNumbers,
+      hasUnits,
+      confidence,
+      isFitnessData
+    });
     
     if (!isFitnessData) {
       return {
         isFitnessData: false,
         extractedText: text,
-        error: "This doesn't appear to be a fitness app screenshot. Please upload a screenshot from your fitness app showing workout data, steps, calories, or other fitness metrics."
+        error: `This doesn't appear to be a fitness app screenshot. Detected text: "${text.slice(0, 100)}..." Please upload a clear screenshot from your fitness app showing workout data, steps, calories, or other fitness metrics.`
       };
     }
     
