@@ -5,39 +5,18 @@ const MetricsOverview = () => {
   const supportedMetrics = [{
     icon: Heart,
     title: "Heart Rate Analysis",
-    description: "Resting, max, and zone analysis with personalized recommendations",
-    features: ["Zone training", "Recovery insights", "Trend analysis"],
+    description: "Comprehensive heart rate monitoring and training zone optimization",
     colors: "from-red-500 to-pink-500"
   }, {
-    icon: Zap,
-    title: "VO2 Max Insights",
-    description: "Cardiovascular fitness assessment and improvement strategies",
-    features: ["Fitness level", "Age comparison", "Training plans"],
-    colors: "from-blue-500 to-cyan-500"
-  }, {
-    icon: Moon,
-    title: "Sleep Pattern Analysis",
-    description: "Deep sleep, REM cycles, and recovery optimization",
-    features: ["Sleep stages", "Quality score", "Recovery tips"],
-    colors: "from-purple-500 to-indigo-500"
-  }, {
     icon: Activity,
-    title: "Cadence & Form",
-    description: "Running efficiency and biomechanics analysis",
-    features: ["Step rate", "Form tips", "Injury prevention"],
+    title: "Performance Metrics",
+    description: "Running efficiency, cadence, and biomechanics analysis",
     colors: "from-green-500 to-emerald-500"
   }, {
     icon: TrendingUp,
-    title: "Performance Trends",
-    description: "Long-term progress tracking and goal setting",
-    features: ["Progress charts", "Goal tracking", "Predictions"],
+    title: "Progress Tracking",
+    description: "Long-term trends, goal setting, and fitness predictions",
     colors: "from-orange-500 to-red-500"
-  }, {
-    icon: Target,
-    title: "Training Zones",
-    description: "Personalized training recommendations and zone optimization",
-    features: ["Zone calculator", "Workout plans", "Intensity guide"],
-    colors: "from-teal-500 to-blue-500"
   }];
   return <div className="space-y-6">
       <div className="text-center">
@@ -62,14 +41,11 @@ const MetricsOverview = () => {
                 <CardTitle className="text-lg">{metric.title}</CardTitle>
                 <CardDescription>{metric.description}</CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  {metric.features.map((feature, idx) => <div key={idx} className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 bg-gray-400 rounded-full"></div>
-                      <span className="text-sm text-gray-700">{feature}</span>
-                    </div>)}
-                </div>
-              </CardContent>
+               <CardContent>
+                 <div className="text-sm text-gray-600 bg-gray-50 rounded-lg p-3">
+                   AI-powered analysis with personalized insights and recommendations
+                 </div>
+               </CardContent>
             </Card>;
       })}
       </div>
