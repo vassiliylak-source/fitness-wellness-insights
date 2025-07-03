@@ -12,7 +12,6 @@ import InsightsDashboard from "@/components/InsightsDashboard";
 import MetricsOverview from "@/components/MetricsOverview";
 import WellnessJournal from "@/components/WellnessJournal";
 import BreathingExercises from "@/components/BreathingExercises";
-import DataPrivacyNotice from "@/components/DataPrivacyNotice";
 import HeroSection from "@/components/Index/HeroSection";
 import FeatureNavigation from "@/components/Index/FeatureNavigation";
 import HowItWorksSection from "@/components/Index/HowItWorksSection";
@@ -129,10 +128,6 @@ const Index = () => {
         <HowItWorksSection />
       </div>
 
-      {/* Data Privacy Notice */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <DataPrivacyNotice />
-      </div>
 
       {/* Health Disclaimer */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
