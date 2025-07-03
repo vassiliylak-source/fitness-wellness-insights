@@ -17,7 +17,7 @@ const FeatureNavigation = ({ activeFeature, onFeatureChange }: FeatureNavigation
           className="flex items-center gap-3 px-8 py-4 text-lg font-semibold rounded-lg transition-all duration-200 hover:scale-105"
         >
           <Upload className="h-6 w-6" />
-          Screenshot Analysis
+          Smart Analytics
         </Button>
         <Button
           onClick={() => onFeatureChange('breathing')}
@@ -25,7 +25,7 @@ const FeatureNavigation = ({ activeFeature, onFeatureChange }: FeatureNavigation
           className="flex items-center gap-3 px-8 py-4 text-lg font-semibold rounded-lg transition-all duration-200 hover:scale-105"
         >
           <Wind className="h-6 w-6" />
-          4-6 Breathing
+          Breathing Exercises
         </Button>
         <Button
           onClick={() => onFeatureChange('journal')}
