@@ -19,9 +19,6 @@ const WellnessInfoCards = ({
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
-            <p className="text-gray-700">
-              🤖 <strong>Get instant AI insights</strong> from your wellness entries:
-            </p>
             <div className="flex justify-center mt-4">
               <a 
                 href="https://chatgpt.com/g/g-67c6e2ead288819186d3be7d91466783-fitness-sleep-metrics-insights" 
