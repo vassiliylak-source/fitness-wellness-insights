@@ -22,13 +22,16 @@ const WellnessInfoCards = ({
             <p className="text-gray-700">
               🤖 <strong>Get instant AI insights</strong> from your wellness entries:
             </p>
-            <ul className="list-disc list-inside space-y-1 text-gray-600 ml-4">
-              <li>Discover mood and energy patterns over time</li>
-              <li>Get personalized recovery recommendations</li>
-              <li>Identify triggers for stress or low energy</li>
-              <li>Receive gentle suggestions to enhance well-being</li>
-              <li>Track progress toward your wellness goals</li>
-            </ul>
+            <div className="flex justify-center mt-4">
+              <a 
+                href="https://chatgpt.com/g/g-67c6e2ead288819186d3be7d91466783-fitness-sleep-metrics-insights" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"
+              >
+                🧠 Get AI Insights
+              </a>
+            </div>
             <div className="mt-4 p-3 bg-white rounded-lg border border-purple-200">
               <p className="text-sm text-purple-700 font-medium">
                 💡 Tip: Keep journaling consistently to get more accurate and valuable insights!
