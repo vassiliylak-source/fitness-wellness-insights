@@ -2,44 +2,54 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Wind, Play, Pause, RotateCcw } from "lucide-react";
+import { BREATHING_CONFIG, ANIMATION_DURATIONS } from "@/constants";
+import { BreathingState } from "@/types/ui";
 const BreathingExercises = () => {
-  const [isActive, setIsActive] = useState(false);
-  const [phase, setPhase] = useState<'inhale' | 'exhale'>('inhale');
-  const [count, setCount] = useState(4);
-  const [cycle, setCycle] = useState(0);
+  const [breathingState, setBreathingState] = useState<BreathingState>({
+    isActive: false,
+    phase: 'inhale',
+    count: BREATHING_CONFIG.inhaleCount,
+    cycle: 0
+  });
   useEffect(() => {
     let interval: NodeJS.Timeout;
-    if (isActive) {
+    if (breathingState.isActive) {
       interval = setInterval(() => {
-        setCount(prevCount => {
-          if (phase === 'inhale' && prevCount <= 1) {
-            setPhase('exhale');
-            return 6;
-          } else if (phase === 'exhale' && prevCount <= 1) {
-            setPhase('inhale');
-            setCycle(prev => prev + 1);
-            return 4;
+        setBreathingState(prev => {
+          if (prev.phase === 'inhale' && prev.count <= 1) {
+            return { ...prev, phase: 'exhale', count: BREATHING_CONFIG.exhaleCount };
+          } else if (prev.phase === 'exhale' && prev.count <= 1) {
+            return { 
+              ...prev, 
+              phase: 'inhale', 
+              count: BREATHING_CONFIG.inhaleCount,
+              cycle: prev.cycle + 1 
+            };
           }
-          return prevCount - 1;
+          return { ...prev, count: prev.count - 1 };
         });
-      }, 1000);
+      }, ANIMATION_DURATIONS.breathingCycle);
     }
     return () => clearInterval(interval);
-  }, [isActive, phase]);
+  }, [breathingState.isActive, breathingState.phase]);
   const toggleBreathing = () => {
-    setIsActive(!isActive);
+    setBreathingState(prev => ({ ...prev, isActive: !prev.isActive }));
   };
+  
   const resetBreathing = () => {
-    setIsActive(false);
-    setPhase('inhale');
-    setCount(4);
-    setCycle(0);
+    setBreathingState({
+      isActive: false,
+      phase: 'inhale',
+      count: BREATHING_CONFIG.inhaleCount,
+      cycle: 0
+    });
   };
+  
   const getCircleScale = () => {
-    if (phase === 'inhale') {
-      return 1.5 - count / 4 * 0.5; // Grows from 1 to 1.5
+    if (breathingState.phase === 'inhale') {
+      return BREATHING_CONFIG.maxScale - breathingState.count / BREATHING_CONFIG.inhaleCount * (BREATHING_CONFIG.maxScale - BREATHING_CONFIG.baseScale);
     } else {
-      return 1 + count / 6 * 0.5; // Shrinks from 1.5 to 1
+      return BREATHING_CONFIG.baseScale + breathingState.count / BREATHING_CONFIG.exhaleCount * (BREATHING_CONFIG.maxScale - BREATHING_CONFIG.baseScale);
     }
   };
   return <div className="space-y-6">
@@ -57,16 +67,16 @@ const BreathingExercises = () => {
           {/* Breathing Animation Circle */}
           <div className="flex justify-center">
             <div className="relative w-64 h-64 flex items-center justify-center">
-              <div className={`w-32 h-32 rounded-full border-4 transition-all duration-1000 ease-in-out ${phase === 'inhale' ? 'border-blue-500 bg-blue-100' : 'border-cyan-500 bg-cyan-100'}`} style={{
+              <div className={`w-32 h-32 rounded-full border-4 transition-all duration-1000 ease-in-out ${breathingState.phase === 'inhale' ? 'border-blue-500 bg-blue-100' : 'border-cyan-500 bg-cyan-100'}`} style={{
               transform: `scale(${getCircleScale()})`
             }}>
                 <div className="w-full h-full flex items-center justify-center">
                   <div className="text-center">
-                    <div className={`text-2xl font-bold ${phase === 'inhale' ? 'text-blue-700' : 'text-cyan-700'}`}>
-                      {count}
+                    <div className={`text-2xl font-bold ${breathingState.phase === 'inhale' ? 'text-blue-700' : 'text-cyan-700'}`}>
+                      {breathingState.count}
                     </div>
-                    <div className={`text-sm font-medium ${phase === 'inhale' ? 'text-blue-600' : 'text-cyan-600'}`}>
-                      {phase === 'inhale' ? 'Inhale' : 'Exhale'}
+                    <div className={`text-sm font-medium ${breathingState.phase === 'inhale' ? 'text-blue-600' : 'text-cyan-600'}`}>
+                      {breathingState.phase === 'inhale' ? 'Inhale' : 'Exhale'}
                     </div>
                   </div>
                 </div>
@@ -77,22 +87,22 @@ const BreathingExercises = () => {
           {/* Status Display */}
           <div className="text-center space-y-2">
             <div className="text-lg font-medium text-gray-700">
-              {isActive ? <>
-                  <span className={phase === 'inhale' ? 'text-blue-600' : 'text-cyan-600'}>
-                    {phase === 'inhale' ? 'Breathe In' : 'Breathe Out'}
+              {breathingState.isActive ? <>
+                  <span className={breathingState.phase === 'inhale' ? 'text-blue-600' : 'text-cyan-600'}>
+                    {breathingState.phase === 'inhale' ? 'Breathe In' : 'Breathe Out'}
                   </span>
-                  <span className="text-gray-500 ml-2">• Cycle {cycle + 1}</span>
+                  <span className="text-gray-500 ml-2">• Cycle {breathingState.cycle + 1}</span>
                 </> : 'Ready to begin'}
             </div>
-            {!isActive && cycle > 0 && <div className="text-sm text-gray-600">
-                Completed {cycle} breathing cycles
+            {!breathingState.isActive && breathingState.cycle > 0 && <div className="text-sm text-gray-600">
+                Completed {breathingState.cycle} breathing cycles
               </div>}
           </div>
 
           {/* Controls */}
           <div className="flex justify-center gap-4">
-            <Button onClick={toggleBreathing} className={`flex items-center gap-2 ${isActive ? 'bg-red-500 hover:bg-red-600' : 'bg-blue-500 hover:bg-blue-600'}`}>
-              {isActive ? <>
+            <Button onClick={toggleBreathing} className={`flex items-center gap-2 ${breathingState.isActive ? 'bg-red-500 hover:bg-red-600' : 'bg-blue-500 hover:bg-blue-600'}`}>
+              {breathingState.isActive ? <>
                   <Pause className="h-4 w-4" />
                   Pause
                 </> : <>
