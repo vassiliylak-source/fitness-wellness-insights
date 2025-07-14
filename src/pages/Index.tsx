@@ -94,8 +94,8 @@ const Index = () => {
         <MetricsOverview />
 
         {/* Support Section */}
-        <Card className="card-modern bg-gradient-to-br from-purple-50/90 to-blue-50/90 border-purple-200">
-          <CardContent className="pt-8">
+        <Card className="card-modern bg-gradient-to-br from-purple-50/90 to-blue-50/90 border-purple-200 py-[25px]">
+          <CardContent className="pt-8 py-[3px]">
             <div className="text-center space-y-4">
               <p className="text-base font-medium text-gray-700">💜 Enjoying this app? If you'd like to support the creator, consider treating him to a coffee with a small donation:</p>
               <div className="flex justify-center">
