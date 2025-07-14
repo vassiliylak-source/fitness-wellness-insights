@@ -12,7 +12,7 @@ const HeroSection = () => {
       <div className="absolute inset-0 bg-black/10"></div>
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-[3px]">
-        <div className="text-center my-0 py-[2px]">
+        <div className="text-center my-0 py-px">
           <div className="flex justify-center mb-8">
             <div className="relative p-6 bg-white/10 backdrop-blur-sm rounded-3xl border border-white/20 neon-glow">
               <Activity className="h-16 w-16 text-purple-300" />
