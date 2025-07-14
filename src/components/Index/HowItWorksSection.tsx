@@ -7,7 +7,7 @@ const HowItWorksSection = () => {
           Complete Wellness Platform
         </CardTitle>
       </CardHeader>
-      <CardContent className="py-px">
+      <CardContent className="py-[10px]">
         <div className="grid md:grid-cols-3 gap-12">
           <div className="text-center transform hover:scale-105 transition-transform duration-200">
             <div className="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
