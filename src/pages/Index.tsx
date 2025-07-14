@@ -71,7 +71,7 @@ const Index = () => {
   const renderScreenshotContent = () => {
     return <div className="space-y-8">
         <Card className="card-modern bg-gradient-to-br from-purple-50/90 to-pink-50/90 border-purple-200">
-          <CardContent className="pt-8">
+          <CardContent className="pt-8 py-[2px]">
             <div className="text-center space-y-6">
               <div className="p-4 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl inline-block">
                 <Brain className="h-12 w-12 text-white" />
