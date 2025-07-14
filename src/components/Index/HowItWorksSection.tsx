@@ -2,12 +2,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Upload, Wind, BookOpen } from "lucide-react";
 const HowItWorksSection = () => {
   return <Card className="mt-12 bg-gradient-to-r from-green-50 to-blue-50 border-green-200">
-      <CardHeader>
+      <CardHeader className="py-px">
         <CardTitle className="text-3xl text-center text-gray-800 mb-8">
           Complete Wellness Platform
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="py-px">
         <div className="grid md:grid-cols-3 gap-12">
           <div className="text-center transform hover:scale-105 transition-transform duration-200">
             <div className="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
