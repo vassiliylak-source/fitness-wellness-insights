@@ -1,10 +1,7 @@
-
 import { Badge } from "@/components/ui/badge";
 import { Activity, Heart, Wind, BookOpen, Clock, TrendingUp, Sparkles } from "lucide-react";
-
 const HeroSection = () => {
-  return (
-    <div className="relative overflow-hidden bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 text-white">
+  return <div className="relative overflow-hidden bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 text-white">
       {/* Animated background elements */}
       <div className="absolute inset-0">
         <div className="absolute top-20 left-10 w-72 h-72 bg-purple-500/30 rounded-full blur-3xl animate-pulse"></div>
@@ -14,8 +11,8 @@ const HeroSection = () => {
       
       <div className="absolute inset-0 bg-black/10"></div>
       
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-        <div className="text-center">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-[3px]">
+        <div className="text-center my-0 py-[2px]">
           <div className="flex justify-center mb-8">
             <div className="relative p-6 bg-white/10 backdrop-blur-sm rounded-3xl border border-white/20 neon-glow">
               <Activity className="h-16 w-16 text-purple-300" />
@@ -23,9 +20,7 @@ const HeroSection = () => {
             </div>
           </div>
           
-          <Badge className="mb-6 bg-white/20 text-white border-white/30 text-lg px-6 py-2 rounded-full backdrop-blur-sm">
-            ✨ AI-Powered Wellness Platform
-          </Badge>
+          
           
           <h1 className="text-4xl md:text-7xl font-black mb-8 leading-tight">
             <span className="gradient-text">Transform Your</span>
@@ -56,8 +51,6 @@ const HeroSection = () => {
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default HeroSection;

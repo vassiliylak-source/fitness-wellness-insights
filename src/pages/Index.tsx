@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -15,7 +14,6 @@ import BreathingExercises from "@/components/BreathingExercises";
 import HeroSection from "@/components/Index/HeroSection";
 import FeatureNavigation from "@/components/Index/FeatureNavigation";
 import HowItWorksSection from "@/components/Index/HowItWorksSection";
-
 const Index = () => {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -71,8 +69,7 @@ const Index = () => {
     setAnalysisResult(null);
   };
   const renderScreenshotContent = () => {
-    return (
-      <div className="space-y-8">
+    return <div className="space-y-8">
         <Card className="card-modern bg-gradient-to-br from-purple-50/90 to-pink-50/90 border-purple-200">
           <CardContent className="pt-8">
             <div className="text-center space-y-6">
@@ -86,12 +83,7 @@ const Index = () => {
                 Get personalized AI analysis of your fitness data, sleep patterns, and health metrics with advanced recommendations
               </p>
               <div className="flex justify-center">
-                <a 
-                  href="https://chatgpt.com/g/g-67c6e2ead288819186d3be7d91466783-fitness-sleep-metrics-insights" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl hover:from-purple-700 hover:to-blue-700 transition-all duration-200 font-bold text-lg shadow-lg hover:shadow-xl transform hover:scale-105"
-                >
+                <a href="https://chatgpt.com/g/g-67c6e2ead288819186d3be7d91466783-fitness-sleep-metrics-insights" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl hover:from-purple-700 hover:to-blue-700 transition-all duration-200 font-bold text-lg shadow-lg hover:shadow-xl transform hover:scale-105">
                   🧠 Get AI Insights
                 </a>
               </div>
@@ -117,14 +109,13 @@ const Index = () => {
             </div>
           </CardContent>
         </Card>
-      </div>
-    );
+      </div>;
   };
   return <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100">
       <HeroSection />
 
       {/* Complete Wellness Platform - moved up after hero section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-[45px]">
         <HowItWorksSection />
       </div>
 
@@ -169,5 +160,4 @@ const Index = () => {
       </footer>
     </div>;
 };
-
 export default Index;
