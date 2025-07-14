@@ -122,7 +122,7 @@ const Index = () => {
 
       {/* Health Disclaimer */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <Card className="card-modern bg-gradient-to-br from-amber-50/90 to-orange-50/90 border-amber-300">
+        <Card className="card-modern bg-gradient-to-br from-amber-50/90 to-orange-50/90 border-amber-300 py-px">
           <CardContent className="pt-8">
             <div className="flex items-start gap-4">
               <div className="p-2 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl">
