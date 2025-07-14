@@ -22,6 +22,8 @@ const WellnessInfoCards = ({
             <div className="flex justify-center mt-4">
               <a 
                 href="https://chatgpt.com/g/g-67c6e2ead288819186d3be7d91466783-fitness-sleep-metrics-insights" 
+                target="_blank" 
+                rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"
               >
                 🧠 Get AI Insights
