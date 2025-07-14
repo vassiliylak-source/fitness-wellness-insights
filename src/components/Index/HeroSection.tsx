@@ -13,9 +13,9 @@ const HeroSection = () => {
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-[3px]">
         <div className="text-center my-0 py-px">
-          <div className="flex justify-center mb-8">
+          <div className="flex justify-center mb-8 py-[20px]">
             <div className="relative p-6 bg-white/10 backdrop-blur-sm rounded-3xl border border-white/20 neon-glow">
-              <Activity className="h-16 w-16 text-purple-300" />
+              <Activity className="h-16 w-16 text-purple-300 py-0" />
               <Sparkles className="absolute -top-2 -right-2 h-6 w-6 text-yellow-400 animate-pulse" />
             </div>
           </div>
