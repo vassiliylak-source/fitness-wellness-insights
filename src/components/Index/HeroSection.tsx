@@ -60,17 +60,6 @@ const HeroSection = () => {
             </div>
           </div>
 
-          {/* Action buttons */}
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center animate-fade-in" style={{ animationDelay: '0.6s' }}>
-            <button className="btn-primary text-lg px-10 py-4 min-w-[200px]">
-              <Heart className="h-6 w-6 mr-2" />
-              Start Your Journey
-            </button>
-            <button className="btn-secondary text-lg px-10 py-4 min-w-[200px]">
-              <Zap className="h-6 w-6 mr-2" />
-              Explore Features
-            </button>
-          </div>
         </div>
       </div>
     </div>
