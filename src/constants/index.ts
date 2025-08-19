@@ -1,6 +1,6 @@
 // Application constants
 export const APP_CONFIG = {
-  name: 'Fitura',
+  name: 'Wellness Tracker',
   author: 'Vassiliy Lakhonin',
 } as const;
 
