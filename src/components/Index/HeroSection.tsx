@@ -1,56 +1,79 @@
-import { Badge } from "@/components/ui/badge";
-import { Activity, Heart, Wind, BookOpen, Clock, TrendingUp, Sparkles } from "lucide-react";
+import { Activity, Wind, BookOpen, TrendingUp, Sparkles, Heart, Zap } from "lucide-react";
+
 const HeroSection = () => {
-  return <div className="relative overflow-hidden bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 text-white">
-      {/* Animated background elements */}
-      <div className="absolute inset-0">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-purple-500/30 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-pink-500/30 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-blue-500/20 rounded-full blur-3xl animate-pulse delay-500"></div>
+  return (
+    <div className="relative overflow-hidden min-h-screen flex items-center">
+      {/* Dynamic gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-accent/10 to-primary-deep/30"></div>
+      
+      {/* Floating animated elements */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-3xl float animate-pulse"></div>
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/20 rounded-full blur-3xl float animate-pulse" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-primary-glow/30 rounded-full blur-3xl float animate-pulse" style={{ animationDelay: '1s' }}></div>
       </div>
       
-      <div className="absolute inset-0 bg-black/10"></div>
-      
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-[3px]">
-        <div className="text-center my-0 py-px">
-          <div className="flex justify-center mb-8 py-[20px]">
-            <div className="relative p-6 bg-white/10 backdrop-blur-sm rounded-3xl border border-white/20 neon-glow">
-              <Activity className="h-16 w-16 text-purple-300 py-0" />
-              <Sparkles className="absolute -top-2 -right-2 h-6 w-6 text-yellow-400 animate-pulse" />
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div className="text-center space-y-8">
+          {/* Hero icon with enhanced styling */}
+          <div className="flex justify-center mb-12">
+            <div className="relative feature-icon p-8 animate-scale-in pulse-glow">
+              <Activity className="h-20 w-20 text-primary-foreground" />
+              <Sparkles className="absolute -top-3 -right-3 h-8 w-8 text-accent animate-pulse" />
+              <div className="absolute -bottom-2 -left-2 w-6 h-6 bg-accent rounded-full animate-pulse" style={{ animationDelay: '0.5s' }}></div>
             </div>
           </div>
           
-          
-          
-          <h1 className="text-4xl md:text-7xl font-black mb-8 leading-tight">
-            <span className="gradient-text">Transform Your</span>
-            <br />
-            <span className="text-white">Fitness Journey</span>
+          {/* Enhanced hero title */}
+          <h1 className="text-5xl md:text-8xl font-black leading-tight animate-fade-in">
+            <span className="gradient-text block mb-4">Transform Your</span>
+            <span className="gradient-text-secondary">Wellness Journey</span>
           </h1>
           
-          <p className="text-xl md:text-2xl mb-12 text-purple-100 max-w-4xl mx-auto leading-relaxed">
+          {/* Enhanced subtitle */}
+          <p className="text-xl md:text-3xl mb-16 text-muted-foreground max-w-5xl mx-auto leading-relaxed animate-fade-in" style={{ animationDelay: '0.2s' }}>
             Unlock the power of AI to decode your fitness data, practice mindful breathing, 
-            and track holistic wellness. Get
-            <span className="text-yellow-300 font-bold"> professional insights </span>
+            and track holistic wellness. Get{' '}
+            <span className="gradient-text font-bold">professional insights</span>{' '}
             combined with mindfulness tools for complete well-being.
           </p>
           
-          <div className="flex flex-wrap justify-center gap-4 mb-8">
-            <div className="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-full backdrop-blur-sm">
-              <TrendingUp className="h-5 w-5 text-green-400" />
-              <span className="text-sm font-medium">Smart Analytics</span>
+          {/* Feature badges with enhanced styling */}
+          <div className="flex flex-wrap justify-center gap-6 mb-12 animate-fade-in" style={{ animationDelay: '0.4s' }}>
+            <div className="glass-card flex items-center gap-3 px-6 py-3 rounded-2xl hover-lift">
+              <div className="p-2 bg-accent/20 rounded-lg">
+                <TrendingUp className="h-6 w-6 text-accent" />
+              </div>
+              <span className="font-semibold text-foreground">Smart Analytics</span>
             </div>
-            <div className="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-full backdrop-blur-sm">
-              <Wind className="h-5 w-5 text-blue-400" />
-              <span className="text-sm font-medium">Breathing Exercises</span>
+            <div className="glass-card flex items-center gap-3 px-6 py-3 rounded-2xl hover-lift">
+              <div className="p-2 bg-primary/20 rounded-lg">
+                <Wind className="h-6 w-6 text-primary" />
+              </div>
+              <span className="font-semibold text-foreground">Breathing Exercises</span>
             </div>
-            <div className="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-full backdrop-blur-sm">
-              <BookOpen className="h-5 w-5 text-purple-400" />
-              <span className="text-sm font-medium">Wellness Journal</span>
+            <div className="glass-card flex items-center gap-3 px-6 py-3 rounded-2xl hover-lift">
+              <div className="p-2 bg-primary-glow/30 rounded-lg">
+                <BookOpen className="h-6 w-6 text-primary-deep" />
+              </div>
+              <span className="font-semibold text-foreground">Wellness Journal</span>
             </div>
+          </div>
+
+          {/* Action buttons */}
+          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center animate-fade-in" style={{ animationDelay: '0.6s' }}>
+            <button className="btn-primary text-lg px-10 py-4 min-w-[200px]">
+              <Heart className="h-6 w-6 mr-2" />
+              Start Your Journey
+            </button>
+            <button className="btn-secondary text-lg px-10 py-4 min-w-[200px]">
+              <Zap className="h-6 w-6 mr-2" />
+              Explore Features
+            </button>
           </div>
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
 export default HeroSection;
