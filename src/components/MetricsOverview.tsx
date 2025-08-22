@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Smartphone, Shield, Zap, Users } from "lucide-react";
 const MetricsOverview = () => {
-  const apps = ["Apple Health", "Strava", "Garmin Connect", "Fitbit", "MyFitnessPal", "Nike Run Club", "Polar Flow", "Suunto", "Oura Ring", "Whoop", "Coros", "Wahoo"];
+  const apps = ["Apple Health", "Strava", "Garmin Connect", "Fitbit", "MyFitnessPal", "Nike Run Club", "Polar Flow", "Oura Ring", "Whoop", "Coros", "Wahoo"];
   return <div className="space-y-8 animate-fade-in">
       {/* Supported Apps Section */}
       <div className="card-elegant space-y-8">
