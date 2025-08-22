@@ -29,7 +29,7 @@ const HeroSection = () => {
           </div>
           
           {/* Enhanced hero title */}
-          <h1 className="text-5xl md:text-8xl font-black leading-tight animate-fade-in">
+          <h1 className="text-4xl md:text-6xl font-black leading-tight animate-fade-in">
             <span className="gradient-text block mb-4">AI-Powered</span>
             <span className="gradient-text-secondary">Wellness</span>
           </h1>
