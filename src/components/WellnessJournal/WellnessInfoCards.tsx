@@ -62,9 +62,7 @@ const WellnessInfoCards = ({
                 ☕ Buy me a coffee
               </a>
             </div>
-            <p className="text-xs text-gray-600">
-              Thank you for your support!
-            </p>
+            
           </div>
         </CardContent>
       </Card>
