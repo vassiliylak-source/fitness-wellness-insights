@@ -15,7 +15,7 @@ const HeroSection = () => {
       }}></div>
       </div>
       
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center space-y-8">
           {/* Hero icon with enhanced styling */}
           <div className="flex justify-center mb-12">
