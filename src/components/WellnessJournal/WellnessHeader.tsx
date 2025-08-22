@@ -7,9 +7,8 @@ const WellnessHeader = () => {
           <BookOpen className="h-6 w-6 text-green-600" />
           Daily Recovery & Wellness Journal
         </CardTitle>
-        <CardDescription className="text-lg">🧘 Track wellness inside and out. 
-Go beyond metrics to reflect on how you feel, spot patterns, and support recovery from burnout, training fatigue, or daily stress.
-      </CardDescription>
+        <CardDescription className="text-lg">🧘 Track wellness inside and out
+Go beyond metrics to reflect on how you feel, spot patterns, and support recovery from burnout, training fatigue, or daily stress</CardDescription>
       </CardHeader>
     </Card>;
 };
