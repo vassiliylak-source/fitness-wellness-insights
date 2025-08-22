@@ -30,18 +30,17 @@ const HeroSection = () => {
           
           {/* Enhanced hero title */}
           <h1 className="text-5xl md:text-8xl font-black leading-tight animate-fade-in">
-            <span className="gradient-text block mb-4">Transform Your</span>
-            <span className="gradient-text-secondary">Wellness Journey</span>
+            <span className="gradient-text block mb-4">AI-Powered</span>
+            <span className="gradient-text-secondary">Wellness</span>
           </h1>
           
           {/* Enhanced subtitle */}
-          <p className="text-xl md:text-3xl mb-16 text-muted-foreground max-w-5xl mx-auto leading-relaxed animate-fade-in" style={{
+          <p className="text-xl md:text-3xl mb-16 text-muted-foreground max-w-4xl mx-auto leading-relaxed animate-fade-in" style={{
           animationDelay: '0.2s'
         }}>
-            Unlock the power of AI to decode your fitness data, practice mindful breathing, 
-            and track holistic wellness. Get{' '}
-            <span className="gradient-text font-bold">professional insights</span>{' '}
-            combined with mindfulness tools for complete well-being.
+            Decode your fitness data with AI. Track wellness with{' '}
+            <span className="gradient-text font-bold">mindful breathing</span>{' '}
+            and journaling.
           </p>
           
           {/* Feature badges with enhanced styling */}
