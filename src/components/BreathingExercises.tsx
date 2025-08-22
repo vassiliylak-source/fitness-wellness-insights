@@ -17,25 +17,34 @@ const BreathingExercises = () => {
       interval = setInterval(() => {
         setBreathingState(prev => {
           if (prev.phase === 'inhale' && prev.count <= 1) {
-            return { ...prev, phase: 'exhale', count: BREATHING_CONFIG.exhaleCount };
+            return {
+              ...prev,
+              phase: 'exhale',
+              count: BREATHING_CONFIG.exhaleCount
+            };
           } else if (prev.phase === 'exhale' && prev.count <= 1) {
-            return { 
-              ...prev, 
-              phase: 'inhale', 
+            return {
+              ...prev,
+              phase: 'inhale',
               count: BREATHING_CONFIG.inhaleCount,
-              cycle: prev.cycle + 1 
+              cycle: prev.cycle + 1
             };
           }
-          return { ...prev, count: prev.count - 1 };
+          return {
+            ...prev,
+            count: prev.count - 1
+          };
         });
       }, ANIMATION_DURATIONS.breathingCycle);
     }
     return () => clearInterval(interval);
   }, [breathingState.isActive, breathingState.phase]);
   const toggleBreathing = () => {
-    setBreathingState(prev => ({ ...prev, isActive: !prev.isActive }));
+    setBreathingState(prev => ({
+      ...prev,
+      isActive: !prev.isActive
+    }));
   };
-  
   const resetBreathing = () => {
     setBreathingState({
       isActive: false,
@@ -44,7 +53,6 @@ const BreathingExercises = () => {
       cycle: 0
     });
   };
-  
   const getCircleScale = () => {
     if (breathingState.phase === 'inhale') {
       return BREATHING_CONFIG.maxScale - breathingState.count / BREATHING_CONFIG.inhaleCount * (BREATHING_CONFIG.maxScale - BREATHING_CONFIG.baseScale);
@@ -150,9 +158,7 @@ const BreathingExercises = () => {
                 ☕ Buy me a coffee
               </a>
             </div>
-            <p className="text-xs text-gray-600">
-              Thank you for your support!
-            </p>
+            
           </div>
         </CardContent>
       </Card>
