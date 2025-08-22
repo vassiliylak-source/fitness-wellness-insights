@@ -1,14 +1,8 @@
 import { Badge } from "@/components/ui/badge";
 import { Smartphone, Shield, Zap, Users } from "lucide-react";
-
 const MetricsOverview = () => {
-  const apps = [
-    "Apple Health", "Strava", "Garmin Connect", "Fitbit", "MyFitnessPal", 
-    "Nike Run Club", "Polar Flow", "Suunto", "Oura Ring", "Whoop", "Coros", "Wahoo"
-  ];
-
-  return (
-    <div className="space-y-8 animate-fade-in">
+  const apps = ["Apple Health", "Strava", "Garmin Connect", "Fitbit", "MyFitnessPal", "Nike Run Club", "Polar Flow", "Suunto", "Oura Ring", "Whoop", "Coros", "Wahoo"];
+  return <div className="space-y-8 animate-fade-in">
       {/* Supported Apps Section */}
       <div className="card-elegant space-y-8">
         {/* Header */}
@@ -28,16 +22,11 @@ const MetricsOverview = () => {
 
         {/* App badges with enhanced styling */}
         <div className="flex flex-wrap justify-center gap-3">
-          {apps.map((app, index) => (
-            <Badge 
-              key={index} 
-              variant="outline" 
-              className="px-4 py-2 text-sm font-semibold glass-card hover-lift border-primary/20 hover:border-primary/40 transition-all duration-300"
-              style={{ animationDelay: `${index * 0.1}s` }}
-            >
+          {apps.map((app, index) => <Badge key={index} variant="outline" className="px-4 py-2 text-sm font-semibold glass-card hover-lift border-primary/20 hover:border-primary/40 transition-all duration-300" style={{
+          animationDelay: `${index * 0.1}s`
+        }}>
               {app}
-            </Badge>
-          ))}
+            </Badge>)}
         </div>
 
         {/* Trust indicators */}
@@ -62,13 +51,11 @@ const MetricsOverview = () => {
             <div className="w-12 h-12 mx-auto glass-card rounded-2xl flex items-center justify-center">
               <Users className="h-6 w-6 text-primary-deep" />
             </div>
-            <h4 className="font-semibold text-foreground">Trusted by Thousands</h4>
+            <h4 className="font-semibold text-foreground">Trusted by Fitness Enthusiasts </h4>
             <p className="text-sm text-muted-foreground">Join our growing community</p>
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default MetricsOverview;

@@ -1,16 +1,18 @@
 import { Activity, Wind, BookOpen, TrendingUp, Sparkles, Heart, Zap } from "lucide-react";
-
 const HeroSection = () => {
-  return (
-    <div className="relative overflow-hidden min-h-screen flex items-center">
+  return <div className="relative overflow-hidden min-h-screen flex items-center">
       {/* Dynamic gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-accent/10 to-primary-deep/30"></div>
       
       {/* Floating animated elements */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-3xl float animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/20 rounded-full blur-3xl float animate-pulse" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-primary-glow/30 rounded-full blur-3xl float animate-pulse" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/20 rounded-full blur-3xl float animate-pulse" style={{
+        animationDelay: '2s'
+      }}></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-primary-glow/30 rounded-full blur-3xl float animate-pulse" style={{
+        animationDelay: '1s'
+      }}></div>
       </div>
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
@@ -20,7 +22,9 @@ const HeroSection = () => {
             <div className="relative feature-icon p-8 animate-scale-in pulse-glow">
               <Activity className="h-20 w-20 text-primary-foreground" />
               <Sparkles className="absolute -top-3 -right-3 h-8 w-8 text-accent animate-pulse" />
-              <div className="absolute -bottom-2 -left-2 w-6 h-6 bg-accent rounded-full animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+              <div className="absolute -bottom-2 -left-2 w-6 h-6 bg-accent rounded-full animate-pulse" style={{
+              animationDelay: '0.5s'
+            }}></div>
             </div>
           </div>
           
@@ -31,7 +35,9 @@ const HeroSection = () => {
           </h1>
           
           {/* Enhanced subtitle */}
-          <p className="text-xl md:text-3xl mb-16 text-muted-foreground max-w-5xl mx-auto leading-relaxed animate-fade-in" style={{ animationDelay: '0.2s' }}>
+          <p className="text-xl md:text-3xl mb-16 text-muted-foreground max-w-5xl mx-auto leading-relaxed animate-fade-in" style={{
+          animationDelay: '0.2s'
+        }}>
             Unlock the power of AI to decode your fitness data, practice mindful breathing, 
             and track holistic wellness. Get{' '}
             <span className="gradient-text font-bold">professional insights</span>{' '}
@@ -39,7 +45,9 @@ const HeroSection = () => {
           </p>
           
           {/* Feature badges with enhanced styling */}
-          <div className="flex flex-wrap justify-center gap-6 mb-12 animate-fade-in" style={{ animationDelay: '0.4s' }}>
+          <div className="flex flex-wrap justify-center gap-6 mb-12 animate-fade-in" style={{
+          animationDelay: '0.4s'
+        }}>
             <div className="glass-card flex items-center gap-3 px-6 py-3 rounded-2xl hover-lift">
               <div className="p-2 bg-accent/20 rounded-lg">
                 <TrendingUp className="h-6 w-6 text-accent" />
@@ -62,7 +70,6 @@ const HeroSection = () => {
 
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
 export default HeroSection;
