@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { Smartphone, Shield, Zap, Users } from "lucide-react";
+import { Smartphone } from "lucide-react";
 const MetricsOverview = () => {
   const apps = ["Apple Health", "Strava", "Garmin Connect", "Fitbit", "MyFitnessPal", "Oura Ring", "Whoop", "Coros", "Wahoo"];
   return <div className="space-y-8 animate-fade-in">
@@ -29,32 +29,6 @@ const MetricsOverview = () => {
             </Badge>)}
         </div>
 
-        {/* Trust indicators */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-8 border-t border-border/50">
-          <div className="text-center space-y-2">
-            <div className="w-12 h-12 mx-auto glass-card rounded-2xl flex items-center justify-center">
-              <Shield className="h-6 w-6 text-primary" />
-            </div>
-            <h4 className="font-semibold text-foreground">Secure & Private</h4>
-            <p className="text-sm text-muted-foreground">Your data stays on your device</p>
-          </div>
-          
-          <div className="text-center space-y-2">
-            <div className="w-12 h-12 mx-auto glass-card rounded-2xl flex items-center justify-center">
-              <Zap className="h-6 w-6 text-accent" />
-            </div>
-            <h4 className="font-semibold text-foreground">Instant Analysis</h4>
-            <p className="text-sm text-muted-foreground">Results in seconds</p>
-          </div>
-          
-          <div className="text-center space-y-2">
-            <div className="w-12 h-12 mx-auto glass-card rounded-2xl flex items-center justify-center">
-              <Users className="h-6 w-6 text-primary-deep" />
-            </div>
-            <h4 className="font-semibold text-foreground">Trusted by Fitness Enthusiasts </h4>
-            <p className="text-sm text-muted-foreground">Join our growing community</p>
-          </div>
-        </div>
       </div>
     </div>;
 };
