@@ -11,7 +11,7 @@ const HowItWorksSection = () => {
     },
     {
       icon: Wind,
-      title: "4-6 Breathing",
+      title: "Mindful Breathing",
       description: "Guided breathing exercises with visual cues to reduce stress, promote relaxation, and improve focus",
       color: "accent", 
       delay: "0.2s"
