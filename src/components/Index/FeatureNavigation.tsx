@@ -11,9 +11,9 @@ const FeatureNavigation = ({
   onFeatureChange
 }: FeatureNavigationProps) => {
   const features = [
-    { id: 'screenshot' as const, icon: Upload, label: 'Screenshot Analysis' },
     { id: 'breathing' as const, icon: Wind, label: 'Mindful Breathing' },
-    { id: 'journal' as const, icon: BookOpen, label: 'Wellness Journal' }
+    { id: 'journal' as const, icon: BookOpen, label: 'Wellness Journal' },
+    { id: 'screenshot' as const, icon: Upload, label: 'Screenshot Analysis' }
   ];
 
   return (
