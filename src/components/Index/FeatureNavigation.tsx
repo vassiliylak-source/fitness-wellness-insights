@@ -12,7 +12,7 @@ const FeatureNavigation = ({
 }: FeatureNavigationProps) => {
   const features = [
     { id: 'screenshot' as const, icon: Upload, label: 'Screenshot Analysis' },
-    { id: 'breathing' as const, icon: Wind, label: '4-6 Breathing' },
+    { id: 'breathing' as const, icon: Wind, label: 'Mindful Breathing' },
     { id: 'journal' as const, icon: BookOpen, label: 'Wellness Journal' }
   ];
 
