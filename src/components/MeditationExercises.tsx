@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Play, Pause, RotateCcw, Heart, Brain, Waves } from "lucide-react";
-import ExternalLink from "@/components/common/ExternalLink";
+import { Slider } from "@/components/ui/slider";
+import { Play, Pause, RotateCcw, Heart, Brain, Waves, Volume2, VolumeX } from "lucide-react";
 
 interface MeditationTechnique {
   id: string;
@@ -14,7 +14,23 @@ interface MeditationTechnique {
   benefits: string[];
   color: string;
   icon: any;
+  soundType: string;
 }
+
+interface SoundOption {
+  id: string;
+  name: string;
+  description: string;
+}
+
+const SOUND_OPTIONS: SoundOption[] = [
+  { id: 'none', name: 'None', description: 'Silent meditation' },
+  { id: 'rain', name: 'Rain', description: 'Gentle rainfall sounds' },
+  { id: 'ocean', name: 'Ocean Waves', description: 'Peaceful ocean waves' },
+  { id: 'forest', name: 'Forest', description: 'Birds and rustling leaves' },
+  { id: 'bowl', name: 'Singing Bowl', description: 'Tibetan singing bowl tones' },
+  { id: 'white-noise', name: 'White Noise', description: 'Calming white noise' },
+];
 
 const MEDITATION_TECHNIQUES: MeditationTechnique[] = [
   {
@@ -24,7 +40,8 @@ const MEDITATION_TECHNIQUES: MeditationTechnique[] = [
     duration: 300, // 5 minutes
     benefits: ['Reduces stress', 'Improves focus', 'Enhances self-awareness'],
     color: 'emerald',
-    icon: Brain
+    icon: Brain,
+    soundType: 'forest'
   },
   {
     id: 'loving-kindness',
@@ -33,7 +50,8 @@ const MEDITATION_TECHNIQUES: MeditationTechnique[] = [
     duration: 480, // 8 minutes
     benefits: ['Increases empathy', 'Reduces negative emotions', 'Builds emotional resilience'],
     color: 'rose',
-    icon: Heart
+    icon: Heart,
+    soundType: 'bowl'
   },
   {
     id: 'body-scan',
@@ -42,7 +60,8 @@ const MEDITATION_TECHNIQUES: MeditationTechnique[] = [
     duration: 600, // 10 minutes
     benefits: ['Releases physical tension', 'Improves body awareness', 'Promotes relaxation'],
     color: 'blue',
-    icon: Waves
+    icon: Waves,
+    soundType: 'ocean'
   }
 ];
 
@@ -51,6 +70,212 @@ const MeditationExercises = () => {
   const [isActive, setIsActive] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState(selectedTechnique.duration);
   const [progress, setProgress] = useState(0);
+  const [selectedSound, setSelectedSound] = useState<string>(selectedTechnique.soundType);
+  const [volume, setVolume] = useState([0.3]);
+  const [isMuted, setIsMuted] = useState(false);
+  
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const sourceRef = useRef<AudioBufferSourceNode | null>(null);
+  const gainNodeRef = useRef<GainNode | null>(null);
+  const oscillatorsRef = useRef<OscillatorNode[]>([]);
+
+  // Initialize audio context
+  const initializeAudio = useCallback(async () => {
+    if (!audioContextRef.current) {
+      audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+      gainNodeRef.current = audioContextRef.current.createGain();
+      gainNodeRef.current.connect(audioContextRef.current.destination);
+      gainNodeRef.current.gain.value = volume[0];
+    }
+  }, [volume]);
+
+  // Generate different types of meditation sounds
+  const generateSound = useCallback(async (soundType: string) => {
+    if (!audioContextRef.current || !gainNodeRef.current) return;
+
+    // Stop existing sounds
+    stopSound();
+
+    if (soundType === 'none') return;
+
+    const context = audioContextRef.current;
+    const gainNode = gainNodeRef.current;
+
+    switch (soundType) {
+      case 'white-noise':
+        const bufferSize = context.sampleRate * 2; // 2 seconds of audio
+        const buffer = context.createBuffer(1, bufferSize, context.sampleRate);
+        const output = buffer.getChannelData(0);
+        
+        for (let i = 0; i < bufferSize; i++) {
+          output[i] = Math.random() * 2 - 1;
+        }
+        
+        const whiteNoiseSource = context.createBufferSource();
+        whiteNoiseSource.buffer = buffer;
+        whiteNoiseSource.loop = true;
+        whiteNoiseSource.connect(gainNode);
+        whiteNoiseSource.start();
+        sourceRef.current = whiteNoiseSource;
+        break;
+
+      case 'ocean':
+        // Create ocean wave sounds using multiple oscillators
+        const oceanOscillators = [];
+        for (let i = 0; i < 3; i++) {
+          const osc = context.createOscillator();
+          const oscGain = context.createGain();
+          
+          osc.type = 'sine';
+          osc.frequency.value = 40 + Math.random() * 60; // Low frequency for ocean sounds
+          oscGain.gain.value = 0.1;
+          
+          // Add subtle frequency modulation for wave-like effect
+          const lfo = context.createOscillator();
+          const lfoGain = context.createGain();
+          lfo.frequency.value = 0.1 + Math.random() * 0.3;
+          lfoGain.gain.value = 10;
+          lfo.connect(lfoGain);
+          lfoGain.connect(osc.frequency);
+          
+          osc.connect(oscGain);
+          oscGain.connect(gainNode);
+          osc.start();
+          lfo.start();
+          
+          oceanOscillators.push(osc, lfo);
+        }
+        oscillatorsRef.current = oceanOscillators;
+        break;
+
+      case 'rain':
+        // Create rain sounds using filtered noise
+        const rainBufferSize = context.sampleRate * 1;
+        const rainBuffer = context.createBuffer(1, rainBufferSize, context.sampleRate);
+        const rainOutput = rainBuffer.getChannelData(0);
+        
+        for (let i = 0; i < rainBufferSize; i++) {
+          rainOutput[i] = (Math.random() * 2 - 1) * 0.3;
+        }
+        
+        const rainSource = context.createBufferSource();
+        const rainFilter = context.createBiquadFilter();
+        rainFilter.type = 'highpass';
+        rainFilter.frequency.value = 1000;
+        
+        rainSource.buffer = rainBuffer;
+        rainSource.loop = true;
+        rainSource.connect(rainFilter);
+        rainFilter.connect(gainNode);
+        rainSource.start();
+        sourceRef.current = rainSource;
+        break;
+
+      case 'forest':
+        // Create forest ambience with multiple tones
+        const forestOscillators = [];
+        const frequencies = [220, 330, 440, 550, 660]; // Bird-like frequencies
+        
+        frequencies.forEach((freq, index) => {
+          setTimeout(() => {
+            if (!context || !gainNode) return;
+            
+            const osc = context.createOscillator();
+            const oscGain = context.createGain();
+            const envelope = context.createGain();
+            
+            osc.type = 'sine';
+            osc.frequency.value = freq + Math.random() * 50;
+            oscGain.gain.value = 0.05;
+            envelope.gain.value = 0;
+            
+            // Create envelope for bird chirp effect
+            envelope.gain.setValueAtTime(0, context.currentTime);
+            envelope.gain.linearRampToValueAtTime(1, context.currentTime + 0.1);
+            envelope.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 1);
+            
+            osc.connect(oscGain);
+            oscGain.connect(envelope);
+            envelope.connect(gainNode);
+            osc.start();
+            osc.stop(context.currentTime + 1);
+            
+            forestOscillators.push(osc);
+          }, Math.random() * 5000 + index * 1000);
+        });
+        
+        // Repeat forest sounds
+        const forestInterval = setInterval(() => {
+          if (isActive && selectedSound === 'forest') {
+            generateSound('forest');
+          } else {
+            clearInterval(forestInterval);
+          }
+        }, 8000);
+        
+        oscillatorsRef.current = forestOscillators;
+        break;
+
+      case 'bowl':
+        // Create singing bowl sounds
+        const bowlOsc = context.createOscillator();
+        const bowlGain = context.createGain();
+        const bowlFilter = context.createBiquadFilter();
+        
+        bowlOsc.type = 'sine';
+        bowlOsc.frequency.value = 200;
+        bowlFilter.type = 'bandpass';
+        bowlFilter.frequency.value = 400;
+        bowlFilter.Q.value = 10;
+        
+        bowlGain.gain.setValueAtTime(0, context.currentTime);
+        bowlGain.gain.linearRampToValueAtTime(0.3, context.currentTime + 0.1);
+        bowlGain.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 8);
+        
+        bowlOsc.connect(bowlFilter);
+        bowlFilter.connect(bowlGain);
+        bowlGain.connect(gainNode);
+        bowlOsc.start();
+        bowlOsc.stop(context.currentTime + 8);
+        
+        // Repeat singing bowl every 10 seconds
+        const bowlInterval = setInterval(() => {
+          if (isActive && selectedSound === 'bowl') {
+            generateSound('bowl');
+          } else {
+            clearInterval(bowlInterval);
+          }
+        }, 10000);
+        
+        oscillatorsRef.current = [bowlOsc];
+        break;
+    }
+  }, [isActive, selectedSound]);
+
+  const stopSound = useCallback(() => {
+    if (sourceRef.current) {
+      sourceRef.current.stop();
+      sourceRef.current.disconnect();
+      sourceRef.current = null;
+    }
+    
+    oscillatorsRef.current.forEach(osc => {
+      try {
+        osc.stop();
+        osc.disconnect();
+      } catch (e) {
+        // Oscillator might already be stopped
+      }
+    });
+    oscillatorsRef.current = [];
+  }, []);
+
+  // Update volume
+  useEffect(() => {
+    if (gainNodeRef.current) {
+      gainNodeRef.current.gain.value = isMuted ? 0 : volume[0];
+    }
+  }, [volume, isMuted]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -63,6 +288,7 @@ const MeditationExercises = () => {
           
           if (newTime <= 0) {
             setIsActive(false);
+            stopSound(); // Stop sound when meditation ends
             return selectedTechnique.duration;
           }
           return newTime;
@@ -71,9 +297,15 @@ const MeditationExercises = () => {
     }
 
     return () => clearInterval(interval);
-  }, [isActive, timeRemaining, selectedTechnique.duration]);
+  }, [isActive, timeRemaining, selectedTechnique.duration, stopSound]);
 
-  const toggleMeditation = () => {
+  const toggleMeditation = async () => {
+    if (!isActive) {
+      await initializeAudio();
+      await generateSound(selectedSound);
+    } else {
+      stopSound();
+    }
     setIsActive(!isActive);
   };
 
@@ -81,6 +313,7 @@ const MeditationExercises = () => {
     setIsActive(false);
     setTimeRemaining(selectedTechnique.duration);
     setProgress(0);
+    stopSound();
   };
 
   const changeTechnique = (techniqueId: string) => {
@@ -90,7 +323,20 @@ const MeditationExercises = () => {
       setTimeRemaining(technique.duration);
       setProgress(0);
       setIsActive(false);
+      setSelectedSound(technique.soundType);
+      stopSound();
     }
+  };
+
+  const handleSoundChange = (soundId: string) => {
+    setSelectedSound(soundId);
+    if (isActive) {
+      generateSound(soundId);
+    }
+  };
+
+  const toggleMute = () => {
+    setIsMuted(!isMuted);
   };
 
   const formatTime = (seconds: number) => {
@@ -194,6 +440,60 @@ const MeditationExercises = () => {
               <Badge variant="secondary" className="text-lg px-4 py-2">
                 {isActive ? '🧘‍♀️ Meditating' : '🕯️ Ready to Begin'}
               </Badge>
+            </div>
+          </div>
+
+          {/* Sound Controls */}
+          <div className="card-elegant space-y-6">
+            <h3 className="text-lg font-semibold gradient-text text-center">
+              Ambient Sounds
+            </h3>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-muted-foreground">Sound Type</label>
+                <Select value={selectedSound} onValueChange={handleSoundChange}>
+                  <SelectTrigger className="glass-card">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="glass-card">
+                    {SOUND_OPTIONS.map((sound) => (
+                      <SelectItem key={sound.id} value={sound.id}>
+                        <div className="flex flex-col">
+                          <span>{sound.name}</span>
+                          <span className="text-xs text-muted-foreground">{sound.description}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-muted-foreground">Volume</label>
+                <div className="flex items-center gap-3">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={toggleMute}
+                    className="p-2"
+                  >
+                    {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+                  </Button>
+                  <Slider
+                    value={volume}
+                    onValueChange={setVolume}
+                    max={1}
+                    min={0}
+                    step={0.1}
+                    className="flex-1"
+                    disabled={isMuted}
+                  />
+                  <span className="text-xs text-muted-foreground w-8">
+                    {Math.round(volume[0] * 100)}%
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
 
