@@ -1,4 +1,4 @@
-import { Activity, Wind, BookOpen, TrendingUp, Sparkles, Heart, Zap } from "lucide-react";
+import { Activity, Wind, BookOpen, TrendingUp, Sparkles, Heart, Zap, Brain } from "lucide-react";
 const HeroSection = () => {
   return <div className="relative overflow-hidden min-h-screen flex items-center">
       {/* Dynamic gradient background */}
@@ -65,6 +65,12 @@ const HeroSection = () => {
                 <BookOpen className="h-6 w-6 text-primary-deep" />
               </div>
               <span className="font-semibold text-foreground">Wellness Journal</span>
+            </div>
+            <div className="glass-card flex items-center gap-3 px-6 py-3 rounded-2xl hover-lift">
+              <div className="p-2 bg-accent/30 rounded-lg">
+                <Brain className="h-6 w-6 text-accent" />
+              </div>
+              <span className="font-semibold text-foreground">Meditation</span>
             </div>
           </div>
 
