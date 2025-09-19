@@ -1,4 +1,4 @@
-export type FeatureType = 'screenshot' | 'breathing' | 'journal';
+export type FeatureType = 'screenshot' | 'breathing' | 'journal' | 'meditation';
 
 export type BreathingPhase = 'inhale' | 'hold' | 'exhale' | 'pause';
 export type BreathingTechnique = 'relaxation' | 'box' | 'triangle' | 'physiological';

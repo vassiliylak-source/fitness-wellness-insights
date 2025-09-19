@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button";
-import { Upload, Wind, BookOpen } from "lucide-react";
+import { Upload, Wind, BookOpen, Brain } from "lucide-react";
 
 interface FeatureNavigationProps {
-  activeFeature: 'screenshot' | 'breathing' | 'journal';
-  onFeatureChange: (feature: 'screenshot' | 'breathing' | 'journal') => void;
+  activeFeature: 'screenshot' | 'breathing' | 'journal' | 'meditation';
+  onFeatureChange: (feature: 'screenshot' | 'breathing' | 'journal' | 'meditation') => void;
 }
 
 const FeatureNavigation = ({
@@ -13,6 +13,7 @@ const FeatureNavigation = ({
   const features = [
     { id: 'breathing' as const, icon: Wind, label: 'Mindful Breathing' },
     { id: 'journal' as const, icon: BookOpen, label: 'Wellness Journal' },
+    { id: 'meditation' as const, icon: Brain, label: 'Meditation' },
     { id: 'screenshot' as const, icon: Upload, label: 'Screenshot Analysis' }
   ];
 

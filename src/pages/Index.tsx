@@ -3,6 +3,7 @@ import { FeatureType } from "@/types/ui";
 import MetricsOverview from "@/components/MetricsOverview";
 import WellnessJournal from "@/components/WellnessJournal";
 import BreathingExercises from "@/components/BreathingExercises";
+import MeditationExercises from "@/components/MeditationExercises";
 import HeroSection from "@/components/Index/HeroSection";
 import FeatureNavigation from "@/components/Index/FeatureNavigation";
 import HowItWorksSection from "@/components/Index/HowItWorksSection";
@@ -54,6 +55,9 @@ const Index = () => {
               </div>}
             {activeFeature === 'journal' && <div className="card-modern">
                 <WellnessJournal />
+              </div>}
+            {activeFeature === 'meditation' && <div className="card-modern">
+                <MeditationExercises />
               </div>}
           </div>
         </div>
