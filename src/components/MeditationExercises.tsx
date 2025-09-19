@@ -272,16 +272,6 @@ const MeditationExercises = () => {
             )}
           </div>
         </div>
-
-        {/* Support Link */}
-        <div className="text-center pt-6">
-          <ExternalLink 
-            href="https://www.paypal.me/yourusername"
-            className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
-          >
-            ☕ Support this meditation app
-          </ExternalLink>
-        </div>
       </CardContent>
     </Card>
   );
