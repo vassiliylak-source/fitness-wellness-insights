@@ -22,6 +22,13 @@ const HowItWorksSection = () => {
       description: "Monitor your mood, energy, stress, and recovery each day. Export your entries to dive deeper into patterns",
       color: "primary-deep",
       delay: "0.4s"
+    },
+    {
+      icon: Brain,
+      title: "Meditation",
+      description: "Practice guided meditation with multiple techniques including mindfulness, loving-kindness, and body scan exercises",
+      color: "accent",
+      delay: "0.6s"
     }
   ];
 
@@ -40,11 +47,11 @@ const HowItWorksSection = () => {
         </h2>
         
         <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-          Three powerful tools working together to transform your health journey through technology and mindfulness.
+          Four powerful tools working together to transform your health journey through technology and mindfulness.
         </p>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
+      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
         {features.map((feature, index) => {
           const Icon = feature.icon;
           return (
