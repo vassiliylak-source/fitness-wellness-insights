@@ -1,39 +1,31 @@
 import { Upload, Wind, BookOpen, Camera, Brain, Sparkles } from "lucide-react";
-
 const HowItWorksSection = () => {
-  const features = [
-    {
-      icon: Upload,
-      title: "Screenshot Analysis",
-      description: "Upload fitness app screenshots for instant AI-powered insights on metrics, patterns, and performance",
-      color: "primary",
-      delay: "0s"
-    },
-    {
-      icon: Wind,
-      title: "Mindful Breathing",
-      description: "Guided breathing exercises with visual cues to reduce stress, promote relaxation, and improve focus",
-      color: "accent", 
-      delay: "0.2s"
-    },
-    {
-      icon: BookOpen,
-      title: "Wellness Journal",
-      description: "Monitor your mood, energy, stress, and recovery each day. Export your entries to dive deeper into patterns",
-      color: "primary-deep",
-      delay: "0.4s"
-    },
-    {
-      icon: Brain,
-      title: "Meditation",
-      description: "Practice guided meditation with multiple techniques including mindfulness, loving-kindness, and body scan exercises",
-      color: "accent",
-      delay: "0.6s"
-    }
-  ];
-
-  return (
-    <div className="py-24">
+  const features = [{
+    icon: Upload,
+    title: "Screenshot Analysis",
+    description: "Upload fitness app screenshots for instant AI-powered insights on metrics, patterns, and performance",
+    color: "primary",
+    delay: "0s"
+  }, {
+    icon: Wind,
+    title: "Mindful Breathing",
+    description: "Guided breathing exercises with visual cues to reduce stress, promote relaxation, and improve focus",
+    color: "accent",
+    delay: "0.2s"
+  }, {
+    icon: BookOpen,
+    title: "Wellness Journal",
+    description: "Monitor your mood, energy, stress, and recovery each day. Export your entries to dive deeper into patterns",
+    color: "primary-deep",
+    delay: "0.4s"
+  }, {
+    icon: Brain,
+    title: "Meditation",
+    description: "Practice guided meditation with multiple techniques including mindfulness, loving-kindness, and body scan exercises",
+    color: "accent",
+    delay: "0.6s"
+  }];
+  return <div className="py-[8px]">
       <div className="text-center mb-20 space-y-6">
         <div className="inline-flex items-center gap-2 px-6 py-3 glass-card rounded-2xl mb-6">
           <Sparkles className="h-5 w-5 text-primary" />
@@ -53,13 +45,10 @@ const HowItWorksSection = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-12">
         {features.map((feature, index) => {
-          const Icon = feature.icon;
-          return (
-            <div 
-              key={feature.title}
-              className="card-feature text-center space-y-6 animate-fade-in"
-              style={{ animationDelay: feature.delay }}
-            >
+        const Icon = feature.icon;
+        return <div key={feature.title} className="card-feature text-center space-y-6 animate-fade-in" style={{
+          animationDelay: feature.delay
+        }}>
               <div className="flex justify-center">
                 <div className="feature-icon neon-glow-primary">
                   <Icon className="h-8 w-8 text-primary-foreground" />
@@ -81,9 +70,8 @@ const HowItWorksSection = () => {
                   <span className="text-lg font-bold gradient-text">{index + 1}</span>
                 </div>
               </div>
-            </div>
-          );
-        })}
+            </div>;
+      })}
       </div>
 
       {/* Bottom CTA section */}
@@ -97,7 +85,6 @@ const HowItWorksSection = () => {
           Ready to start your transformation?
         </h3>
       </div>
-    </div>
-  );
+    </div>;
 };
 export default HowItWorksSection;

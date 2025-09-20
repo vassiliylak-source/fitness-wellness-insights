@@ -2,7 +2,7 @@ import { Activity, Wind, BookOpen, TrendingUp, Sparkles, Heart, Zap, Brain } fro
 const HeroSection = () => {
   return <div className="relative overflow-hidden min-h-screen flex items-center">
       {/* Dynamic gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/20 via-blue-500/15 to-teal-600/25"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/20 via-blue-500/15 to-teal-600/25 py-0 my-0 mx-0"></div>
       
       {/* Floating animated elements */}
       <div className="absolute inset-0 pointer-events-none">
