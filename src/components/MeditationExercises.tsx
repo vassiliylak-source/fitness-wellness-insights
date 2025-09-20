@@ -81,17 +81,36 @@ const MeditationExercises = () => {
 
   // Initialize audio context
   const initializeAudio = useCallback(async () => {
-    if (!audioContextRef.current) {
-      audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
-      gainNodeRef.current = audioContextRef.current.createGain();
-      gainNodeRef.current.connect(audioContextRef.current.destination);
-      gainNodeRef.current.gain.value = volume[0];
+    try {
+      if (!audioContextRef.current) {
+        audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+        gainNodeRef.current = audioContextRef.current.createGain();
+        gainNodeRef.current.connect(audioContextRef.current.destination);
+        gainNodeRef.current.gain.value = volume[0];
+      }
+      
+      // Resume audio context if suspended (required for mobile browsers)
+      if (audioContextRef.current.state === 'suspended') {
+        await audioContextRef.current.resume();
+      }
+    } catch (error) {
+      console.error('Error initializing audio:', error);
     }
   }, [volume]);
 
   // Generate different types of meditation sounds
   const generateSound = useCallback(async (soundType: string) => {
     if (!audioContextRef.current || !gainNodeRef.current) return;
+    
+    // Check if audio context is running (important for mobile)
+    if (audioContextRef.current.state !== 'running') {
+      try {
+        await audioContextRef.current.resume();
+      } catch (error) {
+        console.error('Failed to resume audio context:', error);
+        return;
+      }
+    }
 
     // Stop existing sounds
     stopSound();
@@ -301,8 +320,15 @@ const MeditationExercises = () => {
 
   const toggleMeditation = async () => {
     if (!isActive) {
-      await initializeAudio();
-      await generateSound(selectedSound);
+      try {
+        await initializeAudio();
+        // Ensure audio context is running before generating sound
+        if (audioContextRef.current && audioContextRef.current.state === 'running') {
+          await generateSound(selectedSound);
+        }
+      } catch (error) {
+        console.error('Error starting meditation audio:', error);
+      }
     } else {
       stopSound();
     }
@@ -328,10 +354,17 @@ const MeditationExercises = () => {
     }
   };
 
-  const handleSoundChange = (soundId: string) => {
+  const handleSoundChange = async (soundId: string) => {
     setSelectedSound(soundId);
     if (isActive) {
-      generateSound(soundId);
+      try {
+        await initializeAudio(); // Ensure audio context is ready
+        if (audioContextRef.current && audioContextRef.current.state === 'running') {
+          await generateSound(soundId);
+        }
+      } catch (error) {
+        console.error('Error changing sound:', error);
+      }
     }
   };
 
