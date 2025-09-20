@@ -2,7 +2,7 @@ import { Activity, Wind, BookOpen, TrendingUp, Sparkles, Heart, Zap, Brain } fro
 const HeroSection = () => {
   return <div className="relative overflow-hidden min-h-screen flex items-center">
       {/* Dynamic gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/20 via-blue-500/15 to-teal-600/25 py-0 my-0 mx-0"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/20 via-blue-500/15 to-teal-600/25 py-0 my-0 mx-0 rounded-none"></div>
       
       {/* Floating animated elements */}
       <div className="absolute inset-0 pointer-events-none">
@@ -35,14 +35,7 @@ const HeroSection = () => {
           </h1>
           
           {/* Enhanced subtitle */}
-          <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl mb-8 sm:mb-12 lg:mb-16 text-muted-foreground max-w-5xl mx-auto leading-relaxed animate-fade-in px-4" style={{
-          animationDelay: '0.2s'
-        }}>
-            Unlock the power of AI to decode your fitness data, practice mindful breathing, 
-            and track holistic wellness. Get{' '}
-            <span className="gradient-text font-bold">professional insights</span>{' '}
-            combined with mindfulness tools for complete well-being.
-          </p>
+          
           
           {/* Feature badges with enhanced styling */}
           <div className="flex flex-wrap justify-center gap-3 sm:gap-4 md:gap-6 mb-8 sm:mb-12 animate-fade-in px-4" style={{
