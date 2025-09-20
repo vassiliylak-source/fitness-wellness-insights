@@ -29,13 +29,13 @@ const HeroSection = () => {
           </div>
           
           {/* Enhanced hero title */}
-          <h1 className="text-5xl md:text-8xl font-black leading-tight animate-fade-in">
-            <span className="gradient-text block mb-4">Transform Your</span>
+          <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-8xl font-black leading-tight animate-fade-in">
+            <span className="gradient-text block mb-2 sm:mb-4">Transform Your</span>
             <span className="gradient-text-secondary">Wellness Journey</span>
           </h1>
           
           {/* Enhanced subtitle */}
-          <p className="text-xl md:text-3xl mb-16 text-muted-foreground max-w-5xl mx-auto leading-relaxed animate-fade-in" style={{
+          <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl mb-8 sm:mb-12 lg:mb-16 text-muted-foreground max-w-5xl mx-auto leading-relaxed animate-fade-in px-4" style={{
           animationDelay: '0.2s'
         }}>
             Unlock the power of AI to decode your fitness data, practice mindful breathing, 
@@ -45,32 +45,32 @@ const HeroSection = () => {
           </p>
           
           {/* Feature badges with enhanced styling */}
-          <div className="flex flex-wrap justify-center gap-6 mb-12 animate-fade-in" style={{
+          <div className="flex flex-wrap justify-center gap-3 sm:gap-4 md:gap-6 mb-8 sm:mb-12 animate-fade-in px-4" style={{
           animationDelay: '0.4s'
         }}>
-            <div className="glass-card flex items-center gap-3 px-6 py-3 rounded-2xl hover-lift">
-              <div className="p-2 bg-accent/20 rounded-lg">
-                <TrendingUp className="h-6 w-6 text-accent" />
+            <div className="glass-card flex items-center gap-2 sm:gap-3 px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-xl sm:rounded-2xl hover-lift">
+              <div className="p-1.5 sm:p-2 bg-accent/20 rounded-lg">
+                <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-accent" />
               </div>
-              <span className="font-semibold text-foreground">Smart Analytics</span>
+              <span className="font-semibold text-foreground text-sm sm:text-base">Smart Analytics</span>
             </div>
-            <div className="glass-card flex items-center gap-3 px-6 py-3 rounded-2xl hover-lift">
-              <div className="p-2 bg-primary/20 rounded-lg">
-                <Wind className="h-6 w-6 text-primary" />
+            <div className="glass-card flex items-center gap-2 sm:gap-3 px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-xl sm:rounded-2xl hover-lift">
+              <div className="p-1.5 sm:p-2 bg-primary/20 rounded-lg">
+                <Wind className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-primary" />
               </div>
-              <span className="font-semibold text-foreground">Breathing Exercises</span>
+              <span className="font-semibold text-foreground text-sm sm:text-base">Breathing</span>
             </div>
-            <div className="glass-card flex items-center gap-3 px-6 py-3 rounded-2xl hover-lift">
-              <div className="p-2 bg-primary-glow/30 rounded-lg">
-                <BookOpen className="h-6 w-6 text-primary-deep" />
+            <div className="glass-card flex items-center gap-2 sm:gap-3 px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-xl sm:rounded-2xl hover-lift">
+              <div className="p-1.5 sm:p-2 bg-primary-glow/30 rounded-lg">
+                <BookOpen className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-primary-deep" />
               </div>
-              <span className="font-semibold text-foreground">Wellness Journal</span>
+              <span className="font-semibold text-foreground text-sm sm:text-base">Journal</span>
             </div>
-            <div className="glass-card flex items-center gap-3 px-6 py-3 rounded-2xl hover-lift">
-              <div className="p-2 bg-accent/30 rounded-lg">
-                <Brain className="h-6 w-6 text-accent" />
+            <div className="glass-card flex items-center gap-2 sm:gap-3 px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-xl sm:rounded-2xl hover-lift">
+              <div className="p-1.5 sm:p-2 bg-accent/30 rounded-lg">
+                <Brain className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-accent" />
               </div>
-              <span className="font-semibold text-foreground">Meditation</span>
+              <span className="font-semibold text-foreground text-sm sm:text-base">Meditation</span>
             </div>
           </div>
 

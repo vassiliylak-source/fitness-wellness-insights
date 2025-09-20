@@ -172,8 +172,8 @@ const BreathingExercises = () => {
         <CardContent className="space-y-6">
           {/* Breathing Animation Circle */}
           <div className="flex justify-center">
-            <div className="relative w-64 h-64 flex items-center justify-center">
-              <div className={`w-32 h-32 rounded-full border-4 transition-all duration-1000 ease-in-out ${
+            <div className="relative w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 flex items-center justify-center">
+              <div className={`w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-full border-4 transition-all duration-1000 ease-in-out ${
                 getPhaseColor() === 'blue' ? 'border-blue-500 bg-blue-100' :
                 getPhaseColor() === 'cyan' ? 'border-cyan-500 bg-cyan-100' :
                 getPhaseColor() === 'green' ? 'border-green-500 bg-green-100' :
@@ -249,7 +249,7 @@ const BreathingExercises = () => {
           </div>
 
           {/* Controls */}
-          <div className="flex justify-center gap-4">
+          <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
             <Button onClick={toggleBreathing} className={`flex items-center gap-2 ${
               breathingState.isActive ? 'bg-red-500 hover:bg-red-600' : 
               currentTechnique.color === 'blue' ? 'bg-blue-500 hover:bg-blue-600' :

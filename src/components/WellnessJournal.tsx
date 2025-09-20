@@ -50,8 +50,8 @@ const WellnessJournal = () => {
             onTextChange={handleTextChange} 
           />
 
-          <div className="flex gap-3">
-            <Button onClick={saveEntry} className="flex-1">
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Button onClick={saveEntry} className="flex-1 order-1">
               Save Today's Entry
             </Button>
             {savedEntries.length > 0 && (
@@ -59,6 +59,7 @@ const WellnessJournal = () => {
                 onClick={() => performAIAnalysis(savedEntries)} 
                 variant="outline"
                 disabled={isAnalyzing}
+                className="sm:flex-initial order-2"
               >
                 {isAnalyzing ? (
                   <>

@@ -34,13 +34,13 @@ const Index = () => {
       </div>
 
       {/* Feature Selection and Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="space-y-12">
-          <div className="text-center space-y-4 mb-16">
-            <h2 className="text-3xl md:text-5xl font-black gradient-text">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+        <div className="space-y-8 sm:space-y-12">
+          <div className="text-center space-y-4 mb-12 sm:mb-16">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black gradient-text px-4">
               Choose Your Wellness Tool
             </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">Select from our suite of powerful wellness tools designed to support your journey</p>
+            <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto px-4">Select from our suite of powerful wellness tools designed to support your journey</p>
           </div>
           
           <FeatureNavigation activeFeature={activeFeature} onFeatureChange={setActiveFeature} />

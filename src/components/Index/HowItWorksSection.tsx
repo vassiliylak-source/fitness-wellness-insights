@@ -40,18 +40,18 @@ const HowItWorksSection = () => {
           <span className="font-semibold text-muted-foreground">Complete Wellness Platform</span>
         </div>
         
-        <h2 className="text-4xl md:text-6xl font-black mb-6">
+        <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-6">
           <span className="gradient-text">Everything You Need</span>
           <br />
           <span className="text-foreground">For Total Wellness</span>
         </h2>
         
-        <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+        <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed px-4">
           Four powerful tools working together to transform your health journey through technology and mindfulness.
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-12">
         {features.map((feature, index) => {
           const Icon = feature.icon;
           return (
@@ -67,10 +67,10 @@ const HowItWorksSection = () => {
               </div>
               
               <div className="space-y-4">
-                <h3 className="text-2xl md:text-3xl font-bold gradient-text">
+                <h3 className="text-xl sm:text-2xl md:text-3xl font-bold gradient-text">
                   {feature.title}
                 </h3>
-                <p className="text-lg text-muted-foreground leading-relaxed">
+                <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
                   {feature.description}
                 </p>
               </div>
