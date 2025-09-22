@@ -13,7 +13,7 @@ import HealthDisclaimer from "@/components/Index/HealthDisclaimer";
 import Footer from "@/components/layout/Footer";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 const Index = () => {
-  const [activeFeature, setActiveFeature] = useState<FeatureType>('screenshot');
+  const [activeFeature, setActiveFeature] = useState<FeatureType>('breathing');
   const renderScreenshotContent = () => {
     return <div className="space-y-8">
         <AiInsightsCard />
