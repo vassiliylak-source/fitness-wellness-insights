@@ -1,8 +1,17 @@
 import { Activity, Wind, BookOpen, TrendingUp, Sparkles, Heart, Zap, Brain } from "lucide-react";
 const HeroSection = () => {
   return <div className="relative overflow-hidden min-h-screen flex items-center">
-      {/* Dynamic gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/20 via-blue-500/15 to-teal-600/25 py-0 my-0 mx-0 rounded-none"></div>
+      {/* Enhanced gradient background with patterns */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/15 via-accent/10 to-primary-glow/20"></div>
+      <div className="absolute inset-0 bg-gradient-to-t from-background/40 via-transparent to-transparent"></div>
+      
+      {/* Stylish geometric patterns */}
+      <div className="absolute inset-0 opacity-30">
+        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-primary/5 via-transparent to-accent/5"></div>
+        <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-primary/10 rounded-full blur-2xl"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-40 h-40 bg-accent/10 rounded-full blur-2xl"></div>
+        <div className="absolute top-1/2 left-1/3 w-24 h-24 bg-primary-glow/15 rounded-full blur-xl"></div>
+      </div>
       
       {/* Floating animated elements */}
       <div className="absolute inset-0 pointer-events-none">
