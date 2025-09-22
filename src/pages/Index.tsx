@@ -11,6 +11,7 @@ import AiInsightsCard from "@/components/Index/AiInsightsCard";
 import SupportSection from "@/components/Index/SupportSection";
 import HealthDisclaimer from "@/components/Index/HealthDisclaimer";
 import Footer from "@/components/layout/Footer";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 const Index = () => {
   const [activeFeature, setActiveFeature] = useState<FeatureType>('screenshot');
   const renderScreenshotContent = () => {
@@ -21,6 +22,9 @@ const Index = () => {
       </div>;
   };
   return <div className="min-h-screen">
+      <div className="fixed top-4 right-4 z-50">
+        <ThemeToggle />
+      </div>
       <HeroSection />
 
       {/* How It Works Section */}
