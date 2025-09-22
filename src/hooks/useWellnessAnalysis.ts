@@ -3,13 +3,15 @@ import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { JournalEntry } from "@/types/wellness";
 import { generateWellnessAnalysis } from "@/utils/wellness";
+import { useWellnessPDF } from "@/features/wellness/hooks/useWellnessPDF";
 
-export const useWellnessAnalysis = () => {
+export const useWellnessAnalysis = (savedEntries: JournalEntry[]) => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResults, setAnalysisResults] = useState<string | null>(null);
   const { toast } = useToast();
+  const { downloadPDF } = useWellnessPDF();
 
-  const performAIAnalysis = async (savedEntries: JournalEntry[]) => {
+  const performAIAnalysis = async () => {
     if (savedEntries.length === 0) {
       toast({
         title: "No data to analyze",
@@ -44,9 +46,17 @@ export const useWellnessAnalysis = () => {
     }
   };
 
+  const downloadLastEntry = () => {
+    const lastEntry = savedEntries[savedEntries.length - 1];
+    if (lastEntry) {
+      downloadPDF(lastEntry);
+    }
+  };
+
   return {
     isAnalyzing,
     analysisResults,
-    performAIAnalysis
+    performAIAnalysis,
+    downloadLastEntry
   };
 };

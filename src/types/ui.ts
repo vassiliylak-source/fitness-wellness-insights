@@ -11,6 +11,17 @@ export interface BreathingState {
   technique: BreathingTechnique;
 }
 
+export interface TechniqueConfig {
+  name: string;
+  description: string;
+  icon: string;
+  color: string;
+  inhaleCount: number;
+  holdCount: number;
+  exhaleCount: number;
+  benefits: string[];
+}
+
 export interface WellnessMetric {
   label: string;
   value: number;

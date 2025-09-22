@@ -2,7 +2,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar, Sparkles, Loader2 } from "lucide-react";
-import { useJournalEntries } from "@/hooks/useJournalEntries";
+import { useWellness } from "@/contexts/WellnessContext";
 import { useWellnessAnalysis } from "@/hooks/useWellnessAnalysis";
 import WellnessHeader from "./WellnessJournal/WellnessHeader";
 import WellnessScales from "./WellnessJournal/WellnessScales";
@@ -13,16 +13,15 @@ const WellnessJournal = () => {
   const {
     currentEntry,
     savedEntries,
-    handleScaleChange,
-    handleTextChange,
+    updateEntry,
     saveEntry
-  } = useJournalEntries();
+  } = useWellness();
 
   const {
     isAnalyzing,
     analysisResults,
     performAIAnalysis
-  } = useWellnessAnalysis();
+  } = useWellnessAnalysis(savedEntries);
 
   return (
     <div className="space-y-6">
@@ -42,12 +41,12 @@ const WellnessJournal = () => {
         <CardContent className="space-y-6">
           <WellnessScales 
             currentEntry={currentEntry} 
-            onScaleChange={handleScaleChange} 
+            onScaleChange={(field, value) => updateEntry(field, value)} 
           />
           
           <WellnessReflections 
             currentEntry={currentEntry} 
-            onTextChange={handleTextChange} 
+            onTextChange={(field, value) => updateEntry(field, value)} 
           />
 
           <div className="flex flex-col sm:flex-row gap-3">
@@ -56,7 +55,7 @@ const WellnessJournal = () => {
             </Button>
             {savedEntries.length > 0 && (
               <Button 
-                onClick={() => performAIAnalysis(savedEntries)} 
+                onClick={performAIAnalysis} 
                 variant="outline"
                 disabled={isAnalyzing}
                 className="sm:flex-initial order-2"

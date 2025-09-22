@@ -1,33 +1,10 @@
-
-import { useState } from "react";
-import { useToast } from "@/hooks/use-toast";
-import { JournalEntry } from "@/types/wellness";
-import { WELLNESS_DEFAULTS, STORAGE_KEYS, APP_CONFIG } from "@/constants";
+import { useToast } from '@/hooks/use-toast';
+import { JournalEntry } from '@/types/wellness';
+import { APP_CONFIG } from '@/constants';
 import jsPDF from 'jspdf';
 
-export const useJournalEntries = () => {
-  const [currentEntry, setCurrentEntry] = useState<JournalEntry>({
-    date: new Date().toISOString().split('T')[0],
-    mood: WELLNESS_DEFAULTS.mood,
-    energy: WELLNESS_DEFAULTS.energy,
-    stress: WELLNESS_DEFAULTS.stress,
-    sleep: WELLNESS_DEFAULTS.sleep,
-    recovery: WELLNESS_DEFAULTS.recovery,
-    notes: '',
-    goals: '',
-    gratitude: ''
-  });
-  
-  const [savedEntries, setSavedEntries] = useState<JournalEntry[]>([]);
+export const useWellnessPDF = () => {
   const { toast } = useToast();
-
-  const handleScaleChange = (field: keyof JournalEntry, value: number) => {
-    setCurrentEntry(prev => ({ ...prev, [field]: value }));
-  };
-
-  const handleTextChange = (field: keyof JournalEntry, value: string) => {
-    setCurrentEntry(prev => ({ ...prev, [field]: value }));
-  };
 
   const generatePDF = (entry: JournalEntry) => {
     const doc = new jsPDF();
@@ -114,40 +91,24 @@ export const useJournalEntries = () => {
     return doc;
   };
 
-  const saveEntry = () => {
-    const newEntries = [...savedEntries, currentEntry];
-    setSavedEntries(newEntries);
-    localStorage.setItem(STORAGE_KEYS.wellnessEntries, JSON.stringify(newEntries));
-    
-    // Generate and download PDF
-    const pdf = generatePDF(currentEntry);
-    const fileName = `wellness-entry-${currentEntry.date}.pdf`;
-    pdf.save(fileName);
-    
-    toast({
-      title: "Entry saved! 🌟",
-      description: "Your wellness data has been recorded and PDF downloaded.",
-    });
-
-    // Reset for next entry
-    setCurrentEntry({
-      date: new Date().toISOString().split('T')[0],
-      mood: WELLNESS_DEFAULTS.mood,
-      energy: WELLNESS_DEFAULTS.energy,
-      stress: WELLNESS_DEFAULTS.stress,
-      sleep: WELLNESS_DEFAULTS.sleep,
-      recovery: WELLNESS_DEFAULTS.recovery,
-      notes: '',
-      goals: '',
-      gratitude: ''
-    });
+  const downloadPDF = (entry: JournalEntry) => {
+    try {
+      const pdf = generatePDF(entry);
+      const fileName = `wellness-entry-${entry.date}.pdf`;
+      pdf.save(fileName);
+      
+      toast({
+        title: "PDF Downloaded! 📄",
+        description: "Your wellness entry has been saved as a PDF.",
+      });
+    } catch (error) {
+      toast({
+        title: "PDF Generation Failed",
+        description: "Unable to generate PDF. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
-  return {
-    currentEntry,
-    savedEntries,
-    handleScaleChange,
-    handleTextChange,
-    saveEntry
-  };
+  return { generatePDF, downloadPDF };
 };
