@@ -659,12 +659,11 @@ const MeditationExercises = () => {
             <Button
               onClick={toggleMeditation}
               size="lg"
-              className="flex-1 px-6 py-4 text-base md:text-lg font-semibold rounded-2xl hover-lift min-h-[56px]"
-              style={{
-                background: isActive 
-                  ? 'hsl(var(--destructive))' 
-                  : `linear-gradient(135deg, hsl(var(--${selectedTechnique.color}-500)), hsl(var(--${selectedTechnique.color}-600)))`
-              }}
+              className={`flex-1 px-6 py-4 text-base md:text-lg font-semibold rounded-2xl hover-lift min-h-[56px] text-white border border-white/20 ${
+                isActive 
+                  ? 'bg-destructive hover:bg-destructive/90' 
+                  : 'bg-gradient-to-r from-primary to-primary-deep hover:from-primary/90 hover:to-primary-deep/90'
+              }`}
             >
               {isActive ? <Pause className="w-5 h-5 mr-2" /> : <Play className="w-5 h-5 mr-2" />}
               <span className="hidden sm:inline">{isActive ? 'Pause Meditation' : 'Start Meditation'}</span>
