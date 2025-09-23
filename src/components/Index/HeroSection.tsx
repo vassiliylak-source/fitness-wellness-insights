@@ -51,12 +51,6 @@ const HeroSection = () => {
           animationDelay: '0.4s'
         }}>
             <div className="glass-card flex items-center gap-2 sm:gap-3 px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-xl sm:rounded-2xl hover-lift">
-              <div className="p-1.5 sm:p-2 bg-accent/20 rounded-lg">
-                <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-accent" />
-              </div>
-              <span className="font-semibold text-foreground text-sm sm:text-base">Smart Analytics</span>
-            </div>
-            <div className="glass-card flex items-center gap-2 sm:gap-3 px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-xl sm:rounded-2xl hover-lift">
               <div className="p-1.5 sm:p-2 bg-primary/20 rounded-lg">
                 <Wind className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-primary" />
               </div>
@@ -73,6 +67,12 @@ const HeroSection = () => {
                 <Brain className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-accent" />
               </div>
               <span className="font-semibold text-foreground text-sm sm:text-base">Meditation</span>
+            </div>
+            <div className="glass-card flex items-center gap-2 sm:gap-3 px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-xl sm:rounded-2xl hover-lift">
+              <div className="p-1.5 sm:p-2 bg-accent/20 rounded-lg">
+                <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-accent" />
+              </div>
+              <span className="font-semibold text-foreground text-sm sm:text-base">Smart Analytics</span>
             </div>
           </div>
 
