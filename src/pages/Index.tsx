@@ -44,7 +44,7 @@ const Index = () => {
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black gradient-text px-4">
               Choose Your Wellness Tool
             </h2>
-            <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto px-4">Select from our suite of powerful wellness tools designed to support your journey</p>
+            
           </div>
           
           <FeatureNavigation activeFeature={activeFeature} onFeatureChange={setActiveFeature} />
