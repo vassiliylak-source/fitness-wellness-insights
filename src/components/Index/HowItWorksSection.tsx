@@ -1,28 +1,28 @@
 import { Upload, Wind, BookOpen, Camera, Brain, Sparkles } from "lucide-react";
 const HowItWorksSection = () => {
   const features = [{
-    icon: Upload,
-    title: "Screenshot Analysis",
-    description: "Upload fitness app screenshots for instant AI-powered insights on metrics, patterns, and performance",
-    color: "primary",
-    delay: "0s"
-  }, {
     icon: Wind,
     title: "Mindful Breathing",
     description: "Guided breathing exercises with visual cues to reduce stress, promote relaxation, and improve focus",
     color: "accent",
-    delay: "0.2s"
+    delay: "0s"
   }, {
     icon: BookOpen,
     title: "Wellness Journal",
     description: "Monitor your mood, energy, stress, and recovery each day. Export your entries to dive deeper into patterns",
     color: "primary-deep",
-    delay: "0.4s"
+    delay: "0.2s"
   }, {
     icon: Brain,
     title: "Meditation",
     description: "Practice guided meditation with multiple techniques including mindfulness, loving-kindness, and body scan exercises",
     color: "accent",
+    delay: "0.4s"
+  }, {
+    icon: Upload,
+    title: "Screenshot Analysis",
+    description: "Upload fitness app screenshots for instant AI-powered insights on metrics, patterns, and performance",
+    color: "primary",
     delay: "0.6s"
   }];
   return <div className="py-0">
