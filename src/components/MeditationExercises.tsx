@@ -702,29 +702,65 @@ const MeditationExercises = () => {
             <h3 className="text-lg md:text-xl font-semibold mb-4 gradient-text">
               How to Practice
             </h3>
-            <div className="space-y-2 text-muted-foreground text-sm md:text-base">
+            <div className="space-y-3">
               {selectedTechnique.id === 'mindfulness' && (
                 <>
-                  <p>• Find a comfortable seated position and close your eyes</p>
-                  <p>• Focus on your natural breath without trying to change it</p>
-                  <p>• When thoughts arise, acknowledge them without judgment and return to your breath</p>
-                  <p>• Start with short sessions and gradually increase the duration</p>
+                  <div className="flex items-center gap-3">
+                    <span className="w-2 h-2 rounded-full bg-gradient-to-r from-primary to-accent shrink-0"></span>
+                    <span className="text-sm md:text-base text-muted-foreground">Find a comfortable seated position and close your eyes</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="w-2 h-2 rounded-full bg-gradient-to-r from-primary to-accent shrink-0"></span>
+                    <span className="text-sm md:text-base text-muted-foreground">Focus on your natural breath without trying to change it</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="w-2 h-2 rounded-full bg-gradient-to-r from-primary to-accent shrink-0"></span>
+                    <span className="text-sm md:text-base text-muted-foreground">When thoughts arise, acknowledge them without judgment and return to your breath</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="w-2 h-2 rounded-full bg-gradient-to-r from-primary to-accent shrink-0"></span>
+                    <span className="text-sm md:text-base text-muted-foreground">Start with short sessions and gradually increase the duration</span>
+                  </div>
                 </>
               )}
               {selectedTechnique.id === 'loving-kindness' && (
                 <>
-                  <p>• Begin by sending loving thoughts to yourself: "May I be happy, may I be healthy"</p>
-                  <p>• Extend these wishes to loved ones, neutral people, and even difficult people</p>
-                  <p>• Visualize each person and genuinely wish them well</p>
-                  <p>• End by sending loving-kindness to all beings everywhere</p>
+                  <div className="flex items-center gap-3">
+                    <span className="w-2 h-2 rounded-full bg-gradient-to-r from-primary to-accent shrink-0"></span>
+                    <span className="text-sm md:text-base text-muted-foreground">Begin by sending loving thoughts to yourself: "May I be happy, may I be healthy"</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="w-2 h-2 rounded-full bg-gradient-to-r from-primary to-accent shrink-0"></span>
+                    <span className="text-sm md:text-base text-muted-foreground">Extend these wishes to loved ones, neutral people, and even difficult people</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="w-2 h-2 rounded-full bg-gradient-to-r from-primary to-accent shrink-0"></span>
+                    <span className="text-sm md:text-base text-muted-foreground">Visualize each person and genuinely wish them well</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="w-2 h-2 rounded-full bg-gradient-to-r from-primary to-accent shrink-0"></span>
+                    <span className="text-sm md:text-base text-muted-foreground">End by sending loving-kindness to all beings everywhere</span>
+                  </div>
                 </>
               )}
               {selectedTechnique.id === 'body-scan' && (
                 <>
-                  <p>• Lie down comfortably and close your eyes</p>
-                  <p>• Start from the top of your head and slowly move your attention down</p>
-                  <p>• Notice sensations in each body part without trying to change anything</p>
-                  <p>• Breathe into areas of tension and allow them to soften</p>
+                  <div className="flex items-center gap-3">
+                    <span className="w-2 h-2 rounded-full bg-gradient-to-r from-primary to-accent shrink-0"></span>
+                    <span className="text-sm md:text-base text-muted-foreground">Lie down comfortably and close your eyes</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="w-2 h-2 rounded-full bg-gradient-to-r from-primary to-accent shrink-0"></span>
+                    <span className="text-sm md:text-base text-muted-foreground">Start from the top of your head and slowly move your attention down</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="w-2 h-2 rounded-full bg-gradient-to-r from-primary to-accent shrink-0"></span>
+                    <span className="text-sm md:text-base text-muted-foreground">Notice sensations in each body part without trying to change anything</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="w-2 h-2 rounded-full bg-gradient-to-r from-primary to-accent shrink-0"></span>
+                    <span className="text-sm md:text-base text-muted-foreground">Breathe into areas of tension and allow them to soften</span>
+                  </div>
                 </>
               )}
             </div>
