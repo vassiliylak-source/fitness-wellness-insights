@@ -1,30 +1,49 @@
 import { Upload, Wind, BookOpen, Camera, Brain, Sparkles } from "lucide-react";
-const HowItWorksSection = () => {
+import { FeatureType } from "@/types/ui";
+
+interface HowItWorksSectionProps {
+  onFeatureSelect: (feature: FeatureType) => void;
+}
+
+const HowItWorksSection = ({ onFeatureSelect }: HowItWorksSectionProps) => {
   const features = [{
     icon: Wind,
     title: "Mindful Breathing",
     description: "Guided breathing exercises with visual cues to reduce stress, promote relaxation, and improve focus",
     color: "accent",
-    delay: "0s"
+    delay: "0s",
+    featureType: "breathing" as FeatureType
   }, {
     icon: BookOpen,
     title: "Wellness Journal",
     description: "Monitor your mood, energy, stress, and recovery each day. Export your entries to dive deeper into patterns",
     color: "primary-deep",
-    delay: "0.2s"
+    delay: "0.2s",
+    featureType: "journal" as FeatureType
   }, {
     icon: Brain,
     title: "Meditation",
     description: "Practice guided meditation with multiple techniques including mindfulness, loving-kindness, and body scan exercises",
     color: "accent",
-    delay: "0.4s"
+    delay: "0.4s",
+    featureType: "meditation" as FeatureType
   }, {
     icon: Upload,
     title: "Screenshot Analysis",
     description: "Upload fitness app screenshots for instant AI-powered insights on metrics, patterns, and performance",
     color: "primary",
-    delay: "0.6s"
+    delay: "0.6s",
+    featureType: "screenshot" as FeatureType
   }];
+
+  const handleFeatureClick = (featureType: FeatureType) => {
+    onFeatureSelect(featureType);
+    // Smooth scroll to the feature section
+    const featureSection = document.getElementById('feature-section');
+    if (featureSection) {
+      featureSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
   return <div className="py-0">
       <div className="text-center mb-20 space-y-6">
         <div className="inline-flex items-center gap-2 px-6 py-3 glass-card rounded-2xl mb-6">
@@ -46,9 +65,13 @@ const HowItWorksSection = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-12">
         {features.map((feature, index) => {
         const Icon = feature.icon;
-        return <div key={feature.title} className="card-feature text-center space-y-6 animate-fade-in" style={{
-          animationDelay: feature.delay
-        }}>
+        return <div key={feature.title} 
+          className="card-feature text-center space-y-6 animate-fade-in cursor-pointer hover:scale-105 transition-all duration-300" 
+          style={{
+            animationDelay: feature.delay
+          }}
+          onClick={() => handleFeatureClick(feature.featureType)}
+        >
               <div className="flex justify-center">
                 <div className="feature-icon neon-glow-primary">
                   <Icon className="h-8 w-8 text-primary-foreground" />

@@ -29,7 +29,7 @@ const Index = () => {
 
       {/* How It Works Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <HowItWorksSection />
+        <HowItWorksSection onFeatureSelect={setActiveFeature} />
       </div>
 
       {/* Health Disclaimer */}
@@ -38,7 +38,7 @@ const Index = () => {
       </div>
 
       {/* Feature Selection and Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20 sm:py-[20px]">
+      <div id="feature-section" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20 sm:py-[20px]">
         <div className="space-y-8 sm:space-y-12">
           <div className="text-center space-y-4 mb-12 sm:mb-16">
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black gradient-text px-4">
