@@ -86,13 +86,6 @@ const HowItWorksSection = ({ onFeatureSelect }: HowItWorksSectionProps) => {
                   {feature.description}
                 </p>
               </div>
-
-              {/* Feature number badge */}
-              <div className="flex justify-center">
-                <div className="w-12 h-12 rounded-2xl glass-card flex items-center justify-center">
-                  <span className="text-lg font-bold gradient-text">{index + 1}</span>
-                </div>
-              </div>
             </div>;
       })}
       </div>
