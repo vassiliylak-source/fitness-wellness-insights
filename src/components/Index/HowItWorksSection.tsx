@@ -46,7 +46,7 @@ const HowItWorksSection = ({ onFeatureSelect }: HowItWorksSectionProps) => {
   };
   return <div className="py-0">
       <div className="text-center mb-20 space-y-6">
-        <div className="inline-flex items-center gap-2 px-6 py-3 glass-card rounded-2xl mb-6">
+        <div className="inline-flex items-center gap-3 px-8 py-4 glass-card rounded-2xl mb-8">
           <Sparkles className="h-5 w-5 text-primary" />
           <span className="font-semibold text-muted-foreground">Complete Wellness Platform</span>
         </div>
