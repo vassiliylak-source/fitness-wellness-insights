@@ -37,7 +37,7 @@ const MEDITATION_TECHNIQUES: MeditationTechnique[] = [
     id: 'mindfulness',
     name: 'Mindfulness Meditation',
     description: 'Focus on the present moment and observe your thoughts without judgment.',
-    duration: 300, // 5 minutes
+    duration: 900, // 15 minutes
     benefits: ['Reduces stress', 'Improves focus', 'Enhances self-awareness'],
     color: 'emerald',
     icon: Brain,
