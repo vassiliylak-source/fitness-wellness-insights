@@ -25,7 +25,7 @@ const Index = () => {
       <div className="fixed top-4 right-4 z-50">
         <ThemeToggle />
       </div>
-      <HeroSection />
+      <HeroSection onFeatureSelect={setActiveFeature} />
 
       {/* How It Works Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

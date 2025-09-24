@@ -1,5 +1,19 @@
 import { Activity, Wind, BookOpen, TrendingUp, Sparkles, Heart, Zap, Brain } from "lucide-react";
-const HeroSection = () => {
+import { FeatureType } from "@/types/ui";
+
+interface HeroSectionProps {
+  onFeatureSelect: (feature: FeatureType) => void;
+}
+
+const HeroSection = ({ onFeatureSelect }: HeroSectionProps) => {
+  const handleFeatureClick = (featureType: FeatureType) => {
+    onFeatureSelect(featureType);
+    // Smooth scroll to the feature section
+    const featureSection = document.getElementById('feature-section');
+    if (featureSection) {
+      featureSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
   return <div className="relative overflow-hidden min-h-screen flex items-center">
       {/* Enhanced gradient background with patterns */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/15 via-accent/10 to-primary-glow/20"></div>
@@ -50,25 +64,37 @@ const HeroSection = () => {
           <div className="flex flex-wrap justify-center gap-3 sm:gap-4 md:gap-6 mb-8 sm:mb-12 animate-fade-in px-4" style={{
           animationDelay: '0.4s'
         }}>
-            <div className="glass-card flex items-center gap-2 sm:gap-3 px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-xl sm:rounded-2xl hover-lift">
+            <div 
+              className="glass-card flex items-center gap-2 sm:gap-3 px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-xl sm:rounded-2xl hover-lift cursor-pointer hover:scale-105 transition-all duration-300"
+              onClick={() => handleFeatureClick('breathing')}
+            >
               <div className="p-1.5 sm:p-2 bg-primary/20 rounded-lg">
                 <Wind className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-primary" />
               </div>
               <span className="font-semibold text-foreground text-sm sm:text-base">Breathing</span>
             </div>
-            <div className="glass-card flex items-center gap-2 sm:gap-3 px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-xl sm:rounded-2xl hover-lift">
+            <div 
+              className="glass-card flex items-center gap-2 sm:gap-3 px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-xl sm:rounded-2xl hover-lift cursor-pointer hover:scale-105 transition-all duration-300"
+              onClick={() => handleFeatureClick('journal')}
+            >
               <div className="p-1.5 sm:p-2 bg-primary-glow/30 rounded-lg">
                 <BookOpen className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-primary-deep" />
               </div>
               <span className="font-semibold text-foreground text-sm sm:text-base">Journal</span>
             </div>
-            <div className="glass-card flex items-center gap-2 sm:gap-3 px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-xl sm:rounded-2xl hover-lift">
+            <div 
+              className="glass-card flex items-center gap-2 sm:gap-3 px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-xl sm:rounded-2xl hover-lift cursor-pointer hover:scale-105 transition-all duration-300"
+              onClick={() => handleFeatureClick('meditation')}
+            >
               <div className="p-1.5 sm:p-2 bg-accent/30 rounded-lg">
                 <Brain className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-accent" />
               </div>
               <span className="font-semibold text-foreground text-sm sm:text-base">Meditation</span>
             </div>
-            <div className="glass-card flex items-center gap-2 sm:gap-3 px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-xl sm:rounded-2xl hover-lift">
+            <div 
+              className="glass-card flex items-center gap-2 sm:gap-3 px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-xl sm:rounded-2xl hover-lift cursor-pointer hover:scale-105 transition-all duration-300"
+              onClick={() => handleFeatureClick('screenshot')}
+            >
               <div className="p-1.5 sm:p-2 bg-accent/20 rounded-lg">
                 <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-accent" />
               </div>
