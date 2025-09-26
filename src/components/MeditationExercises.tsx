@@ -80,43 +80,63 @@ const MeditationExercises = () => {
   const oscillatorsRef = useRef<(OscillatorNode | AudioBufferSourceNode)[]>([]);
   const intervalsRef = useRef<NodeJS.Timeout[]>([]);
 
-  // Initialize audio context
+  // Initialize audio context with Safari compatibility
   const initializeAudio = useCallback(async () => {
     try {
-      if (!audioContextRef.current) {
-        audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+      // Always create a new audio context for Safari compatibility
+      if (!audioContextRef.current || audioContextRef.current.state === 'closed') {
+        // Use webkit prefix for Safari compatibility
+        const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+        audioContextRef.current = new AudioContextClass();
+        
+        // Create gain node
         gainNodeRef.current = audioContextRef.current.createGain();
         gainNodeRef.current.connect(audioContextRef.current.destination);
-        gainNodeRef.current.gain.value = volume[0];
+        gainNodeRef.current.gain.value = isMuted ? 0 : volume[0];
       }
       
-      // Resume audio context if suspended (required for mobile browsers)
+      // Resume audio context if suspended (critical for Safari)
       if (audioContextRef.current.state === 'suspended') {
         await audioContextRef.current.resume();
+        // Wait a bit for Safari to fully resume
+        await new Promise(resolve => setTimeout(resolve, 100));
       }
+      
+      // Verify audio context is running
+      if (audioContextRef.current.state !== 'running') {
+        throw new Error('Audio context failed to start');
+      }
+      
+      return true;
     } catch (error) {
       console.error('Error initializing audio:', error);
+      return false;
     }
-  }, [volume]);
+  }, [volume, isMuted]);
 
-  // Generate different types of meditation sounds
+  // Generate different types of meditation sounds with Safari compatibility
   const generateSound = useCallback(async (soundType: string) => {
-    if (!audioContextRef.current || !gainNodeRef.current) return;
+    if (!audioContextRef.current || !gainNodeRef.current) {
+      console.error('Audio context not initialized');
+      return false;
+    }
     
-    // Check if audio context is running (important for mobile)
+    // Ensure audio context is running (critical for Safari)
     if (audioContextRef.current.state !== 'running') {
       try {
         await audioContextRef.current.resume();
+        // Give Safari time to properly resume
+        await new Promise(resolve => setTimeout(resolve, 100));
       } catch (error) {
         console.error('Failed to resume audio context:', error);
-        return;
+        return false;
       }
     }
 
     // Stop existing sounds
     stopSound();
 
-    if (soundType === 'none') return;
+    if (soundType === 'none') return true;
 
     const context = audioContextRef.current;
     const gainNode = gainNodeRef.current;
@@ -146,7 +166,7 @@ const MeditationExercises = () => {
         filter.connect(gainNode);
         whiteNoiseSource.start();
         sourceRef.current = whiteNoiseSource;
-        break;
+        return true;
 
       case 'ocean':
         // Realistic ocean waves with multiple layers
@@ -204,7 +224,7 @@ const MeditationExercises = () => {
         
         intervalsRef.current.push(crashInterval);
         oscillatorsRef.current = [waveSource];
-        break;
+        return true;
 
       case 'rain':
         // Multi-layered realistic rain
@@ -244,7 +264,7 @@ const MeditationExercises = () => {
         }
         
         oscillatorsRef.current = rainLayers;
-        break;
+        return true;
 
       case 'forest':
         // Rich forest ambience with birds, wind, and rustling
@@ -324,7 +344,7 @@ const MeditationExercises = () => {
         setTimeout(createBirdSong, 1000);
         
         oscillatorsRef.current = forestSounds;
-        break;
+        return true;
 
       case 'bowl':
         // Realistic singing bowl with harmonics
@@ -370,9 +390,13 @@ const MeditationExercises = () => {
         }, 15000);
         
         intervalsRef.current.push(bowlInterval);
+        return true;
         
-        break;
+      default:
+        return false;
     }
+    
+    return true;
   }, [isActive, selectedSound]);
 
   const stopSound = useCallback(() => {
@@ -445,18 +469,29 @@ const MeditationExercises = () => {
   const toggleMeditation = async () => {
     if (!isActive) {
       try {
-        await initializeAudio();
-        // Ensure audio context is running before generating sound
-        if (audioContextRef.current && audioContextRef.current.state === 'running') {
-          await generateSound(selectedSound);
+        // Initialize audio with user gesture (required for Safari)
+        const initialized = await initializeAudio();
+        if (!initialized) {
+          console.error('Failed to initialize audio');
+          return;
         }
+        
+        // Generate sound after successful initialization
+        const soundStarted = await generateSound(selectedSound);
+        if (!soundStarted && selectedSound !== 'none') {
+          console.warn('Sound failed to start, continuing with silent meditation');
+        }
+        
+        setIsActive(true);
       } catch (error) {
         console.error('Error starting meditation audio:', error);
+        // Still allow meditation to start even if audio fails
+        setIsActive(true);
       }
     } else {
       stopSound();
+      setIsActive(false);
     }
-    setIsActive(!isActive);
   };
 
   const resetMeditation = () => {
@@ -482,8 +517,9 @@ const MeditationExercises = () => {
     setSelectedSound(soundId);
     if (isActive) {
       try {
-        await initializeAudio(); // Ensure audio context is ready
-        if (audioContextRef.current && audioContextRef.current.state === 'running') {
+        // Ensure audio context is ready
+        const initialized = await initializeAudio();
+        if (initialized) {
           await generateSound(soundId);
         }
       } catch (error) {
