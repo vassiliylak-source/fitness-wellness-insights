@@ -13,6 +13,7 @@ import HealthDisclaimer from "@/components/Index/HealthDisclaimer";
 import Footer from "@/components/layout/Footer";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { ScreenshotAnalysisProvider } from "@/contexts/ScreenshotAnalysisContext";
+import { WellnessProvider } from "@/contexts/WellnessContext";
 const Index = () => {
   const [activeFeature, setActiveFeature] = useState<FeatureType>('breathing');
   
@@ -62,9 +63,11 @@ const Index = () => {
             {activeFeature === 'breathing' && <div className="card-modern">
                 <BreathingExercises />
               </div>}
-            {activeFeature === 'journal' && <div className="card-modern">
-                <WellnessJournal />
-              </div>}
+            {activeFeature === 'journal' && <WellnessProvider>
+                <div className="card-modern">
+                  <WellnessJournal />
+                </div>
+              </WellnessProvider>}
             {activeFeature === 'meditation' && <div className="card-modern">
                 <MeditationExercises />
               </div>}
