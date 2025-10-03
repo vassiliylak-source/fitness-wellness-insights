@@ -2,17 +2,18 @@ import { Brain, Sparkles, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useFitnessAnalysis } from "@/hooks/useFitnessAnalysis";
 import { useScreenshotAnalysis } from "@/contexts/ScreenshotAnalysisContext";
-
 const AiInsightsCard = () => {
-  const { analysisResult } = useScreenshotAnalysis();
-  const { isAnalyzing, analyzeWithAI } = useFitnessAnalysis();
-
+  const {
+    analysisResult
+  } = useScreenshotAnalysis();
+  const {
+    isAnalyzing,
+    analyzeWithAI
+  } = useFitnessAnalysis();
   const handleAnalyze = () => {
     analyzeWithAI(analysisResult);
   };
-
-  return (
-    <div className="card-feature relative overflow-hidden animate-fade-in">
+  return <div className="card-feature relative overflow-hidden animate-fade-in">
       {/* Background gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-accent/5 to-primary-deep/10 rounded-3xl"></div>
       
@@ -22,7 +23,9 @@ const AiInsightsCard = () => {
           <div className="relative feature-icon p-6 pulse-glow">
             <Brain className="h-16 w-16 text-primary-foreground" />
             <Sparkles className="absolute -top-2 -right-2 h-6 w-6 text-accent animate-pulse" />
-            <div className="absolute -bottom-1 -left-1 w-4 h-4 bg-primary rounded-full animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+            <div className="absolute -bottom-1 -left-1 w-4 h-4 bg-primary rounded-full animate-pulse" style={{
+            animationDelay: '0.5s'
+          }}></div>
           </div>
         </div>
         
@@ -37,34 +40,25 @@ const AiInsightsCard = () => {
         </div>
         
         {/* Enhanced CTA button */}
-        <div className="flex justify-center pt-4">
-          <Button
-            onClick={handleAnalyze}
-            disabled={isAnalyzing || !analysisResult?.fitnessData}
-            className="btn-primary text-xl px-12 py-5 hover-lift inline-flex items-center gap-4"
-          >
-            <Brain className="h-6 w-6" />
-            {isAnalyzing ? "Analyzing..." : "Get AI Insights"}
-            {!isAnalyzing && <Zap className="h-5 w-5 animate-pulse" />}
-          </Button>
-        </div>
+        
 
         {/* Feature highlights */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-8">
-          {[
-            { icon: '🔍', label: 'Deep Analysis' },
-            { icon: '📊', label: 'Pattern Recognition' },
-            { icon: '💡', label: 'Smart Recommendations' }
-          ].map((feature, index) => (
-            <div key={feature.label} className="glass-card p-4 rounded-2xl hover-lift">
+          {[{
+          icon: '🔍',
+          label: 'Deep Analysis'
+        }, {
+          icon: '📊',
+          label: 'Pattern Recognition'
+        }, {
+          icon: '💡',
+          label: 'Smart Recommendations'
+        }].map((feature, index) => <div key={feature.label} className="glass-card p-4 rounded-2xl hover-lift">
               <div className="text-2xl mb-2">{feature.icon}</div>
               <div className="text-sm font-semibold text-muted-foreground">{feature.label}</div>
-            </div>
-          ))}
+            </div>)}
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default AiInsightsCard;
