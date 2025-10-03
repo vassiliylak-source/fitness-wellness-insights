@@ -12,15 +12,20 @@ import SupportSection from "@/components/Index/SupportSection";
 import HealthDisclaimer from "@/components/Index/HealthDisclaimer";
 import Footer from "@/components/layout/Footer";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { ScreenshotAnalysisProvider } from "@/contexts/ScreenshotAnalysisContext";
 const Index = () => {
   const [activeFeature, setActiveFeature] = useState<FeatureType>('breathing');
+  
   const renderScreenshotContent = () => {
-    return <div className="space-y-8">
-        <AiInsightsCard />
-        <MetricsOverview />
-        <SupportSection />
-      </div>;
+    return <ScreenshotAnalysisProvider>
+        <div className="space-y-8">
+          <AiInsightsCard />
+          <MetricsOverview />
+          <SupportSection />
+        </div>
+      </ScreenshotAnalysisProvider>;
   };
+  
   return <div className="min-h-screen">
       <div className="fixed top-4 right-4 z-50">
         <ThemeToggle />

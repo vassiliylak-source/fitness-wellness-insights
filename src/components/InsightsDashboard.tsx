@@ -5,17 +5,15 @@ import {
   Heart, 
   Activity, 
   TrendingUp, 
-  TrendingDown, 
   Clock, 
   Zap, 
   Target,
-  AlertTriangle,
   CheckCircle,
-  Moon,
-  Upload
+  Upload,
+  Sparkles
 } from "lucide-react";
-
 import { ImageAnalysisResult } from "@/services/imageAnalysis";
+import { useFitnessAnalysis } from "@/hooks/useFitnessAnalysis";
 
 interface InsightsDashboardProps {
   uploadedImage: string | null;
@@ -23,7 +21,7 @@ interface InsightsDashboardProps {
 }
 
 const InsightsDashboard = ({ uploadedImage, analysisResult }: InsightsDashboardProps) => {
-  // Use real data from OCR analysis when available, fallback to mock data
+  const { aiInsights } = useFitnessAnalysis();
   const fitnessData = analysisResult?.fitnessData;
   
   // Enhanced mock data with real OCR data integration
@@ -221,12 +219,32 @@ const InsightsDashboard = ({ uploadedImage, analysisResult }: InsightsDashboardP
         </div>
       )}
 
+      {/* AI Insights Section */}
+      {aiInsights && (
+        <Card className="bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-purple-600" />
+              AI-Powered Insights
+            </CardTitle>
+            <CardDescription>
+              Personalized analysis from free AI
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="prose prose-sm max-w-none">
+              <div className="whitespace-pre-wrap text-gray-700">{aiInsights}</div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Detailed Recommendations */}
       <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <TrendingUp className="h-5 w-5 text-blue-600" />
-            {fitnessData ? 'Personalized Recommendations' : 'Sample Recommendations'}
+            {fitnessData ? 'Quick Tips' : 'Getting Started'}
           </CardTitle>
           <CardDescription>
             {fitnessData 
@@ -238,7 +256,6 @@ const InsightsDashboard = ({ uploadedImage, analysisResult }: InsightsDashboardP
         <CardContent>
           <div className="space-y-4">
             {fitnessData ? (
-              // Real recommendations based on detected data
               <>
                 {fitnessData.steps && (
                   <div className="flex items-start gap-3 p-4 bg-white rounded-lg">
@@ -292,7 +309,6 @@ const InsightsDashboard = ({ uploadedImage, analysisResult }: InsightsDashboardP
                 )}
               </>
             ) : (
-              // Default recommendations when no real data available
               <>
                 <div className="flex items-start gap-3 p-4 bg-white rounded-lg">
                   <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
@@ -319,18 +335,6 @@ const InsightsDashboard = ({ uploadedImage, analysisResult }: InsightsDashboardP
                 </div>
               </>
             )}
-          </div>
-          
-          {/* More AI Insights Link */}
-          <div className="flex justify-center mt-6 pt-4 border-t border-gray-200">
-            <a 
-              href="https://chatgpt.com/g/g-67c6e2ead288819186d3be7d91466783-fitness-sleep-metrics-insights" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"
-            >
-              🧠 Get More AI Insights
-            </a>
           </div>
         </CardContent>
       </Card>

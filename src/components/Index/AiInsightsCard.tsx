@@ -1,8 +1,16 @@
 import { Brain, Sparkles, Zap } from "lucide-react";
-import ExternalLink from "@/components/common/ExternalLink";
-import { EXTERNAL_URLS } from "@/constants";
+import { Button } from "@/components/ui/button";
+import { useFitnessAnalysis } from "@/hooks/useFitnessAnalysis";
+import { useScreenshotAnalysis } from "@/contexts/ScreenshotAnalysisContext";
 
 const AiInsightsCard = () => {
+  const { analysisResult } = useScreenshotAnalysis();
+  const { isAnalyzing, analyzeWithAI } = useFitnessAnalysis();
+
+  const handleAnalyze = () => {
+    analyzeWithAI(analysisResult);
+  };
+
   return (
     <div className="card-feature relative overflow-hidden animate-fade-in">
       {/* Background gradient overlay */}
@@ -30,14 +38,15 @@ const AiInsightsCard = () => {
         
         {/* Enhanced CTA button */}
         <div className="flex justify-center pt-4">
-          <ExternalLink 
-            href={EXTERNAL_URLS.aiInsights}
+          <Button
+            onClick={handleAnalyze}
+            disabled={isAnalyzing || !analysisResult?.fitnessData}
             className="btn-primary text-xl px-12 py-5 hover-lift inline-flex items-center gap-4"
           >
             <Brain className="h-6 w-6" />
-            Get AI Insights
-            <Zap className="h-5 w-5 animate-pulse" />
-          </ExternalLink>
+            {isAnalyzing ? "Analyzing..." : "Get AI Insights"}
+            {!isAnalyzing && <Zap className="h-5 w-5 animate-pulse" />}
+          </Button>
         </div>
 
         {/* Feature highlights */}

@@ -1,0 +1,4 @@
+project_id = "xworaiuvlcvipzkurjun"
+
+[functions.analyze-fitness]
+verify_jwt = false
