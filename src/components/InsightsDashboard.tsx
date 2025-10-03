@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { ImageAnalysisResult } from "@/services/imageAnalysis";
 import { useFitnessAnalysis } from "@/hooks/useFitnessAnalysis";
+import FitnessChat from "@/components/FitnessChat";
 
 interface InsightsDashboardProps {
   uploadedImage: string | null;
@@ -338,6 +339,11 @@ const InsightsDashboard = ({ uploadedImage, analysisResult }: InsightsDashboardP
           </div>
         </CardContent>
       </Card>
+
+      {/* Chat Section - only show if there's fitness data */}
+      {fitnessData && (
+        <FitnessChat fitnessData={fitnessData} />
+      )}
     </div>
   );
 };
