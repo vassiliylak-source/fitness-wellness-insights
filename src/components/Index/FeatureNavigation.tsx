@@ -18,9 +18,9 @@ const FeatureNavigation = ({
   ];
 
   return (
-    <div className="flex justify-center mb-16">
+    <nav className="flex justify-center mb-16" aria-label="Wellness tools navigation">
       <div className="nav-modern p-2 animate-fade-in">
-        <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
+        <div className="flex flex-wrap justify-center gap-2 sm:gap-3" role="tablist">
           {features.map((feature) => {
             const Icon = feature.icon;
             const isActive = activeFeature === feature.id;
@@ -30,6 +30,10 @@ const FeatureNavigation = ({
                 key={feature.id}
                 onClick={() => onFeatureChange(feature.id)}
                 variant={isActive ? 'default' : 'ghost'}
+                role="tab"
+                aria-selected={isActive}
+                aria-controls={`${feature.id}-panel`}
+                aria-label={`Switch to ${feature.label} tool`}
                 className={`
                   flex items-center gap-2 sm:gap-3 px-3 sm:px-4 md:px-6 py-2 sm:py-3 md:py-4 
                   text-sm sm:text-base md:text-lg font-semibold rounded-xl sm:rounded-2xl 
@@ -57,7 +61,7 @@ const FeatureNavigation = ({
           })}
         </div>
       </div>
-    </div>
+    </nav>
   );
 };
 export default FeatureNavigation;

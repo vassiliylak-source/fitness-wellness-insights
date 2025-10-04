@@ -58,6 +58,9 @@ const HeroSection = ({ onFeatureSelect }: HeroSectionProps) => {
           </h1>
           
           {/* Enhanced subtitle */}
+          <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed px-4 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+            AI-powered fitness insights, guided mindfulness, and wellness tracking - all in one place
+          </p>
           
           
           {/* Feature badges with enhanced styling */}

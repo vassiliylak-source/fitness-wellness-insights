@@ -46,11 +46,11 @@ const HowItWorksSection = ({
       });
     }
   };
-  return <div className="py-0">
-      <div className="text-center mb-20 space-y-6">
+  return <section className="py-0" aria-labelledby="features-heading">
+      <header className="text-center mb-20 space-y-6">
         
         
-        <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-6">
+        <h2 id="features-heading" className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-6">
           <span className="gradient-text">Everything You Need</span>
           <br />
           <span className="text-foreground">For Total Wellness</span>
@@ -59,16 +59,16 @@ const HowItWorksSection = ({
         <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed px-4">
           Four powerful tools working together to transform your health journey through technology and mindfulness.
         </p>
-      </div>
+      </header>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-12">
         {features.map((feature, index) => {
         const Icon = feature.icon;
-        return <div key={feature.title} className="card-feature text-center space-y-6 animate-fade-in cursor-pointer hover:scale-105 transition-all duration-300" style={{
+        return <article key={feature.title} className="card-feature text-center space-y-6 animate-fade-in cursor-pointer hover:scale-105 transition-all duration-300" style={{
           animationDelay: feature.delay
         }} onClick={() => handleFeatureClick(feature.featureType)}>
               <div className="flex justify-center">
-                <div className="feature-icon neon-glow-primary">
+                <div className="feature-icon neon-glow-primary" aria-hidden="true">
                   <Icon className="h-8 w-8 text-primary-foreground" />
                 </div>
               </div>
@@ -81,7 +81,7 @@ const HowItWorksSection = ({
                   {feature.description}
                 </p>
               </div>
-            </div>;
+            </article>;
       })}
       </div>
 
@@ -93,6 +93,6 @@ const HowItWorksSection = ({
           Ready to start your transformation?
         </h3>
       </div>
-    </div>;
+    </section>;
 };
 export default HowItWorksSection;
