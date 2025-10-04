@@ -347,47 +347,54 @@ const MeditationExercises = () => {
         return true;
 
       case 'bowl':
-        // Realistic singing bowl with harmonics
+        // Realistic singing bowl with harmonics - plays continuously
         const fundamentalFreq = 200;
         const harmonics = [1, 2.1, 3.1, 4.2, 5.3]; // Realistic harmonic ratios
         
-        harmonics.forEach((harmonic, index) => {
-          const osc = context.createOscillator();
-          const oscGain = context.createGain();
-          const envelope = context.createGain();
-          const filter = context.createBiquadFilter();
+        const playBowlSound = () => {
+          if (!audioContextRef.current || !gainNodeRef.current) return;
+          if (!isActive || selectedSound !== 'bowl') return;
           
-          osc.type = 'sine';
-          osc.frequency.value = fundamentalFreq * harmonic;
-          filter.type = 'peaking';
-          filter.frequency.value = fundamentalFreq * harmonic;
-          filter.Q.value = 5;
-          filter.gain.value = 3;
+          const ctx = audioContextRef.current;
+          const gn = gainNodeRef.current;
           
-          const amplitude = 1 / (index + 1); // Decreasing amplitude for higher harmonics
-          oscGain.gain.value = amplitude * 0.15;
-          envelope.gain.value = 0;
-          
-          envelope.gain.setValueAtTime(0, context.currentTime);
-          envelope.gain.linearRampToValueAtTime(1, context.currentTime + 0.1);
-          envelope.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 12);
-          
-          osc.connect(filter);
-          filter.connect(oscGain);
-          oscGain.connect(envelope);
-          envelope.connect(gainNode);
-          osc.start();
-          osc.stop(context.currentTime + 12);
-        });
+          harmonics.forEach((harmonic, index) => {
+            const osc = ctx.createOscillator();
+            const oscGain = ctx.createGain();
+            const envelope = ctx.createGain();
+            const filter = ctx.createBiquadFilter();
+            
+            osc.type = 'sine';
+            osc.frequency.value = fundamentalFreq * harmonic;
+            filter.type = 'peaking';
+            filter.frequency.value = fundamentalFreq * harmonic;
+            filter.Q.value = 5;
+            filter.gain.value = 3;
+            
+            const amplitude = 1 / (index + 1); // Decreasing amplitude for higher harmonics
+            oscGain.gain.value = amplitude * 0.15;
+            envelope.gain.value = 0;
+            
+            envelope.gain.setValueAtTime(0, ctx.currentTime);
+            envelope.gain.linearRampToValueAtTime(1, ctx.currentTime + 0.1);
+            envelope.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 10);
+            
+            osc.connect(filter);
+            filter.connect(oscGain);
+            oscGain.connect(envelope);
+            envelope.connect(gn);
+            osc.start();
+            osc.stop(ctx.currentTime + 10);
+          });
+        };
         
-        // Repeat singing bowl
+        // Play initial bowl sound
+        playBowlSound();
+        
+        // Repeat singing bowl every 12 seconds continuously
         const bowlInterval = setInterval(() => {
-          if (isActive && selectedSound === 'bowl') {
-            generateSound('bowl');
-          } else {
-            clearInterval(bowlInterval);
-          }
-        }, 15000);
+          playBowlSound();
+        }, 12000);
         
         intervalsRef.current.push(bowlInterval);
         return true;
