@@ -347,13 +347,12 @@ const MeditationExercises = () => {
         return true;
 
       case 'bowl':
-        // Realistic singing bowl with harmonics - plays continuously
+        // Realistic singing bowl with harmonics - loops continuously
         const fundamentalFreq = 200;
         const harmonics = [1, 2.1, 3.1, 4.2, 5.3]; // Realistic harmonic ratios
         
         const playBowlSound = () => {
           if (!audioContextRef.current || !gainNodeRef.current) return;
-          if (!isActive || selectedSound !== 'bowl') return;
           
           const ctx = audioContextRef.current;
           const gn = gainNodeRef.current;
@@ -391,10 +390,8 @@ const MeditationExercises = () => {
         // Play initial bowl sound
         playBowlSound();
         
-        // Repeat singing bowl every 12 seconds continuously
-        const bowlInterval = setInterval(() => {
-          playBowlSound();
-        }, 12000);
+        // Loop singing bowl every 12 seconds until meditation stops
+        const bowlInterval = setInterval(playBowlSound, 12000);
         
         intervalsRef.current.push(bowlInterval);
         return true;
