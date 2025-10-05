@@ -27,7 +27,6 @@ const SOUND_OPTIONS: SoundOption[] = [
   { id: 'none', name: 'None', description: 'Silent meditation' },
   { id: 'rain', name: 'Rain', description: 'Gentle rainfall sounds' },
   { id: 'ocean', name: 'Ocean Waves', description: 'Peaceful ocean waves' },
-  { id: 'forest', name: 'Forest', description: 'Birds and rustling leaves' },
   { id: 'bowl', name: 'Singing Bowl', description: 'Tibetan singing bowl tones' },
   { id: 'white-noise', name: 'White Noise', description: 'Calming white noise' },
 ];
@@ -41,7 +40,7 @@ const MEDITATION_TECHNIQUES: MeditationTechnique[] = [
     benefits: ['Reduces stress', 'Improves focus', 'Enhances self-awareness'],
     color: 'emerald',
     icon: Brain,
-    soundType: 'forest'
+    soundType: 'rain'
   },
   {
     id: 'loving-kindness',
@@ -266,85 +265,6 @@ const MeditationExercises = () => {
         oscillatorsRef.current = rainLayers;
         return true;
 
-      case 'forest':
-        // Rich forest ambience with birds, wind, and rustling
-        const forestSounds = [];
-        
-        // Wind through trees (base ambience)
-        const windBufferSize = context.sampleRate * 6;
-        const windBuffer = context.createBuffer(2, windBufferSize, context.sampleRate);
-        
-        for (let channel = 0; channel < 2; channel++) {
-          const output = windBuffer.getChannelData(channel);
-          for (let i = 0; i < windBufferSize; i++) {
-            const wind = Math.sin(i * 0.0001) * (Math.random() * 2 - 1) * 0.1;
-            output[i] = wind;
-          }
-        }
-        
-        const windSource = context.createBufferSource();
-        const windFilter = context.createBiquadFilter();
-        windFilter.type = 'lowpass';
-        windFilter.frequency.value = 300;
-        
-        windSource.buffer = windBuffer;
-        windSource.loop = true;
-        windSource.connect(windFilter);
-        windFilter.connect(gainNode);
-        windSource.start();
-        forestSounds.push(windSource);
-        
-        // Bird songs with more variety
-        const birdFrequencies = [
-          [220, 440, 330], [880, 1100, 990], [550, 770, 660], 
-          [1320, 1100, 1210], [330, 220, 275]
-        ];
-        
-        const createBirdSong = () => {
-          if (!isActive || selectedSound !== 'forest') return;
-          
-          const songPattern = birdFrequencies[Math.floor(Math.random() * birdFrequencies.length)];
-          
-          songPattern.forEach((freq, noteIndex) => {
-            setTimeout(() => {
-              if (!context || !gainNode) return;
-              
-              const osc = context.createOscillator();
-              const oscGain = context.createGain();
-              const envelope = context.createGain();
-              const filter = context.createBiquadFilter();
-              
-              osc.type = 'sine';
-              osc.frequency.value = freq + Math.random() * 50 - 25;
-              filter.type = 'bandpass';
-              filter.frequency.value = freq;
-              filter.Q.value = 10;
-              
-              oscGain.gain.value = 0.05 + Math.random() * 0.03;
-              envelope.gain.value = 0;
-              
-              envelope.gain.setValueAtTime(0, context.currentTime);
-              envelope.gain.linearRampToValueAtTime(1, context.currentTime + 0.05);
-              envelope.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 0.3 + Math.random() * 0.4);
-              
-              osc.connect(filter);
-              filter.connect(oscGain);
-              oscGain.connect(envelope);
-              envelope.connect(gainNode);
-              osc.start();
-              osc.stop(context.currentTime + 0.8);
-            }, noteIndex * 150 + Math.random() * 100);
-          });
-          
-          // Schedule next bird song
-          setTimeout(createBirdSong, 3000 + Math.random() * 8000);
-        };
-        
-        // Start bird sounds after a delay
-        setTimeout(createBirdSong, 1000);
-        
-        oscillatorsRef.current = forestSounds;
-        return true;
 
       case 'bowl':
         // Realistic singing bowl with harmonics - loops continuously
