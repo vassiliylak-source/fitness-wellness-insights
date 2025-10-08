@@ -1,11 +1,14 @@
 import { Activity, Wind, BookOpen, TrendingUp, Sparkles, Heart, Zap, Brain } from "lucide-react";
 import { FeatureType } from "@/types/ui";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface HeroSectionProps {
   onFeatureSelect: (feature: FeatureType) => void;
 }
 
 const HeroSection = ({ onFeatureSelect }: HeroSectionProps) => {
+  const { t } = useLanguage();
+  
   const handleFeatureClick = (featureType: FeatureType) => {
     onFeatureSelect(featureType);
     // Smooth scroll to the feature section
@@ -53,13 +56,12 @@ const HeroSection = ({ onFeatureSelect }: HeroSectionProps) => {
           
           {/* Enhanced hero title */}
           <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-8xl font-black leading-tight animate-fade-in">
-            <span className="gradient-text block mb-2 sm:mb-4">Transform Your</span>
-            <span className="gradient-text-secondary">Wellness Journey</span>
+            <span className="gradient-text block mb-2 sm:mb-4">{t('hero.title')}</span>
           </h1>
           
           {/* Enhanced subtitle */}
           <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed px-4 animate-fade-in" style={{ animationDelay: '0.2s' }}>
-            AI-powered fitness insights, guided mindfulness, and wellness tracking - all in one place
+            {t('hero.subtitle')}
           </p>
           
           
@@ -74,7 +76,7 @@ const HeroSection = ({ onFeatureSelect }: HeroSectionProps) => {
               <div className="p-1.5 sm:p-2 bg-primary/20 rounded-lg">
                 <Wind className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-primary" />
               </div>
-              <span className="font-semibold text-foreground text-sm sm:text-base">Breathing</span>
+              <span className="font-semibold text-foreground text-sm sm:text-base">{t('features.breathing')}</span>
             </div>
             <div 
               className="glass-card flex items-center gap-2 sm:gap-3 px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-xl sm:rounded-2xl hover-lift cursor-pointer hover:scale-105 transition-all duration-300"
@@ -83,7 +85,7 @@ const HeroSection = ({ onFeatureSelect }: HeroSectionProps) => {
               <div className="p-1.5 sm:p-2 bg-primary-glow/30 rounded-lg">
                 <BookOpen className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-primary-deep" />
               </div>
-              <span className="font-semibold text-foreground text-sm sm:text-base">Journal</span>
+              <span className="font-semibold text-foreground text-sm sm:text-base">{t('features.journal')}</span>
             </div>
             <div 
               className="glass-card flex items-center gap-2 sm:gap-3 px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-xl sm:rounded-2xl hover-lift cursor-pointer hover:scale-105 transition-all duration-300"
@@ -92,7 +94,7 @@ const HeroSection = ({ onFeatureSelect }: HeroSectionProps) => {
               <div className="p-1.5 sm:p-2 bg-accent/30 rounded-lg">
                 <Brain className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-accent" />
               </div>
-              <span className="font-semibold text-foreground text-sm sm:text-base">Meditation</span>
+              <span className="font-semibold text-foreground text-sm sm:text-base">{t('features.meditation')}</span>
             </div>
             <div 
               className="glass-card flex items-center gap-2 sm:gap-3 px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-xl sm:rounded-2xl hover-lift cursor-pointer hover:scale-105 transition-all duration-300"
@@ -101,7 +103,7 @@ const HeroSection = ({ onFeatureSelect }: HeroSectionProps) => {
               <div className="p-1.5 sm:p-2 bg-accent/20 rounded-lg">
                 <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-accent" />
               </div>
-              <span className="font-semibold text-foreground text-sm sm:text-base">Smart Analytics</span>
+              <span className="font-semibold text-foreground text-sm sm:text-base">{t('features.screenshot')}</span>
             </div>
           </div>
 

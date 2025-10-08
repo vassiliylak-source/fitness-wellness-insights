@@ -1,11 +1,15 @@
 import { Upload, Wind, BookOpen, Camera, Brain, Sparkles } from "lucide-react";
 import { FeatureType } from "@/types/ui";
+import { useLanguage } from "@/contexts/LanguageContext";
+
 interface HowItWorksSectionProps {
   onFeatureSelect: (feature: FeatureType) => void;
 }
 const HowItWorksSection = ({
   onFeatureSelect
 }: HowItWorksSectionProps) => {
+  const { t } = useLanguage();
+  
   const features = [{
     icon: Wind,
     title: "Mindful Breathing",
@@ -51,13 +55,11 @@ const HowItWorksSection = ({
         
         
         <h2 id="features-heading" className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-6">
-          <span className="gradient-text">Everything You Need</span>
-          <br />
-          <span className="text-foreground">For Total Wellness</span>
+          <span className="gradient-text">{t('howItWorks.title')}</span>
         </h2>
         
         <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed px-4">
-          Four powerful tools working together to transform your health journey through technology and mindfulness.
+          {t('hero.subtitle')}
         </p>
       </header>
 

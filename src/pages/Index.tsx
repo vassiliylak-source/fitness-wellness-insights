@@ -12,6 +12,7 @@ import SupportSection from "@/components/Index/SupportSection";
 import HealthDisclaimer from "@/components/Index/HealthDisclaimer";
 import Footer from "@/components/layout/Footer";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { LanguageToggle } from "@/components/ui/language-toggle";
 import { ScreenshotAnalysisProvider } from "@/contexts/ScreenshotAnalysisContext";
 import { WellnessProvider } from "@/contexts/WellnessContext";
 const Index = () => {
@@ -28,7 +29,8 @@ const Index = () => {
   };
   
   return <div className="min-h-screen">
-      <div className="fixed top-4 right-4 z-50">
+      <div className="fixed top-4 right-4 z-50 flex gap-2">
+        <LanguageToggle />
         <ThemeToggle />
       </div>
       <main>
