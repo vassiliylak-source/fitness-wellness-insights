@@ -515,14 +515,14 @@ const MeditationExercises = () => {
                 fill="none"
                 stroke="hsl(var(--muted))"
                 strokeWidth="4"
-                className="opacity-20"
+                className="opacity-30"
               />
               <circle
                 cx="60"
                 cy="60"
                 r="54"
                 fill="none"
-                stroke={`hsl(var(--${selectedTechnique.color}-500))`}
+                stroke="hsl(var(--primary))"
                 strokeWidth="4"
                 strokeLinecap="round"
                 strokeDasharray={339.292}
@@ -535,16 +535,13 @@ const MeditationExercises = () => {
             <div 
               className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
                 w-32 h-32 md:w-64 md:h-64 rounded-full flex items-center justify-center
-                transition-all duration-1000 ease-in-out`}
+                transition-all duration-1000 ease-in-out bg-gradient-to-br from-primary via-primary-deep to-accent
+                ${isActive ? 'shadow-[0_0_60px_hsl(var(--primary)/0.6)]' : 'shadow-[0_0_30px_hsl(var(--primary)/0.3)]'}`}
               style={{
-                transform: `translate(-50%, -50%) scale(${getAnimationScale()})`,
-                background: `linear-gradient(135deg, hsl(var(--${selectedTechnique.color}-400)), hsl(var(--${selectedTechnique.color}-600)))`,
-                boxShadow: isActive 
-                  ? `0 0 60px hsl(var(--${selectedTechnique.color}-500) / 0.6)` 
-                  : `0 0 30px hsl(var(--${selectedTechnique.color}-500) / 0.3)`
+                transform: `translate(-50%, -50%) scale(${getAnimationScale()})`
               }}
             >
-              <Icon className="w-8 h-8 md:w-16 md:h-16 text-white drop-shadow-lg" />
+              <Icon className="w-8 h-8 md:w-16 md:h-16 text-primary-foreground drop-shadow-lg" />
             </div>
           </div>
 
@@ -561,23 +558,23 @@ const MeditationExercises = () => {
           </div>
 
           {/* Sound Controls */}
-          <div className="card-elegant space-y-4">
+          <div className="card-elegant space-y-4 w-full max-w-md">
             <h3 className="text-lg font-semibold gradient-text text-center">
               Ambient Sounds
             </h3>
             
             <div className="space-y-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-muted-foreground">Sound Type</label>
+                <label className="text-sm font-medium text-foreground">Sound Type</label>
                 <Select value={selectedSound} onValueChange={handleSoundChange}>
-                  <SelectTrigger className="glass-card w-full">
+                  <SelectTrigger className="glass-card w-full border-border bg-card text-card-foreground">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="glass-card">
+                  <SelectContent className="glass-card border-border bg-popover">
                     {SOUND_OPTIONS.map((sound) => (
-                      <SelectItem key={sound.id} value={sound.id}>
+                      <SelectItem key={sound.id} value={sound.id} className="text-popover-foreground">
                         <div className="flex flex-col">
-                          <span>{sound.name}</span>
+                          <span className="text-foreground">{sound.name}</span>
                           <span className="text-xs text-muted-foreground">{sound.description}</span>
                         </div>
                       </SelectItem>
@@ -587,15 +584,15 @@ const MeditationExercises = () => {
               </div>
               
               <div className="space-y-2">
-                <label className="text-sm font-medium text-muted-foreground">Volume</label>
+                <label className="text-sm font-medium text-foreground">Volume</label>
                 <div className="flex items-center gap-3">
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={toggleMute}
-                    className="p-2 shrink-0"
+                    className="p-2 shrink-0 hover:bg-accent"
                   >
-                    {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+                    {isMuted ? <VolumeX className="w-4 h-4 text-muted-foreground" /> : <Volume2 className="w-4 h-4 text-foreground" />}
                   </Button>
                   <Slider
                     value={volume}
@@ -615,14 +612,14 @@ const MeditationExercises = () => {
           </div>
 
           {/* Control Buttons */}
-          <div className="flex flex-col sm:flex-row gap-3 w-full">
+          <div className="flex flex-col sm:flex-row gap-3 w-full max-w-md">
             <Button
               onClick={toggleMeditation}
               size="lg"
-              className={`flex-1 px-6 py-4 text-base md:text-lg font-semibold rounded-2xl hover-lift min-h-[56px] text-white border border-white/20 ${
+              className={`flex-1 px-6 py-4 text-base md:text-lg font-semibold rounded-2xl hover-lift min-h-[56px] ${
                 isActive 
-                  ? 'bg-destructive hover:bg-destructive/90' 
-                  : 'bg-gradient-to-r from-primary to-primary-deep hover:from-primary/90 hover:to-primary-deep/90'
+                  ? 'bg-destructive hover:bg-destructive/90 text-destructive-foreground' 
+                  : 'bg-gradient-to-r from-primary to-primary-deep hover:from-primary/90 hover:to-primary-deep/90 text-primary-foreground'
               }`}
             >
               {isActive ? <Pause className="w-5 h-5 mr-2" /> : <Play className="w-5 h-5 mr-2" />}
@@ -634,7 +631,7 @@ const MeditationExercises = () => {
               onClick={resetMeditation}
               variant="outline"
               size="lg"
-              className="flex-1 sm:flex-initial px-6 py-4 text-base md:text-lg font-semibold rounded-2xl hover-lift min-h-[56px]"
+              className="flex-1 sm:flex-initial px-6 py-4 text-base md:text-lg font-semibold rounded-2xl hover-lift min-h-[56px] border-border hover:bg-accent hover:text-accent-foreground"
             >
               <RotateCcw className="w-5 h-5 mr-2" />
               Reset
