@@ -1,15 +1,15 @@
 import { Upload, Wind, BookOpen, Camera, Brain, Sparkles } from "lucide-react";
 import { FeatureType } from "@/types/ui";
 import { useLanguage } from "@/contexts/LanguageContext";
-
 interface HowItWorksSectionProps {
   onFeatureSelect: (feature: FeatureType) => void;
 }
 const HowItWorksSection = ({
   onFeatureSelect
 }: HowItWorksSectionProps) => {
-  const { t } = useLanguage();
-  
+  const {
+    t
+  } = useLanguage();
   const features = [{
     icon: Wind,
     title: "Mindful Breathing",
@@ -58,9 +58,7 @@ const HowItWorksSection = ({
           <span className="gradient-text">{t('howItWorks.title')}</span>
         </h2>
         
-        <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed px-4">
-          {t('hero.subtitle')}
-        </p>
+        
       </header>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-12">
