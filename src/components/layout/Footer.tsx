@@ -11,7 +11,9 @@ const Footer = () => {
           <h2 className="text-2xl font-bold">
             {t('app.name')}
           </h2>
-          
+          <p className="text-base sm:text-lg font-medium opacity-90">
+            {t('footer.tagline')}
+          </p>
           <p className="text-sm opacity-75">
             &copy; {currentYear} {t('app.name')}. {t('footer.rights')}
           </p>
