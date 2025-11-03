@@ -16,6 +16,11 @@ const LANGUAGES = [
   { code: 'ja', name: '日本語', flag: '🇯🇵' },
   { code: 'ar', name: 'العربية', flag: '🇸🇦' },
   { code: 'hi', name: 'हिन्दी', flag: '🇮🇳' },
+  { code: 'ru', name: 'Русский', flag: '🇷🇺' },
+  { code: 'kk', name: 'Қазақша', flag: '🇰🇿' },
+  { code: 'uz', name: 'Oʻzbekcha', flag: '🇺🇿' },
+  { code: 'ky', name: 'Кыргызча', flag: '🇰🇬' },
+  { code: 'tg', name: 'Тоҷикӣ', flag: '🇹🇯' },
 ] as const;
 
 export function LanguageToggle() {
