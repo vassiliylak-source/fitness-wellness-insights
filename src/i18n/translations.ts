@@ -1,5 +1,8 @@
 export const translations = {
   en: {
+    // App Name
+    'app.name': 'FitWellnionaire',
+    
     // Hero Section
     'hero.title': 'Your Complete Wellness Journey',
     'hero.subtitle': 'Transform your mind and body with AI-powered fitness tracking, mindful breathing exercises, guided meditation, and personalized wellness insights.',
@@ -29,6 +32,7 @@ export const translations = {
     'footer.rights': 'All rights reserved.',
   },
   es: {
+    'app.name': 'FitWellnionaire',
     'hero.title': 'Tu Viaje Completo de Bienestar',
     'hero.subtitle': 'Transforma tu mente y cuerpo con seguimiento físico impulsado por IA, ejercicios de respiración consciente, meditación guiada e información personalizada de bienestar.',
     'hero.cta': 'Comienza Tu Viaje',
@@ -49,6 +53,7 @@ export const translations = {
     'footer.rights': 'Todos los derechos reservados.',
   },
   fr: {
+    'app.name': 'FitWellnionaire',
     'hero.title': 'Votre Parcours Complet de Bien-être',
     'hero.subtitle': 'Transformez votre esprit et votre corps avec un suivi de fitness alimenté par l\'IA, des exercices de respiration consciente, une méditation guidée et des informations personnalisées sur le bien-être.',
     'hero.cta': 'Commencez Votre Parcours',
@@ -69,6 +74,7 @@ export const translations = {
     'footer.rights': 'Tous droits réservés.',
   },
   de: {
+    'app.name': 'FitWellnionaire',
     'hero.title': 'Ihre Vollständige Wellness-Reise',
     'hero.subtitle': 'Transformieren Sie Ihren Geist und Körper mit KI-gestütztem Fitness-Tracking, achtsamen Atemübungen, geführter Meditation und personalisierten Wellness-Einblicken.',
     'hero.cta': 'Starten Sie Ihre Reise',
@@ -89,6 +95,7 @@ export const translations = {
     'footer.rights': 'Alle Rechte vorbehalten.',
   },
   zh: {
+    'app.name': 'FitWellnionaire',
     'hero.title': '您的完整健康之旅',
     'hero.subtitle': '通过人工智能驱动的健身追踪、正念呼吸练习、引导冥想和个性化健康洞察，改变您的身心。',
     'hero.cta': '开始您的旅程',
@@ -109,6 +116,7 @@ export const translations = {
     'footer.rights': '版权所有。',
   },
   ja: {
+    'app.name': 'FitWellnionaire',
     'hero.title': 'あなたの完全なウェルネスジャーニー',
     'hero.subtitle': 'AI搭載のフィットネストラッキング、マインドフル呼吸法、ガイド付き瞑想、パーソナライズされたウェルネスインサイトで心と体を変革しましょう。',
     'hero.cta': 'ジャーニーを始める',
@@ -129,6 +137,7 @@ export const translations = {
     'footer.rights': '全著作権所有。',
   },
   ar: {
+    'app.name': 'FitWellnionaire',
     'hero.title': 'رحلتك الكاملة للعافية',
     'hero.subtitle': 'حوّل عقلك وجسدك من خلال تتبع اللياقة البدنية المدعوم بالذكاء الاصطناعي، وتمارين التنفس الواعي، والتأمل الموجه، ورؤى العافية الشخصية.',
     'hero.cta': 'ابدأ رحلتك',
@@ -149,6 +158,7 @@ export const translations = {
     'footer.rights': 'جميع الحقوق محفوظة.',
   },
   hi: {
+    'app.name': 'FitWellnionaire',
     'hero.title': 'आपकी पूर्ण स्वास्थ्य यात्रा',
     'hero.subtitle': 'एआई-संचालित फिटनेस ट्रैकिंग, माइंडफुल श्वास अभ्यास, निर्देशित ध्यान और व्यक्तिगत स्वास्थ्य अंतर्दृष्टि के साथ अपने मन और शरीर को बदलें।',
     'hero.cta': 'अपनी यात्रा शुरू करें',
