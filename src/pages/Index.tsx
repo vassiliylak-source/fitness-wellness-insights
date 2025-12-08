@@ -11,10 +11,6 @@ const Index = () => {
         <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-accent/5 rounded-full blur-3xl" />
       </div>
 
-      {/* Theme toggle */}
-      <div className="fixed top-4 right-4 z-50">
-        <ThemeToggle />
-      </div>
 
       {/* Main content */}
       <main className="relative z-10">
