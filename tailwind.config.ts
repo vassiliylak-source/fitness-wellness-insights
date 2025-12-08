@@ -47,6 +47,10 @@ export default {
 					foreground: 'hsl(var(--accent-foreground))',
 					glow: 'hsl(var(--accent-glow))'
 				},
+				energy: {
+					DEFAULT: 'hsl(var(--energy))',
+					foreground: 'hsl(var(--energy-foreground))'
+				},
 				popover: {
 					DEFAULT: 'hsl(var(--popover))',
 					foreground: 'hsl(var(--popover-foreground))'
@@ -66,6 +70,10 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				}
 			},
+			fontFamily: {
+				sans: ['Inter', 'SF Pro Display', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+				mono: ['Courier New', 'monospace']
+			},
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
@@ -84,59 +92,54 @@ export default {
 					'0%': { opacity: '0', transform: 'translateY(20px)' },
 					'100%': { opacity: '1', transform: 'translateY(0)' }
 				},
-				'fade-out': {
-					'0%': { opacity: '1', transform: 'translateY(0)' },
-					'100%': { opacity: '0', transform: 'translateY(20px)' }
+				'slot-reveal': {
+					'0%': { transform: 'translateY(-100%)', opacity: '0' },
+					'60%': { transform: 'translateY(10%)', opacity: '1' },
+					'100%': { transform: 'translateY(0)', opacity: '1' }
 				},
-				'scale-in': {
-					'0%': { transform: 'scale(0.9)', opacity: '0' },
-					'100%': { transform: 'scale(1)', opacity: '1' }
+				'shake': {
+					'0%, 100%': { transform: 'translateX(0)' },
+					'10%, 30%, 50%, 70%, 90%': { transform: 'translateX(-5px)' },
+					'20%, 40%, 60%, 80%': { transform: 'translateX(5px)' }
 				},
-				'scale-out': {
-					'0%': { transform: 'scale(1)', opacity: '1' },
-					'100%': { transform: 'scale(0.9)', opacity: '0' }
-				},
-				'slide-in-right': {
-					'0%': { transform: 'translateX(100%)' },
-					'100%': { transform: 'translateX(0)' }
-				},
-				'slide-out-right': {
-					'0%': { transform: 'translateX(0)' },
-					'100%': { transform: 'translateX(100%)' }
-				},
-				'float': {
-					'0%, 100%': { transform: 'translateY(0px)' },
-					'50%': { transform: 'translateY(-10px)' }
-				},
-				'pulse-glow': {
+				'pulse-fire': {
 					'0%, 100%': { 
-						boxShadow: '0 0 20px hsl(var(--primary) / 0.3)',
-						filter: 'brightness(1)'
+						boxShadow: '0 0 30px hsl(var(--primary) / 0.4)',
+						transform: 'scale(1)'
 					},
 					'50%': { 
-						boxShadow: '0 0 40px hsl(var(--primary) / 0.6)',
-						filter: 'brightness(1.1)'
+						boxShadow: '0 0 60px hsl(var(--primary) / 0.7), 0 0 100px hsl(var(--accent) / 0.3)',
+						transform: 'scale(1.02)'
 					}
 				},
-				'shimmer': {
-					'0%': { transform: 'translateX(-100%)' },
-					'100%': { transform: 'translateX(100%)' }
+				'count-tick': {
+					'0%': { transform: 'scale(1)' },
+					'50%': { transform: 'scale(1.1)' },
+					'100%': { transform: 'scale(1)' }
+				},
+				'slide-up': {
+					'0%': { transform: 'translateY(100%)', opacity: '0' },
+					'100%': { transform: 'translateY(0)', opacity: '1' }
+				},
+				'glow-pulse': {
+					'0%, 100%': { 
+						textShadow: '0 0 20px hsl(var(--primary) / 0.5)'
+					},
+					'50%': { 
+						textShadow: '0 0 40px hsl(var(--primary) / 0.8), 0 0 60px hsl(var(--accent) / 0.4)'
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.3s ease-out',
 				'accordion-up': 'accordion-up 0.3s ease-out',
 				'fade-in': 'fade-in 0.5s ease-out',
-				'fade-out': 'fade-out 0.3s ease-out',
-				'scale-in': 'scale-in 0.3s ease-out',
-				'scale-out': 'scale-out 0.2s ease-out',
-				'slide-in-right': 'slide-in-right 0.4s ease-out',
-				'slide-out-right': 'slide-out-right 0.3s ease-out',
-				'float': 'float 6s ease-in-out infinite',
-				'pulse-glow': 'pulse-glow 2s ease-in-out infinite alternate',
-				'shimmer': 'shimmer 2s linear infinite',
-				'enter': 'fade-in 0.3s ease-out',
-				'exit': 'fade-out 0.3s ease-out'
+				'slot-reveal': 'slot-reveal 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)',
+				'shake': 'shake 0.5s ease-in-out',
+				'pulse-fire': 'pulse-fire 1.5s ease-in-out infinite',
+				'count-tick': 'count-tick 0.3s ease-out',
+				'slide-up': 'slide-up 0.4s ease-out',
+				'glow-pulse': 'glow-pulse 2s ease-in-out infinite'
 			}
 		}
 	},
