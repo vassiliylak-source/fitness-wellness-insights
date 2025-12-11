@@ -1,17 +1,20 @@
 import { useState, useCallback, useEffect } from 'react';
-import { Zap, Clock, Target } from 'lucide-react';
+import { Zap, Clock, Target, AlertTriangle, Skull } from 'lucide-react';
 import { 
   generateWOD, 
   GeneratedWOD, 
+  GeneratedExercise,
   ALGORITHM_PHRASES,
   formatTime,
   canGenerate,
-  recordGeneration
+  recordGeneration,
+  EXERCISES
 } from '@/constants/wod';
 import SlotMachine from './SlotMachine';
 import Timer from './Timer';
 import GenerateButton from './GenerateButton';
 import PackageSelector from './PackageSelector';
+import { audioEngine } from '@/lib/audioEngine';
 
 const WODGenerator = () => {
   const [selectedPackage, setSelectedPackage] = useState('bodyweight');
@@ -21,6 +24,20 @@ const WODGenerator = () => {
   const [showTimer, setShowTimer] = useState(false);
   const [algorithmPhrase, setAlgorithmPhrase] = useState('');
   const [remainingGenerations, setRemainingGenerations] = useState(1);
+  const [sabotageActive, setSabotageActive] = useState(false);
+  const [sabotageExercise, setSabotageExercise] = useState<GeneratedExercise | null>(null);
+  const [isScaledDown, setIsScaledDown] = useState(false);
+  const [isCheatDay, setIsCheatDay] = useState(false);
+
+  // Check for "Cheat Day" - late night recovery
+  useEffect(() => {
+    const hour = new Date().getHours();
+    const day = new Date().getDay();
+    // Friday or Saturday between 11pm and 5am
+    if ((day === 5 || day === 6) && (hour >= 23 || hour < 5)) {
+      setIsCheatDay(true);
+    }
+  }, []);
 
   // Check generation limit on mount
   useEffect(() => {
@@ -35,6 +52,11 @@ const WODGenerator = () => {
     setIsGenerating(true);
     setIsSpinning(true);
     setShowTimer(false);
+    setSabotageActive(false);
+    setSabotageExercise(null);
+    setIsScaledDown(false);
+    
+    audioEngine.play('hydraulic');
     
     setTimeout(() => {
       const wod = generateWOD(selectedPackage, 3);
@@ -43,10 +65,11 @@ const WODGenerator = () => {
       setIsSpinning(false);
       setAlgorithmPhrase(ALGORITHM_PHRASES[Math.floor(Math.random() * ALGORITHM_PHRASES.length)]);
       
-      // Record generation and update remaining
       recordGeneration();
       const { remaining } = canGenerate();
       setRemainingGenerations(remaining);
+      
+      audioEngine.play('shutter');
     }, 800);
   }, [selectedPackage]);
 
@@ -55,35 +78,145 @@ const WODGenerator = () => {
   }, []);
 
   const handleRerollExercise = useCallback((index: number) => {
-    // Premium feature - would reroll specific exercise
     console.log('Reroll exercise at index:', index);
   }, []);
 
+  const handleScaleDown = useCallback(() => {
+    if (!currentWOD) return;
+    
+    // Reduce all exercise values by 30%
+    const scaledExercises = currentWOD.exercises.map(ex => ({
+      ...ex,
+      value: Math.round(ex.value * 0.7)
+    }));
+    
+    setCurrentWOD({
+      ...currentWOD,
+      exercises: scaledExercises,
+      targetTime: Math.round(currentWOD.targetTime * 0.7)
+    });
+    
+    setIsScaledDown(true);
+  }, [currentWOD]);
+
+  const handleSabotage = useCallback(() => {
+    if (!currentWOD) return;
+    
+    // Pick a random exercise to add
+    const availableExercises = EXERCISES.filter(
+      e => !currentWOD.exercises.find(ex => ex.exercise.id === e.id)
+    );
+    
+    if (availableExercises.length === 0) return;
+    
+    const randomExercise = availableExercises[Math.floor(Math.random() * availableExercises.length)];
+    const sabotageValue = Math.round(randomExercise.minValue + (randomExercise.maxValue - randomExercise.minValue) * 0.3);
+    
+    const newExercise: GeneratedExercise = {
+      exercise: randomExercise,
+      value: sabotageValue,
+      format: randomExercise.measureType,
+      estimatedTime: randomExercise.measureType === 'seconds' 
+        ? sabotageValue 
+        : sabotageValue * (randomExercise.estimatedSecondsPerRep || 2)
+    };
+    
+    setSabotageExercise(newExercise);
+    setSabotageActive(true);
+    
+    // Add to WOD
+    setCurrentWOD({
+      ...currentWOD,
+      exercises: [...currentWOD.exercises, newExercise],
+      totalEstimatedTime: currentWOD.totalEstimatedTime + newExercise.estimatedTime
+    });
+  }, [currentWOD]);
+
+  // Cheat Day Easter Egg
+  if (isCheatDay) {
+    return (
+      <div className="min-h-screen px-4 py-8 md:py-16 flex items-center justify-center scanlines">
+        <div className="max-w-lg text-center">
+          <div className="text-6xl mb-8">😴</div>
+          <h1 className="text-2xl md:text-4xl font-mono font-bold text-foreground uppercase mb-4">
+            SYSTEM OVERRIDE
+          </h1>
+          <p className="text-muted-foreground font-mono text-lg mb-8">
+            Recovery is part of the process.
+            <br />
+            <span className="text-primary">Go to sleep.</span>
+          </p>
+          <button 
+            onClick={() => setIsCheatDay(false)}
+            className="text-xs text-muted-foreground/40 font-mono uppercase hover:text-muted-foreground transition-colors"
+          >
+            [OVERRIDE RECOVERY PROTOCOL]
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen px-4 py-8 md:py-16">
+    <div className={`min-h-screen px-4 py-8 md:py-16 ${sabotageActive ? 'sabotage-flash' : ''}`}>
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <header className="text-center mb-12">
           <div className="inline-flex items-center gap-2 mb-4">
-            <Zap className="w-6 h-6 text-primary" />
+            <span className="text-primary">◈</span>
             <span className="text-[10px] uppercase tracking-[0.4em] text-muted-foreground font-mono">
-              CHAOS ENGINE v1.0
+              CHAOS ENGINE v2.0
             </span>
-            <Zap className="w-6 h-6 text-primary" />
+            <span className="text-primary">◈</span>
           </div>
           
-          <h1 className="brutal-header fire-text mb-4">
+          <h1 className="brutal-header fire-text mb-4 terminal-cursor">
             CHAOS PROTOCOL
           </h1>
           
-          <p className="text-muted-foreground max-w-lg mx-auto text-sm md:text-base">
+          <p className="text-muted-foreground max-w-lg mx-auto text-sm md:text-base font-mono">
             The algorithm creates. You execute.
             <br />
-            <span className="text-primary font-medium">
-              Procedurally generated challenges. No mercy protocol.
+            <span className="text-primary">
+              Procedurally generated. No mercy protocol.
             </span>
           </p>
         </header>
+
+        {/* Sabotage Alert */}
+        {sabotageActive && sabotageExercise && (
+          <div className="mb-8 animate-shake">
+            <div className="card-brutal p-6 border-destructive bg-destructive/10">
+              <div className="flex items-center justify-center gap-3 mb-4">
+                <Skull className="w-6 h-6 text-destructive" />
+                <span className="font-mono font-bold text-destructive uppercase tracking-widest">
+                  SYSTEM GLITCH DETECTED
+                </span>
+                <Skull className="w-6 h-6 text-destructive" />
+              </div>
+              <p className="text-center font-mono text-foreground">
+                <span className="text-destructive font-bold">+{sabotageExercise.value}</span>
+                {' '}{sabotageExercise.exercise.name.toUpperCase()}{' '}
+                <span className="text-muted-foreground">ADDED</span>
+              </p>
+              <p className="text-center text-xs text-muted-foreground/60 font-mono mt-2">
+                Chaos is inevitable. Adapt or fail.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Scale Down Notification */}
+        {isScaledDown && (
+          <div className="mb-8 text-center">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-energy/10 border border-energy/30 rounded-none">
+              <AlertTriangle className="w-4 h-4 text-energy" />
+              <span className="font-mono text-sm text-energy uppercase">
+                Protocol adjusted. Keep moving.
+              </span>
+            </div>
+          </div>
+        )}
 
         {/* Package Selector */}
         <section className="mb-10">
@@ -111,15 +244,15 @@ const WODGenerator = () => {
           <section className="animate-fade-in">
             {/* Sequence header */}
             <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-6">
-              <div className="flex items-center gap-2 px-4 py-2 bg-card border border-border rounded-lg">
+              <div className="flex items-center gap-2 px-4 py-2 bg-card border border-border rounded-none">
                 <span className="text-xs text-muted-foreground font-mono">SEQUENCE</span>
-                <span className="text-lg font-black text-primary">#{currentWOD.sequenceId}</span>
+                <span className="text-lg font-mono font-black text-primary">#{currentWOD.sequenceId}</span>
               </div>
               
-              <div className="flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/30 rounded-lg">
+              <div className="flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/30 rounded-none">
                 <Target className="w-4 h-4 text-primary" />
-                <span className="text-sm font-medium">
-                  Target: <span className="font-black text-primary">{formatTime(currentWOD.targetTime)}</span>
+                <span className="text-sm font-mono font-medium">
+                  TARGET: <span className="font-black text-primary">{formatTime(currentWOD.targetTime)}</span>
                 </span>
               </div>
             </div>
@@ -127,8 +260,8 @@ const WODGenerator = () => {
             {/* Algorithm phrase */}
             {algorithmPhrase && (
               <div className="text-center mb-8">
-                <span className="text-xl md:text-2xl font-black fire-text animate-glow-pulse font-mono tracking-wider">
-                  {algorithmPhrase}
+                <span className="text-xl md:text-2xl font-mono font-black fire-text animate-glow-pulse tracking-widest">
+                  [{algorithmPhrase}]
                 </span>
               </div>
             )}
@@ -146,7 +279,7 @@ const WODGenerator = () => {
 
             {/* Timer */}
             {showTimer && (
-              <div className="card-brutal p-6 md:p-8 animate-slide-up">
+              <div className="card-brutal p-6 md:p-8 animate-slide-up scanlines">
                 <h3 className="text-center text-xs uppercase tracking-widest text-muted-foreground mb-2 font-mono">
                   <Clock className="w-4 h-4 inline mr-2" />
                   STOPWATCH vs ALGORITHM
@@ -155,6 +288,8 @@ const WODGenerator = () => {
                   initialTime={0}
                   isCountdown={false}
                   targetTime={currentWOD.targetTime}
+                  onScaleDown={handleScaleDown}
+                  onSabotage={handleSabotage}
                 />
               </div>
             )}
@@ -163,7 +298,7 @@ const WODGenerator = () => {
 
         {/* Footer */}
         <footer className="text-center mt-16 text-muted-foreground text-xs font-mono space-y-2">
-          <p className="text-primary/60">⚡ Each sequence is unique. Algorithm never repeats.</p>
+          <p className="text-primary/60">◈ Each sequence is unique. Algorithm never repeats. ◈</p>
           <p className="text-muted-foreground/40">
             PRO: Unlimited generations • Exercise reroll • Smart scaling
           </p>

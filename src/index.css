@@ -134,7 +134,64 @@
     @apply bg-background text-foreground antialiased;
     background: var(--gradient-dark);
     min-height: 100vh;
-    font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'JetBrains Mono', 'Fira Code', 'Source Code Pro', 'Courier New', monospace;
+  }
+
+  /* Terminal cursor blink */
+  .terminal-cursor::after {
+    content: '▌';
+    animation: blink 1s step-end infinite;
+  }
+
+  @keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+
+  /* Scanline effect */
+  .scanlines {
+    position: relative;
+  }
+
+  .scanlines::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.1) 2px,
+      rgba(0, 0, 0, 0.1) 4px
+    );
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* Glitch effect */
+  .glitch {
+    animation: glitch 0.3s ease-in-out;
+  }
+
+  @keyframes glitch {
+    0% { transform: translate(0); filter: hue-rotate(0deg); }
+    20% { transform: translate(-2px, 2px); filter: hue-rotate(90deg); }
+    40% { transform: translate(2px, -2px); filter: hue-rotate(180deg); }
+    60% { transform: translate(-2px, -2px); filter: hue-rotate(270deg); }
+    80% { transform: translate(2px, 2px); filter: hue-rotate(360deg); }
+    100% { transform: translate(0); filter: hue-rotate(0deg); }
+  }
+
+  /* Sabotage red flash */
+  .sabotage-flash {
+    animation: sabotage-flash 0.5s ease-out;
+  }
+
+  @keyframes sabotage-flash {
+    0%, 100% { background-color: transparent; }
+    25% { background-color: hsl(0 90% 30% / 0.5); }
+    50% { background-color: hsl(0 90% 50% / 0.3); }
+    75% { background-color: hsl(0 90% 30% / 0.5); }
   }
 
   h1, h2, h3, h4, h5, h6 {
