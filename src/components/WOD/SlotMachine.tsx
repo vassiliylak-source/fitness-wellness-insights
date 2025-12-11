@@ -43,11 +43,11 @@ const SlotMachine = ({
   if (exercises.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20">
-        <div className="text-6xl mb-6 opacity-50">⚡</div>
-        <p className="text-muted-foreground text-lg uppercase tracking-wider text-center">
-          Initiate sequence to generate challenge
+        <div className="text-6xl mb-6 opacity-50">◈</div>
+        <p className="text-muted-foreground text-lg uppercase tracking-wider text-center font-mono">
+          INITIATE SEQUENCE TO GENERATE CHALLENGE
         </p>
-        <p className="text-muted-foreground/60 text-sm mt-2">
+        <p className="text-muted-foreground/60 text-xs mt-2 font-mono">
           Procedurally generated. No two sequences identical.
         </p>
       </div>
@@ -59,15 +59,13 @@ const SlotMachine = ({
       {exercises.map((item, index) => {
         const isRevealed = index < revealedCount;
         const isTimeBased = item.format === 'seconds';
-        
-        // Calculate intensity bar based on suffering coefficient
         const intensityPercent = (item.exercise.sufferingCoefficient / 10) * 100;
         
         return (
           <div
             key={`${item.exercise.id}-${index}`}
             className={`
-              exercise-card overflow-hidden relative
+              exercise-card overflow-hidden relative rounded-none
               transition-all duration-500
               ${isRevealed ? 'animate-slot-reveal opacity-100' : 'opacity-0 translate-y-full'}
               ${showAll ? 'hover:border-primary' : ''}
@@ -78,10 +76,10 @@ const SlotMachine = ({
               <div className="flex items-center gap-4 flex-1">
                 <span className="text-4xl">{item.exercise.icon}</span>
                 <div className="flex-1">
-                  <h3 className="text-lg md:text-xl font-black uppercase tracking-tight text-foreground">
+                  <h3 className="text-lg md:text-xl font-mono font-black uppercase tracking-tight text-foreground">
                     {item.exercise.name}
                   </h3>
-                  <span className="text-xs text-muted-foreground/80 block mt-0.5">
+                  <span className="text-xs text-muted-foreground/80 font-mono block mt-0.5">
                     {item.exercise.description}
                   </span>
                 </div>
@@ -89,21 +87,20 @@ const SlotMachine = ({
               
               <div className="text-right flex items-center gap-3">
                 <div>
-                  <div className="text-2xl md:text-3xl font-black fire-text animate-glow-pulse">
+                  <div className="text-2xl md:text-3xl font-mono font-black fire-text animate-glow-pulse">
                     {isTimeBased ? formatTime(item.value) : item.value}
                   </div>
-                  <span className="text-xs text-muted-foreground uppercase">
-                    {isTimeBased ? 'duration' : 'reps'}
+                  <span className="text-xs text-muted-foreground uppercase font-mono">
+                    {isTimeBased ? 'DURATION' : 'REPS'}
                   </span>
                 </div>
                 
-                {/* Reroll button - Premium feature */}
                 {showAll && (
                   <Button
                     variant="ghost"
                     size="icon"
                     className={`
-                      w-10 h-10 rounded-full 
+                      w-10 h-10 rounded-none 
                       ${isPremium 
                         ? 'hover:bg-primary/20 text-muted-foreground hover:text-primary' 
                         : 'text-muted-foreground/30 cursor-not-allowed'}
@@ -123,9 +120,9 @@ const SlotMachine = ({
             </div>
             
             {/* Intensity bar */}
-            <div className="mt-4 h-1 bg-muted rounded-full overflow-hidden">
+            <div className="mt-4 h-1 bg-muted rounded-none overflow-hidden">
               <div 
-                className="h-full rounded-full transition-all duration-1000"
+                className="h-full rounded-none transition-all duration-1000"
                 style={{ 
                   width: isRevealed ? `${intensityPercent}%` : '0%',
                   background: intensityPercent > 70 
@@ -135,6 +132,11 @@ const SlotMachine = ({
                       : 'hsl(var(--primary))'
                 }}
               />
+            </div>
+            
+            {/* Suffering coefficient indicator */}
+            <div className="absolute top-2 right-2 text-[10px] font-mono text-muted-foreground/40 uppercase">
+              S:{item.exercise.sufferingCoefficient}
             </div>
           </div>
         );

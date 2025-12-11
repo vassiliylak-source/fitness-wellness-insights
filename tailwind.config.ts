@@ -71,8 +71,9 @@ export default {
 				}
 			},
 			fontFamily: {
-				sans: ['Inter', 'SF Pro Display', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-				mono: ['Courier New', 'monospace']
+				sans: ['JetBrains Mono', 'Fira Code', 'Source Code Pro', 'Courier New', 'monospace'],
+				mono: ['JetBrains Mono', 'Fira Code', 'Source Code Pro', 'Courier New', 'monospace'],
+				display: ['JetBrains Mono', 'Fira Code', 'monospace']
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
