@@ -1,64 +1,78 @@
-import { Dices, Loader2 } from 'lucide-react';
-import { MOTIVATIONAL_PHRASES } from '@/constants/wod';
 import { useState, useEffect } from 'react';
+import { Zap, RefreshCw, Lock } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { ALGORITHM_PHRASES } from '@/constants/wod';
 
 interface GenerateButtonProps {
   onClick: () => void;
   isGenerating: boolean;
   hasWorkout: boolean;
+  remainingGenerations: number;
 }
 
-const GenerateButton = ({ onClick, isGenerating, hasWorkout }: GenerateButtonProps) => {
-  const [phrase, setPhrase] = useState(MOTIVATIONAL_PHRASES[0]);
+const GenerateButton = ({ onClick, isGenerating, hasWorkout, remainingGenerations }: GenerateButtonProps) => {
+  const [phrase, setPhrase] = useState('');
 
   useEffect(() => {
     if (isGenerating) {
       const interval = setInterval(() => {
-        const randomPhrase = MOTIVATIONAL_PHRASES[Math.floor(Math.random() * MOTIVATIONAL_PHRASES.length)];
-        setPhrase(randomPhrase);
-      }, 150);
+        setPhrase(ALGORITHM_PHRASES[Math.floor(Math.random() * ALGORITHM_PHRASES.length)]);
+      }, 200);
       return () => clearInterval(interval);
     }
   }, [isGenerating]);
 
+  const canGen = remainingGenerations > 0;
+
   return (
     <div className="text-center">
-      <button
+      <Button
         onClick={onClick}
-        disabled={isGenerating}
+        disabled={isGenerating || !canGen}
         className={`
-          btn-brutal group relative
-          ${isGenerating ? 'animate-pulse-fire' : 'hover:animate-pulse-fire'}
-          ${hasWorkout ? 'px-8' : 'px-12 py-6 text-xl'}
+          btn-brutal text-xl md:text-2xl py-8 px-12 
+          group relative overflow-hidden
+          ${!canGen ? 'opacity-50 cursor-not-allowed' : ''}
         `}
       >
-        <span className="flex items-center gap-3">
-          {isGenerating ? (
-            <>
-              <Loader2 className="w-6 h-6 animate-spin" />
-              <span className="font-black">{phrase}</span>
-            </>
-          ) : (
-            <>
-              <Dices className="w-6 h-6 group-hover:animate-shake" />
-              <span className="font-black">
-                {hasWorkout ? 'REROLL' : 'GENERATE WOD'}
-              </span>
-            </>
-          )}
-        </span>
-        
-        {/* Fire effect on hover */}
-        <div className="absolute inset-0 -z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <div className="absolute inset-0 bg-gradient-to-t from-primary/30 to-transparent blur-xl" />
-        </div>
-      </button>
+        {isGenerating ? (
+          <div className="flex items-center gap-3">
+            <div className="w-6 h-6 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
+            <span className="animate-pulse font-mono text-sm">{phrase || 'COMPILING...'}</span>
+          </div>
+        ) : !canGen ? (
+          <div className="flex items-center gap-3">
+            <Lock className="w-6 h-6" />
+            <span>DAILY LIMIT REACHED</span>
+          </div>
+        ) : (
+          <div className="flex items-center gap-3">
+            {hasWorkout ? (
+              <>
+                <RefreshCw className="w-6 h-6 group-hover:rotate-180 transition-transform duration-500" />
+                <span>REROLL SEQUENCE</span>
+              </>
+            ) : (
+              <>
+                <Zap className="w-6 h-6 group-hover:scale-110 transition-transform" />
+                <span>INITIATE SEQUENCE</span>
+              </>
+            )}
+          </div>
+        )}
+      </Button>
       
-      {!hasWorkout && (
-        <p className="text-muted-foreground text-sm mt-4 uppercase tracking-wider">
-          Press to reveal your fate
-        </p>
-      )}
+      <div className="mt-4 text-sm text-muted-foreground">
+        {canGen ? (
+          <span>
+            <span className="text-primary font-bold">{remainingGenerations}</span> generation{remainingGenerations !== 1 ? 's' : ''} remaining today
+          </span>
+        ) : (
+          <span className="text-muted-foreground/60">
+            Return tomorrow for a new challenge • <span className="text-primary">PRO removes limits</span>
+          </span>
+        )}
+      </div>
     </div>
   );
 };

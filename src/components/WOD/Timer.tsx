@@ -1,19 +1,21 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Play, Pause, RotateCcw, Volume2, VolumeX } from 'lucide-react';
+import { Play, Pause, RotateCcw, Volume2, VolumeX, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { formatTime } from '@/constants/wod';
 
 interface TimerProps {
-  initialTime?: number; // in seconds, if countdown
+  initialTime?: number;
   isCountdown?: boolean;
+  targetTime?: number; // AI prediction to beat
   onComplete?: () => void;
 }
 
-const Timer = ({ initialTime = 0, isCountdown = false, onComplete }: TimerProps) => {
+const Timer = ({ initialTime = 0, isCountdown = false, targetTime, onComplete }: TimerProps) => {
   const [time, setTime] = useState(isCountdown ? initialTime : 0);
   const [isRunning, setIsRunning] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [hasCompleted, setHasCompleted] = useState(false);
+  const [beatTarget, setBeatTarget] = useState<boolean | null>(null);
 
   const playBeep = useCallback(() => {
     if (!soundEnabled) return;
@@ -53,7 +55,6 @@ const Timer = ({ initialTime = 0, isCountdown = false, onComplete }: TimerProps)
               onComplete?.();
               return 0;
             }
-            // Beep in last 3 seconds
             if (prev <= 4) playBeep();
             return prev - 1;
           } else {
@@ -70,28 +71,85 @@ const Timer = ({ initialTime = 0, isCountdown = false, onComplete }: TimerProps)
     setTime(isCountdown ? initialTime : 0);
     setIsRunning(false);
     setHasCompleted(false);
+    setBeatTarget(null);
   };
 
   const toggleTimer = () => {
     setIsRunning(!isRunning);
   };
 
+  const completeWorkout = () => {
+    setIsRunning(false);
+    setHasCompleted(true);
+    if (targetTime) {
+      setBeatTarget(time < targetTime);
+    }
+    playBeep();
+    onComplete?.();
+  };
+
+  // Calculate progress against target
+  const progressPercent = targetTime ? Math.min((time / targetTime) * 100, 100) : 0;
+  const isOverTarget = targetTime ? time >= targetTime : false;
+
   return (
-    <div className="text-center py-8">
+    <div className="text-center py-6">
+      {/* Target time display */}
+      {targetTime && !hasCompleted && (
+        <div className="mb-6 p-4 bg-card/50 border border-border rounded-lg">
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <Zap className="w-4 h-4 text-primary" />
+            <span className="text-xs uppercase tracking-wider text-muted-foreground">
+              Algorithm Prediction
+            </span>
+          </div>
+          <div className="text-2xl font-black text-foreground">
+            Target: <span className="fire-text">{formatTime(targetTime)}</span>
+          </div>
+          <p className="text-xs text-muted-foreground mt-1">
+            Beat the machine. Prove you're not average.
+          </p>
+        </div>
+      )}
+
       {/* Timer display */}
       <div 
         className={`
-          timer-display mb-8 transition-all duration-300
+          timer-display mb-6 transition-all duration-300
           ${isRunning ? 'fire-text animate-glow-pulse' : 'text-foreground'}
-          ${hasCompleted ? 'text-accent animate-shake' : ''}
+          ${hasCompleted && beatTarget ? 'text-accent' : ''}
+          ${hasCompleted && beatTarget === false ? 'text-destructive' : ''}
+          ${isOverTarget && isRunning ? 'text-destructive' : ''}
         `}
       >
         {formatTime(time)}
       </div>
+
+      {/* Progress bar vs target */}
+      {targetTime && !isCountdown && !hasCompleted && (
+        <div className="max-w-md mx-auto mb-6">
+          <div className="h-2 bg-muted rounded-full overflow-hidden">
+            <div 
+              className="h-full transition-all duration-300"
+              style={{ 
+                width: `${progressPercent}%`,
+                background: isOverTarget ? 'hsl(var(--destructive))' : 'hsl(var(--primary))'
+              }}
+            />
+          </div>
+          <div className="flex justify-between text-xs text-muted-foreground mt-1">
+            <span>00:00</span>
+            <span className={isOverTarget ? 'text-destructive' : ''}>{formatTime(targetTime)}</span>
+          </div>
+        </div>
+      )}
       
+      {/* Completion message */}
       {hasCompleted && (
-        <div className="text-2xl font-black text-accent uppercase mb-6 animate-fade-in">
-          🔥 TIME'S UP! 🔥
+        <div className={`text-xl font-black uppercase mb-6 animate-fade-in ${beatTarget ? 'text-accent' : 'text-destructive'}`}>
+          {beatTarget === true && '⚡ ALGORITHM DEFEATED ⚡'}
+          {beatTarget === false && '💀 MACHINE WINS 💀'}
+          {beatTarget === null && '🔥 SEQUENCE COMPLETE 🔥'}
         </div>
       )}
       
@@ -103,7 +161,7 @@ const Timer = ({ initialTime = 0, isCountdown = false, onComplete }: TimerProps)
             btn-brutal w-20 h-20 rounded-full p-0
             ${isRunning ? 'bg-accent hover:bg-accent/90' : ''}
           `}
-          disabled={hasCompleted && isCountdown}
+          disabled={hasCompleted}
         >
           {isRunning ? (
             <Pause className="w-8 h-8" />
@@ -111,6 +169,16 @@ const Timer = ({ initialTime = 0, isCountdown = false, onComplete }: TimerProps)
             <Play className="w-8 h-8 ml-1" />
           )}
         </Button>
+        
+        {/* Complete button (for stopwatch mode) */}
+        {!isCountdown && isRunning && (
+          <Button
+            onClick={completeWorkout}
+            className="btn-brutal h-16 px-6"
+          >
+            COMPLETE
+          </Button>
+        )}
         
         <Button
           onClick={reset}
