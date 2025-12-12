@@ -11,7 +11,7 @@ interface TimerProps {
   initialTime?: number;
   isCountdown?: boolean;
   targetTime?: number;
-  onComplete?: () => void;
+  onComplete?: (time?: number, beatTarget?: boolean) => void;
   onScaleDown?: () => void;
   onSabotage?: () => void;
 }
@@ -181,10 +181,11 @@ const Timer = ({
     setHasCompleted(true);
     audioEngine.stopMetronome();
     audioEngine.play('complete');
+    const didBeatTarget = targetTime ? time < targetTime : false;
     if (targetTime) {
-      setBeatTarget(time < targetTime);
+      setBeatTarget(didBeatTarget);
     }
-    onComplete?.();
+    onComplete?.(time, didBeatTarget);
   };
 
   const dismissWarning = () => {

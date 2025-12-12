@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import { Zap, Clock, Target, AlertTriangle, Skull } from 'lucide-react';
+import { Zap, Clock, Target, AlertTriangle, Skull, History } from 'lucide-react';
 import { 
   generateWOD, 
   GeneratedWOD, 
@@ -14,7 +14,24 @@ import SlotMachine from './SlotMachine';
 import Timer from './Timer';
 import GenerateButton from './GenerateButton';
 import PackageSelector from './PackageSelector';
+import StreakCounter from './Chronicle/StreakCounter';
+import HallOfPain from './Chronicle/HallOfPain';
+import PostWorkoutSurvey from './Chronicle/PostWorkoutSurvey';
+import PreWorkoutChecklist from './Rituals/PreWorkoutChecklist';
+import RareRoll from './EasterEggs/RareRoll';
+import GhostMode from './GhostMode';
+import GlobalStats from './GlobalStats';
 import { audioEngine } from '@/lib/audioEngine';
+import { useWorkoutSession } from '@/hooks/useWorkoutSession';
+import { Button } from '@/components/ui/button';
+
+// Mythic challenges for rare rolls
+const MYTHIC_CHALLENGES = [
+  { name: 'DEATH BY BURPEES', description: '100 burpees for time' },
+  { name: 'CENTURY SQUATS', description: '100 air squats, no breaks' },
+  { name: 'IRON PLANK', description: '5 minute plank hold' },
+  { name: 'PUSH-UP GAUNTLET', description: '75 push-ups, any partition' }
+];
 
 const WODGenerator = () => {
   const [selectedPackage, setSelectedPackage] = useState('bodyweight');
@@ -28,12 +45,35 @@ const WODGenerator = () => {
   const [sabotageExercise, setSabotageExercise] = useState<GeneratedExercise | null>(null);
   const [isScaledDown, setIsScaledDown] = useState(false);
   const [isCheatDay, setIsCheatDay] = useState(false);
+  
+  // Retention system states
+  const [showChecklist, setShowChecklist] = useState(false);
+  const [showSurvey, setShowSurvey] = useState(false);
+  const [showChronicle, setShowChronicle] = useState(false);
+  const [workoutTime, setWorkoutTime] = useState(0);
+  const [beatTarget, setBeatTarget] = useState(false);
+  const [showRareRoll, setShowRareRoll] = useState(false);
+  const [rareChallenge, setRareChallenge] = useState<typeof MYTHIC_CHALLENGES[0] | null>(null);
+  const [globalStats, setGlobalStats] = useState<{
+    total_completions: number;
+    average_time: number;
+    fastest_time: number | null;
+  } | null>(null);
+
+  // Workout session hook
+  const { 
+    streakData, 
+    workoutHistory, 
+    recordWorkout, 
+    getGlobalStats,
+    getGhostTime,
+    isLoading 
+  } = useWorkoutSession();
 
   // Check for "Cheat Day" - late night recovery
   useEffect(() => {
     const hour = new Date().getHours();
     const day = new Date().getDay();
-    // Friday or Saturday between 11pm and 5am
     if ((day === 5 || day === 6) && (hour >= 23 || hour < 5)) {
       setIsCheatDay(true);
     }
@@ -45,16 +85,39 @@ const WODGenerator = () => {
     setRemainingGenerations(remaining);
   }, []);
 
+  // Fetch global stats when WOD is generated
+  useEffect(() => {
+    const fetchStats = async () => {
+      if (currentWOD) {
+        const stats = await getGlobalStats(currentWOD);
+        setGlobalStats(stats);
+      }
+    };
+    fetchStats();
+  }, [currentWOD, getGlobalStats]);
+
   const handleGenerate = useCallback(() => {
     const { canGen } = canGenerate();
     if (!canGen) return;
 
+    // Check for rare roll (1/100 chance)
+    if (Math.random() < 0.01) {
+      const challenge = MYTHIC_CHALLENGES[Math.floor(Math.random() * MYTHIC_CHALLENGES.length)];
+      setRareChallenge(challenge);
+      setShowRareRoll(true);
+      audioEngine.play('glitch');
+      return;
+    }
+
     setIsGenerating(true);
     setIsSpinning(true);
     setShowTimer(false);
+    setShowChecklist(false);
+    setShowSurvey(false);
     setSabotageActive(false);
     setSabotageExercise(null);
     setIsScaledDown(false);
+    setGlobalStats(null);
     
     audioEngine.play('hydraulic');
     
@@ -74,7 +137,49 @@ const WODGenerator = () => {
   }, [selectedPackage]);
 
   const handleSpinComplete = useCallback(() => {
+    // Show pre-workout checklist instead of timer directly
+    setShowChecklist(true);
+  }, []);
+
+  const handleChecklistComplete = useCallback(() => {
+    setShowChecklist(false);
     setShowTimer(true);
+  }, []);
+
+  const handleChecklistSkip = useCallback(() => {
+    setShowChecklist(false);
+    setShowTimer(true);
+  }, []);
+
+  const handleWorkoutComplete = useCallback((time: number, didBeatTarget: boolean) => {
+    setWorkoutTime(time);
+    setBeatTarget(didBeatTarget);
+    setShowSurvey(true);
+  }, []);
+
+  const handleSurveySubmit = useCallback(async (feeling: 'dead' | 'ok' | 'more') => {
+    if (currentWOD) {
+      await recordWorkout(currentWOD, workoutTime, undefined, feeling);
+    }
+    setShowSurvey(false);
+  }, [currentWOD, workoutTime, recordWorkout]);
+
+  const handleSurveySkip = useCallback(async () => {
+    if (currentWOD) {
+      await recordWorkout(currentWOD, workoutTime);
+    }
+    setShowSurvey(false);
+  }, [currentWOD, workoutTime, recordWorkout]);
+
+  const handleRareRollAccept = useCallback(() => {
+    setShowRareRoll(false);
+    // Generate the mythic challenge as a special WOD
+    handleGenerate();
+  }, [handleGenerate]);
+
+  const handleRareRollDecline = useCallback(() => {
+    setShowRareRoll(false);
+    setRareChallenge(null);
   }, []);
 
   const handleRerollExercise = useCallback((index: number) => {
@@ -84,7 +189,6 @@ const WODGenerator = () => {
   const handleScaleDown = useCallback(() => {
     if (!currentWOD) return;
     
-    // Reduce all exercise values by 30%
     const scaledExercises = currentWOD.exercises.map(ex => ({
       ...ex,
       value: Math.round(ex.value * 0.7)
@@ -102,7 +206,6 @@ const WODGenerator = () => {
   const handleSabotage = useCallback(() => {
     if (!currentWOD) return;
     
-    // Pick a random exercise to add
     const availableExercises = EXERCISES.filter(
       e => !currentWOD.exercises.find(ex => ex.exercise.id === e.id)
     );
@@ -124,13 +227,27 @@ const WODGenerator = () => {
     setSabotageExercise(newExercise);
     setSabotageActive(true);
     
-    // Add to WOD
     setCurrentWOD({
       ...currentWOD,
       exercises: [...currentWOD.exercises, newExercise],
       totalEstimatedTime: currentWOD.totalEstimatedTime + newExercise.estimatedTime
     });
   }, [currentWOD]);
+
+  // Get ghost time for current WOD
+  const ghostTime = currentWOD ? getGhostTime(currentWOD) : null;
+
+  // Rare Roll Modal
+  if (showRareRoll && rareChallenge) {
+    return (
+      <RareRoll
+        challengeName={rareChallenge.name}
+        completedCount={Math.floor(Math.random() * 50) + 10}
+        onAccept={handleRareRollAccept}
+        onDecline={handleRareRollDecline}
+      />
+    );
+  }
 
   // Cheat Day Easter Egg
   if (isCheatDay) {
@@ -181,7 +298,29 @@ const WODGenerator = () => {
               Procedurally generated. No mercy protocol.
             </span>
           </p>
+
+          {/* Chronicle Toggle */}
+          <Button
+            onClick={() => setShowChronicle(!showChronicle)}
+            variant="ghost"
+            className="mt-4 font-mono text-xs uppercase"
+          >
+            <History className="w-4 h-4 mr-2" />
+            {showChronicle ? 'HIDE CHRONICLE' : 'VIEW CHRONICLE'}
+          </Button>
         </header>
+
+        {/* Chronicle View */}
+        {showChronicle && streakData && (
+          <section className="mb-12 animate-fade-in space-y-6">
+            <StreakCounter
+              currentStreak={streakData.current_streak}
+              longestStreak={streakData.longest_streak}
+              totalWorkouts={streakData.total_workouts}
+            />
+            <HallOfPain workouts={workoutHistory} />
+          </section>
+        )}
 
         {/* Sabotage Alert */}
         {sabotageActive && sabotageExercise && (
@@ -219,28 +358,32 @@ const WODGenerator = () => {
         )}
 
         {/* Package Selector */}
-        <section className="mb-10">
-          <h2 className="text-xs uppercase tracking-widest text-muted-foreground mb-4 font-mono flex items-center gap-2">
-            <span className="text-primary">//</span> SELECT VARIABLE
-          </h2>
-          <PackageSelector 
-            selectedPackage={selectedPackage} 
-            onSelect={setSelectedPackage} 
-          />
-        </section>
+        {!showChronicle && (
+          <section className="mb-10">
+            <h2 className="text-xs uppercase tracking-widest text-muted-foreground mb-4 font-mono flex items-center gap-2">
+              <span className="text-primary">//</span> SELECT VARIABLE
+            </h2>
+            <PackageSelector 
+              selectedPackage={selectedPackage} 
+              onSelect={setSelectedPackage} 
+            />
+          </section>
+        )}
 
         {/* Generate Button */}
-        <section className="mb-10">
-          <GenerateButton 
-            onClick={handleGenerate} 
-            isGenerating={isGenerating}
-            hasWorkout={!!currentWOD}
-            remainingGenerations={remainingGenerations}
-          />
-        </section>
+        {!showChronicle && (
+          <section className="mb-10">
+            <GenerateButton 
+              onClick={handleGenerate} 
+              isGenerating={isGenerating}
+              hasWorkout={!!currentWOD}
+              remainingGenerations={remainingGenerations}
+            />
+          </section>
+        )}
 
         {/* Generated Workout */}
-        {currentWOD && (
+        {currentWOD && !showChronicle && (
           <section className="animate-fade-in">
             {/* Sequence header */}
             <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-6">
@@ -266,6 +409,17 @@ const WODGenerator = () => {
               </div>
             )}
 
+            {/* Global Stats */}
+            {globalStats && globalStats.total_completions > 0 && (
+              <div className="mb-6">
+                <GlobalStats
+                  totalCompletions={globalStats.total_completions}
+                  averageTime={globalStats.average_time}
+                  fastestTime={globalStats.fastest_time}
+                />
+              </div>
+            )}
+
             {/* Slot Machine Results */}
             <div className="card-brutal p-6 md:p-8 mb-8">
               <SlotMachine 
@@ -277,19 +431,53 @@ const WODGenerator = () => {
               />
             </div>
 
+            {/* Pre-Workout Checklist */}
+            {showChecklist && (
+              <PreWorkoutChecklist
+                onComplete={handleChecklistComplete}
+                onSkip={handleChecklistSkip}
+              />
+            )}
+
+            {/* Post-Workout Survey */}
+            {showSurvey && (
+              <div className="card-brutal p-6 md:p-8 scanlines">
+                <PostWorkoutSurvey
+                  actualTime={workoutTime}
+                  targetTime={currentWOD.targetTime}
+                  beatTarget={beatTarget}
+                  onSubmit={handleSurveySubmit}
+                  onSkip={handleSurveySkip}
+                />
+              </div>
+            )}
+
             {/* Timer */}
-            {showTimer && (
+            {showTimer && !showSurvey && !showChecklist && (
               <div className="card-brutal p-6 md:p-8 animate-slide-up scanlines">
                 <h3 className="text-center text-xs uppercase tracking-widest text-muted-foreground mb-2 font-mono">
                   <Clock className="w-4 h-4 inline mr-2" />
                   STOPWATCH vs ALGORITHM
                 </h3>
+                
+                {/* Ghost Mode */}
+                {ghostTime && (
+                  <div className="mb-4">
+                    <GhostMode
+                      ghostTime={ghostTime}
+                      currentTime={0}
+                      isActive={true}
+                    />
+                  </div>
+                )}
+                
                 <Timer 
                   initialTime={0}
                   isCountdown={false}
                   targetTime={currentWOD.targetTime}
                   onScaleDown={handleScaleDown}
                   onSabotage={handleSabotage}
+                  onComplete={(time, didBeat) => handleWorkoutComplete(time || 0, didBeat || false)}
                 />
               </div>
             )}

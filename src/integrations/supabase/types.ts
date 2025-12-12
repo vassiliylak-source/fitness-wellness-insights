@@ -14,7 +14,132 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      daily_tips: {
+        Row: {
+          created_at: string
+          id: string
+          tip_date: string
+          tip_text: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          tip_date: string
+          tip_text: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          tip_date?: string
+          tip_text?: string
+        }
+        Relationships: []
+      }
+      workout_global_stats: {
+        Row: {
+          average_time: number
+          fastest_time: number | null
+          id: string
+          total_completions: number
+          updated_at: string
+          workout_hash: string
+        }
+        Insert: {
+          average_time?: number
+          fastest_time?: number | null
+          id?: string
+          total_completions?: number
+          updated_at?: string
+          workout_hash: string
+        }
+        Update: {
+          average_time?: number
+          fastest_time?: number | null
+          id?: string
+          total_completions?: number
+          updated_at?: string
+          workout_hash?: string
+        }
+        Relationships: []
+      }
+      workout_logs: {
+        Row: {
+          actual_time: number | null
+          completed_at: string
+          created_at: string
+          difficulty_rating: number | null
+          exercises: Json
+          feeling: string | null
+          id: string
+          package_type: string
+          session_id: string
+          target_time: number
+          workout_hash: string
+        }
+        Insert: {
+          actual_time?: number | null
+          completed_at?: string
+          created_at?: string
+          difficulty_rating?: number | null
+          exercises: Json
+          feeling?: string | null
+          id?: string
+          package_type: string
+          session_id: string
+          target_time: number
+          workout_hash: string
+        }
+        Update: {
+          actual_time?: number | null
+          completed_at?: string
+          created_at?: string
+          difficulty_rating?: number | null
+          exercises?: Json
+          feeling?: string | null
+          id?: string
+          package_type?: string
+          session_id?: string
+          target_time?: number
+          workout_hash?: string
+        }
+        Relationships: []
+      }
+      workout_streaks: {
+        Row: {
+          created_at: string
+          current_streak: number
+          id: string
+          last_workout_date: string | null
+          longest_streak: number
+          session_id: string
+          total_workouts: number
+          unlocked_features: Json
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          current_streak?: number
+          id?: string
+          last_workout_date?: string | null
+          longest_streak?: number
+          session_id: string
+          total_workouts?: number
+          unlocked_features?: Json
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          current_streak?: number
+          id?: string
+          last_workout_date?: string | null
+          longest_streak?: number
+          session_id?: string
+          total_workouts?: number
+          unlocked_features?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
