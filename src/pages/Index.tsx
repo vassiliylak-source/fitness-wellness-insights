@@ -1,5 +1,4 @@
 import WODGenerator from '@/components/WOD/WODGenerator';
-import { ThemeToggle } from '@/components/ui/theme-toggle';
 
 const Index = () => {
   return (
