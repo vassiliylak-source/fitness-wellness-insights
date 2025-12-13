@@ -41,7 +41,7 @@ const WODGenerator = () => {
   const [isSpinning, setIsSpinning] = useState(false);
   const [showTimer, setShowTimer] = useState(false);
   const [algorithmPhrase, setAlgorithmPhrase] = useState('');
-  const [remainingGenerations, setRemainingGenerations] = useState(1);
+  const [remainingGenerations, setRemainingGenerations] = useState(3);
   const [sabotageActive, setSabotageActive] = useState(false);
   const [sabotageExercise, setSabotageExercise] = useState<GeneratedExercise | null>(null);
   const [isScaledDown, setIsScaledDown] = useState(false);
