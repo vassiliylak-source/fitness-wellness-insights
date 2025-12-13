@@ -74,6 +74,7 @@ export type Database = {
           package_type: string
           session_id: string
           target_time: number
+          user_id: string | null
           workout_hash: string
         }
         Insert: {
@@ -87,6 +88,7 @@ export type Database = {
           package_type: string
           session_id: string
           target_time: number
+          user_id?: string | null
           workout_hash: string
         }
         Update: {
@@ -100,6 +102,7 @@ export type Database = {
           package_type?: string
           session_id?: string
           target_time?: number
+          user_id?: string | null
           workout_hash?: string
         }
         Relationships: []
@@ -115,6 +118,7 @@ export type Database = {
           total_workouts: number
           unlocked_features: Json
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           created_at?: string
@@ -126,6 +130,7 @@ export type Database = {
           total_workouts?: number
           unlocked_features?: Json
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           created_at?: string
@@ -137,6 +142,7 @@ export type Database = {
           total_workouts?: number
           unlocked_features?: Json
           updated_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }

@@ -1,8 +1,9 @@
-// Session management for anonymous user tracking and workout persistence
+// Session management for authenticated user tracking and workout persistence
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { GeneratedWOD, GeneratedExercise } from '@/constants/wod';
 import { Json } from '@/integrations/supabase/types';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface WorkoutLog {
   id: string;
@@ -30,16 +31,6 @@ interface GlobalStats {
   fastest_time: number | null;
 }
 
-// Generate unique session ID for anonymous user
-const getSessionId = (): string => {
-  let sessionId = localStorage.getItem('chaos_session_id');
-  if (!sessionId) {
-    sessionId = `session_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
-    localStorage.setItem('chaos_session_id', sessionId);
-  }
-  return sessionId;
-};
-
 // Generate workout hash for comparing similar workouts
 const generateWorkoutHash = (wod: GeneratedWOD): string => {
   const exerciseIds = wod.exercises.map(e => e.exercise.id).sort().join('_');
@@ -47,23 +38,31 @@ const generateWorkoutHash = (wod: GeneratedWOD): string => {
 };
 
 export const useWorkoutSession = () => {
-  const [sessionId] = useState(getSessionId);
+  const { user } = useAuth();
   const [streakData, setStreakData] = useState<StreakData | null>(null);
   const [workoutHistory, setWorkoutHistory] = useState<WorkoutLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Fetch streak data on mount
+  // Fetch streak data on mount or user change
   useEffect(() => {
-    fetchStreakData();
-    fetchWorkoutHistory();
-  }, [sessionId]);
+    if (user) {
+      fetchStreakData();
+      fetchWorkoutHistory();
+    } else {
+      setStreakData(null);
+      setWorkoutHistory([]);
+      setIsLoading(false);
+    }
+  }, [user?.id]);
 
   const fetchStreakData = async () => {
+    if (!user) return;
+    
     try {
       const { data, error } = await supabase
         .from('workout_streaks')
         .select('*')
-        .eq('session_id', sessionId)
+        .eq('user_id', user.id)
         .maybeSingle();
 
       if (error && error.code !== 'PGRST116') {
@@ -99,11 +98,13 @@ export const useWorkoutSession = () => {
   };
 
   const fetchWorkoutHistory = async () => {
+    if (!user) return;
+    
     try {
       const { data, error } = await supabase
         .from('workout_logs')
         .select('*')
-        .eq('session_id', sessionId)
+        .eq('user_id', user.id)
         .order('completed_at', { ascending: false })
         .limit(50);
 
@@ -136,14 +137,19 @@ export const useWorkoutSession = () => {
     difficultyRating?: number,
     feeling?: 'dead' | 'ok' | 'more'
   ) => {
+    if (!user) return false;
+    
     const workoutHash = generateWorkoutHash(wod);
     const today = new Date().toISOString().split('T')[0];
+    // Keep session_id for backward compatibility with existing data
+    const sessionId = `user_${user.id}`;
 
     try {
       // Insert workout log
       const { error: logError } = await supabase
         .from('workout_logs')
         .insert({
+          user_id: user.id,
           session_id: sessionId,
           workout_hash: workoutHash,
           package_type: wod.package,
@@ -186,22 +192,44 @@ export const useWorkoutSession = () => {
         unlockedFeatures.push('mythic_access');
       }
 
-      // Upsert streak data
-      const { error: streakError } = await supabase
+      // Upsert streak data - use user_id for uniqueness
+      const { data: existingStreak } = await supabase
         .from('workout_streaks')
-        .upsert({
-          session_id: sessionId,
-          current_streak: newStreak,
-          longest_streak: newLongest,
-          last_workout_date: today,
-          total_workouts: newTotal,
-          unlocked_features: unlockedFeatures as unknown as Json
-        }, {
-          onConflict: 'session_id'
-        });
+        .select('id')
+        .eq('user_id', user.id)
+        .maybeSingle();
 
-      if (streakError) {
-        console.error('Error updating streak:', streakError);
+      if (existingStreak) {
+        const { error: streakError } = await supabase
+          .from('workout_streaks')
+          .update({
+            current_streak: newStreak,
+            longest_streak: newLongest,
+            last_workout_date: today,
+            total_workouts: newTotal,
+            unlocked_features: unlockedFeatures as unknown as Json
+          })
+          .eq('user_id', user.id);
+
+        if (streakError) {
+          console.error('Error updating streak:', streakError);
+        }
+      } else {
+        const { error: streakError } = await supabase
+          .from('workout_streaks')
+          .insert({
+            user_id: user.id,
+            session_id: sessionId,
+            current_streak: newStreak,
+            longest_streak: newLongest,
+            last_workout_date: today,
+            total_workouts: newTotal,
+            unlocked_features: unlockedFeatures as unknown as Json
+          });
+
+        if (streakError) {
+          console.error('Error inserting streak:', streakError);
+        }
       }
 
       // Update global stats
@@ -287,7 +315,7 @@ export const useWorkoutSession = () => {
   };
 
   return {
-    sessionId,
+    sessionId: user?.id || null,
     streakData,
     workoutHistory,
     isLoading,
@@ -301,7 +329,6 @@ export const useWorkoutSession = () => {
 // Helper: check if date2 is the day after date1
 function isNextDay(date1: string, date2: string): boolean {
   const d1 = new Date(date1);
-  const d2 = new Date(date2);
   d1.setDate(d1.getDate() + 1);
   return d1.toISOString().split('T')[0] === date2;
 }
