@@ -25,6 +25,7 @@ import { audioEngine } from '@/lib/audioEngine';
 import { useWorkoutSession } from '@/hooks/useWorkoutSession';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
+import AuthRequiredModal from '@/components/AuthRequiredModal';
 
 // Mythic challenges for rare rolls
 const MYTHIC_CHALLENGES = [
@@ -46,6 +47,7 @@ const WODGenerator = () => {
   const [sabotageExercise, setSabotageExercise] = useState<GeneratedExercise | null>(null);
   const [isScaledDown, setIsScaledDown] = useState(false);
   const [isCheatDay, setIsCheatDay] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
   
   // Retention system states
   const [showChecklist, setShowChecklist] = useState(false);
@@ -99,6 +101,12 @@ const WODGenerator = () => {
   }, [currentWOD, getGlobalStats]);
 
   const handleGenerate = useCallback(() => {
+    // Check if user is authenticated
+    if (!user) {
+      setShowAuthModal(true);
+      return;
+    }
+
     const { canGen } = canGenerate();
     if (!canGen) return;
 
@@ -136,7 +144,7 @@ const WODGenerator = () => {
       
       audioEngine.play('shutter');
     }, 800);
-  }, [selectedPackage]);
+  }, [selectedPackage, user]);
 
   const handleSpinComplete = useCallback(() => {
     // Show pre-workout checklist instead of timer directly
@@ -278,19 +286,22 @@ const WODGenerator = () => {
 
   return (
     <div className={`min-h-screen px-4 py-8 md:py-16 ${sabotageActive ? 'sabotage-flash' : ''}`}>
+      <AuthRequiredModal open={showAuthModal} onOpenChange={setShowAuthModal} />
       <div className="max-w-4xl mx-auto">
-        {/* Sign Out Button */}
-        <div className="absolute top-4 right-4">
-          <Button
-            onClick={signOut}
-            variant="ghost"
-            size="sm"
-            className="font-mono text-xs uppercase text-muted-foreground hover:text-destructive"
-          >
-            <LogOut className="w-4 h-4 mr-2" />
-            SIGN OUT
-          </Button>
-        </div>
+        {/* Sign Out Button - only show when authenticated */}
+        {user && (
+          <div className="absolute top-4 right-4">
+            <Button
+              onClick={signOut}
+              variant="ghost"
+              size="sm"
+              className="font-mono text-xs uppercase text-muted-foreground hover:text-destructive"
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              SIGN OUT
+            </Button>
+          </div>
+        )}
 
         {/* Header */}
         <header className="text-center mb-12">
@@ -316,7 +327,13 @@ const WODGenerator = () => {
 
           {/* Chronicle Toggle */}
           <Button
-            onClick={() => setShowChronicle(!showChronicle)}
+            onClick={() => {
+              if (!user) {
+                setShowAuthModal(true);
+                return;
+              }
+              setShowChronicle(!showChronicle);
+            }}
             variant="ghost"
             className="mt-4 font-mono text-xs uppercase"
           >
