@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import { Zap, Clock, Target, AlertTriangle, Skull, History } from 'lucide-react';
+import { Zap, Clock, Target, AlertTriangle, Skull, History, LogOut } from 'lucide-react';
 import { 
   generateWOD, 
   GeneratedWOD, 
@@ -23,6 +23,7 @@ import GhostMode from './GhostMode';
 import GlobalStats from './GlobalStats';
 import { audioEngine } from '@/lib/audioEngine';
 import { useWorkoutSession } from '@/hooks/useWorkoutSession';
+import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 
 // Mythic challenges for rare rolls
@@ -60,7 +61,8 @@ const WODGenerator = () => {
     fastest_time: number | null;
   } | null>(null);
 
-  // Workout session hook
+  // Auth and workout session hooks
+  const { signOut, user } = useAuth();
   const { 
     streakData, 
     workoutHistory, 
@@ -277,6 +279,19 @@ const WODGenerator = () => {
   return (
     <div className={`min-h-screen px-4 py-8 md:py-16 ${sabotageActive ? 'sabotage-flash' : ''}`}>
       <div className="max-w-4xl mx-auto">
+        {/* Sign Out Button */}
+        <div className="absolute top-4 right-4">
+          <Button
+            onClick={signOut}
+            variant="ghost"
+            size="sm"
+            className="font-mono text-xs uppercase text-muted-foreground hover:text-destructive"
+          >
+            <LogOut className="w-4 h-4 mr-2" />
+            SIGN OUT
+          </Button>
+        </div>
+
         {/* Header */}
         <header className="text-center mb-12">
           <div className="inline-flex items-center gap-2 mb-4">
