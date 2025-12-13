@@ -248,38 +248,13 @@ export const useWorkoutSession = () => {
 
   const updateGlobalStats = async (workoutHash: string, actualTime: number) => {
     try {
-      const { data: existing } = await supabase
-        .from('workout_global_stats')
-        .select('*')
-        .eq('workout_hash', workoutHash)
-        .maybeSingle();
+      // Use secure edge function to update global stats
+      const { error } = await supabase.functions.invoke('update-global-stats', {
+        body: { workoutHash, actualTime }
+      });
 
-      if (existing) {
-        const newTotal = existing.total_completions + 1;
-        const newAvg = Math.round(
-          (existing.average_time * existing.total_completions + actualTime) / newTotal
-        );
-        const newFastest = existing.fastest_time 
-          ? Math.min(existing.fastest_time, actualTime)
-          : actualTime;
-
-        await supabase
-          .from('workout_global_stats')
-          .update({
-            total_completions: newTotal,
-            average_time: newAvg,
-            fastest_time: newFastest
-          })
-          .eq('workout_hash', workoutHash);
-      } else {
-        await supabase
-          .from('workout_global_stats')
-          .insert({
-            workout_hash: workoutHash,
-            total_completions: 1,
-            average_time: actualTime,
-            fastest_time: actualTime
-          });
+      if (error) {
+        console.error('Error updating global stats:', error);
       }
     } catch (err) {
       console.error('Error updating global stats:', err);
