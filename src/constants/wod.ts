@@ -533,7 +533,7 @@ export const formatTime = (seconds: number): string => {
 export const STORAGE_KEY_LAST_GEN = 'chaos_protocol_last_gen';
 export const STORAGE_KEY_GEN_COUNT = 'chaos_protocol_gen_count';
 
-// Check if user can generate (1 per day for free)
+// Check if user can generate (3 per day for free)
 export const canGenerate = (): { canGen: boolean; remaining: number } => {
   const today = new Date().toDateString();
   const lastGen = localStorage.getItem(STORAGE_KEY_LAST_GEN);
@@ -543,10 +543,10 @@ export const canGenerate = (): { canGen: boolean; remaining: number } => {
     // New day, reset count
     localStorage.setItem(STORAGE_KEY_LAST_GEN, today);
     localStorage.setItem(STORAGE_KEY_GEN_COUNT, '0');
-    return { canGen: true, remaining: 1 };
+    return { canGen: true, remaining: 3 };
   }
   
-  const maxFreeGens = 1;
+  const maxFreeGens = 3;
   return { canGen: genCount < maxFreeGens, remaining: Math.max(0, maxFreeGens - genCount) };
 };
 
