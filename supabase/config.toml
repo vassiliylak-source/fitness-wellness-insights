@@ -1,7 +1,10 @@
 project_id = "xworaiuvlcvipzkurjun"
 
 [functions.analyze-fitness]
-verify_jwt = false
+verify_jwt = true
 
 [functions.fitness-chat]
-verify_jwt = false
+verify_jwt = true
+
+[functions.update-global-stats]
+verify_jwt = true
