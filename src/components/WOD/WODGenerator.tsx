@@ -305,7 +305,7 @@ const WODGenerator = () => {
 
         {/* Header */}
         <header className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 mb-4">
+          <div className="inline-flex items-center gap-2 mb-4" aria-hidden="true">
             <span className="text-primary">◈</span>
             <span className="text-[10px] uppercase tracking-[0.4em] text-muted-foreground font-mono">
               CHAOS ENGINE v2.0
@@ -318,7 +318,7 @@ const WODGenerator = () => {
           </h1>
           
           <p className="text-muted-foreground max-w-lg mx-auto text-sm md:text-base font-mono">
-            The algorithm creates. You execute.
+            Free AI-powered workout generator for CrossFit-style WODs.
             <br />
             <span className="text-primary">
               Procedurally generated. No mercy protocol.
