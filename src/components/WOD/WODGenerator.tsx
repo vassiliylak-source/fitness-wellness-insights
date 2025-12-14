@@ -10,6 +10,13 @@ import {
   recordGeneration,
   EXERCISES
 } from '@/constants/wod';
+import { 
+  MythicRoll, 
+  SecretChallenge,
+  getRandomMythicRoll, 
+  getNextUnlockable,
+  getUnlockedSecrets
+} from '@/constants/secretChallenges';
 import SlotMachine from './SlotMachine';
 import Timer from './Timer';
 import GenerateButton from './GenerateButton';
@@ -19,6 +26,8 @@ import HallOfPain from './Chronicle/HallOfPain';
 import PostWorkoutSurvey from './Chronicle/PostWorkoutSurvey';
 import PreWorkoutChecklist from './Rituals/PreWorkoutChecklist';
 import RareRoll from './EasterEggs/RareRoll';
+import SecretUnlock from './EasterEggs/SecretUnlock';
+import UnlockProgress from './EasterEggs/UnlockProgress';
 import GhostMode from './GhostMode';
 import GlobalStats from './GlobalStats';
 import { audioEngine } from '@/lib/audioEngine';
@@ -26,14 +35,6 @@ import { useWorkoutSession } from '@/hooks/useWorkoutSession';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import AuthRequiredModal from '@/components/AuthRequiredModal';
-
-// Mythic challenges for rare rolls
-const MYTHIC_CHALLENGES = [
-  { name: 'DEATH BY BURPEES', description: '100 burpees for time' },
-  { name: 'CENTURY SQUATS', description: '100 air squats, no breaks' },
-  { name: 'IRON PLANK', description: '5 minute plank hold' },
-  { name: 'PUSH-UP GAUNTLET', description: '75 push-ups, any partition' }
-];
 
 const WODGenerator = () => {
   const [selectedPackage, setSelectedPackage] = useState('bodyweight');
@@ -56,7 +57,9 @@ const WODGenerator = () => {
   const [workoutTime, setWorkoutTime] = useState(0);
   const [beatTarget, setBeatTarget] = useState(false);
   const [showRareRoll, setShowRareRoll] = useState(false);
-  const [rareChallenge, setRareChallenge] = useState<typeof MYTHIC_CHALLENGES[0] | null>(null);
+  const [rareChallenge, setRareChallenge] = useState<MythicRoll | null>(null);
+  const [showSecretUnlock, setShowSecretUnlock] = useState(false);
+  const [unlockedSecret, setUnlockedSecret] = useState<SecretChallenge | null>(null);
   const [globalStats, setGlobalStats] = useState<{
     total_completions: number;
     average_time: number;
@@ -112,7 +115,7 @@ const WODGenerator = () => {
 
     // Check for rare roll (1/100 chance)
     if (Math.random() < 0.01) {
-      const challenge = MYTHIC_CHALLENGES[Math.floor(Math.random() * MYTHIC_CHALLENGES.length)];
+      const challenge = getRandomMythicRoll();
       setRareChallenge(challenge);
       setShowRareRoll(true);
       audioEngine.play('glitch');
@@ -182,14 +185,69 @@ const WODGenerator = () => {
   }, [currentWOD, workoutTime, recordWorkout]);
 
   const handleRareRollAccept = useCallback(() => {
+    if (!rareChallenge) return;
+    
+    // Convert mythic roll to a special WOD
+    const mythicExercises: GeneratedExercise[] = rareChallenge.exercises.map(ex => ({
+      exercise: EXERCISES.find(e => e.name === ex.name) || EXERCISES[0],
+      value: ex.value,
+      format: ex.measureType,
+      estimatedTime: ex.measureType === 'seconds' ? ex.value : ex.value * 3
+    }));
+
+    const totalTime = mythicExercises.reduce((sum, ex) => sum + ex.estimatedTime, 0);
+    
+    setCurrentWOD({
+      exercises: mythicExercises,
+      totalEstimatedTime: totalTime,
+      targetTime: Math.round(totalTime * 0.9),
+      format: 'reps',
+      package: 'MYTHIC',
+      sequenceId: `MYTH-${Math.floor(Math.random() * 1000)}`
+    });
+    
+    setAlgorithmPhrase('MYTHIC PROTOCOL ENGAGED');
     setShowRareRoll(false);
-    // Generate the mythic challenge as a special WOD
-    handleGenerate();
-  }, [handleGenerate]);
+    setShowChecklist(true);
+    audioEngine.play('shutter');
+  }, [rareChallenge]);
 
   const handleRareRollDecline = useCallback(() => {
     setShowRareRoll(false);
     setRareChallenge(null);
+  }, []);
+
+  const handleSecretAccept = useCallback(() => {
+    if (!unlockedSecret) return;
+    
+    // Convert secret challenge to a special WOD
+    const secretExercises: GeneratedExercise[] = unlockedSecret.exercises.map(ex => ({
+      exercise: EXERCISES.find(e => e.name === ex.name) || EXERCISES[0],
+      value: ex.value,
+      format: ex.measureType,
+      estimatedTime: ex.measureType === 'seconds' ? ex.value : ex.value * 3
+    }));
+
+    const totalTime = secretExercises.reduce((sum, ex) => sum + ex.estimatedTime, 0);
+    
+    setCurrentWOD({
+      exercises: secretExercises,
+      totalEstimatedTime: totalTime,
+      targetTime: Math.round(totalTime * 0.85),
+      format: 'reps',
+      package: unlockedSecret.name,
+      sequenceId: `SEC-${Math.floor(Math.random() * 1000)}`
+    });
+    
+    setAlgorithmPhrase(unlockedSecret.codename);
+    setShowSecretUnlock(false);
+    setShowChecklist(true);
+    audioEngine.play('shutter');
+  }, [unlockedSecret]);
+
+  const handleSecretDismiss = useCallback(() => {
+    setShowSecretUnlock(false);
+    setUnlockedSecret(null);
   }, []);
 
   const handleRerollExercise = useCallback((index: number) => {
@@ -247,14 +305,38 @@ const WODGenerator = () => {
   // Get ghost time for current WOD
   const ghostTime = currentWOD ? getGhostTime(currentWOD) : null;
 
+  // Get next unlockable progress
+  const nextUnlockable = streakData 
+    ? getNextUnlockable(
+        streakData.current_streak, 
+        streakData.total_workouts, 
+        streakData.unlocked_features
+      ) 
+    : null;
+
+  // Get unlocked secrets
+  const unlockedSecrets = streakData 
+    ? getUnlockedSecrets(streakData.unlocked_features) 
+    : [];
+
   // Rare Roll Modal
   if (showRareRoll && rareChallenge) {
     return (
       <RareRoll
-        challengeName={rareChallenge.name}
-        completedCount={Math.floor(Math.random() * 50) + 10}
+        challenge={rareChallenge}
         onAccept={handleRareRollAccept}
         onDecline={handleRareRollDecline}
+      />
+    );
+  }
+
+  // Secret Unlock Modal
+  if (showSecretUnlock && unlockedSecret) {
+    return (
+      <SecretUnlock
+        challenge={unlockedSecret}
+        onAccept={handleSecretAccept}
+        onDismiss={handleSecretDismiss}
       />
     );
   }
@@ -350,6 +432,49 @@ const WODGenerator = () => {
               longestStreak={streakData.longest_streak}
               totalWorkouts={streakData.total_workouts}
             />
+            
+            {/* Next Unlock Progress */}
+            {nextUnlockable && (
+              <UnlockProgress
+                challenge={nextUnlockable.challenge}
+                progress={nextUnlockable.progress}
+                remaining={nextUnlockable.remaining}
+              />
+            )}
+
+            {/* Unlocked Secrets */}
+            {unlockedSecrets.length > 0 && (
+              <div className="space-y-3">
+                <h3 className="text-xs font-mono text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+                  <span className="text-primary">◈</span> UNLOCKED PROTOCOLS
+                </h3>
+                <div className="grid gap-3">
+                  {unlockedSecrets.map(secret => (
+                    <button
+                      key={secret.id}
+                      onClick={() => {
+                        setUnlockedSecret(secret);
+                        setShowSecretUnlock(true);
+                      }}
+                      className="bg-card/50 border border-primary/30 p-4 text-left font-mono hover:bg-primary/10 transition-colors group"
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="text-2xl">{secret.icon}</span>
+                        <div>
+                          <div className="text-sm font-bold text-foreground group-hover:text-primary transition-colors">
+                            {secret.name}
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            {secret.codename}
+                          </div>
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+            
             <HallOfPain workouts={workoutHistory} />
           </section>
         )}
