@@ -29,6 +29,7 @@ import RareRoll from './EasterEggs/RareRoll';
 import SecretUnlock from './EasterEggs/SecretUnlock';
 import UnlockProgress from './EasterEggs/UnlockProgress';
 import SabotageMode from './SabotageMode';
+import CheatDayScreen from './CheatDayScreen';
 import GhostMode from './GhostMode';
 import GlobalStats from './GlobalStats';
 import { audioEngine } from '@/lib/audioEngine';
@@ -79,11 +80,16 @@ const WODGenerator = () => {
     isLoading 
   } = useWorkoutSession();
 
-  // Check for "Cheat Day" - late night recovery
+  // Check for "Cheat Day" - late night recovery (Fri 11PM-5AM, Sat 11PM-Sun 5AM)
   useEffect(() => {
     const hour = new Date().getHours();
     const day = new Date().getDay();
-    if ((day === 5 || day === 6) && (hour >= 23 || hour < 5)) {
+    // Friday (5) or Saturday (6) late night, OR Sunday (0) early morning
+    const isLateNight = hour >= 23 || hour < 5;
+    const isWeekendNight = (day === 5 || day === 6) && isLateNight;
+    const isSundayEarlyMorning = day === 0 && hour < 5;
+    
+    if (isWeekendNight || isSundayEarlyMorning) {
       setIsCheatDay(true);
     }
   }, []);
@@ -350,27 +356,7 @@ const WODGenerator = () => {
 
   // Cheat Day Easter Egg
   if (isCheatDay) {
-    return (
-      <div className="min-h-screen px-4 py-8 md:py-16 flex items-center justify-center scanlines">
-        <div className="max-w-lg text-center">
-          <div className="text-6xl mb-8">😴</div>
-          <h1 className="text-2xl md:text-4xl font-mono font-bold text-foreground uppercase mb-4">
-            SYSTEM OVERRIDE
-          </h1>
-          <p className="text-muted-foreground font-mono text-lg mb-8">
-            Recovery is part of the process.
-            <br />
-            <span className="text-primary">Go to sleep.</span>
-          </p>
-          <button 
-            onClick={() => setIsCheatDay(false)}
-            className="text-xs text-muted-foreground/40 font-mono uppercase hover:text-muted-foreground transition-colors"
-          >
-            [OVERRIDE RECOVERY PROTOCOL]
-          </button>
-        </div>
-      </div>
-    );
+    return <CheatDayScreen onOverride={() => setIsCheatDay(false)} />;
   }
 
   return (
