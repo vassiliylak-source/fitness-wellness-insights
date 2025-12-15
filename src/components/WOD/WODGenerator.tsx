@@ -28,6 +28,7 @@ import PreWorkoutChecklist from './Rituals/PreWorkoutChecklist';
 import RareRoll from './EasterEggs/RareRoll';
 import SecretUnlock from './EasterEggs/SecretUnlock';
 import UnlockProgress from './EasterEggs/UnlockProgress';
+import SabotageMode from './SabotageMode';
 import GhostMode from './GhostMode';
 import GlobalStats from './GlobalStats';
 import { audioEngine } from '@/lib/audioEngine';
@@ -46,6 +47,7 @@ const WODGenerator = () => {
   const [remainingGenerations, setRemainingGenerations] = useState(3);
   const [sabotageActive, setSabotageActive] = useState(false);
   const [sabotageExercise, setSabotageExercise] = useState<GeneratedExercise | null>(null);
+  const [showSabotageOverlay, setShowSabotageOverlay] = useState(false);
   const [isScaledDown, setIsScaledDown] = useState(false);
   const [isCheatDay, setIsCheatDay] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -293,7 +295,7 @@ const WODGenerator = () => {
     };
     
     setSabotageExercise(newExercise);
-    setSabotageActive(true);
+    setShowSabotageOverlay(true);
     
     setCurrentWOD({
       ...currentWOD,
@@ -301,6 +303,11 @@ const WODGenerator = () => {
       totalEstimatedTime: currentWOD.totalEstimatedTime + newExercise.estimatedTime
     });
   }, [currentWOD]);
+
+  const handleSabotageDismiss = useCallback(() => {
+    setShowSabotageOverlay(false);
+    setSabotageActive(true);
+  }, []);
 
   // Get ghost time for current WOD
   const ghostTime = currentWOD ? getGhostTime(currentWOD) : null;
@@ -479,24 +486,25 @@ const WODGenerator = () => {
           </section>
         )}
 
-        {/* Sabotage Alert */}
-        {sabotageActive && sabotageExercise && (
-          <div className="mb-8 animate-shake">
-            <div className="card-brutal p-6 border-destructive bg-destructive/10">
-              <div className="flex items-center justify-center gap-3 mb-4">
-                <Skull className="w-6 h-6 text-destructive" />
-                <span className="font-mono font-bold text-destructive uppercase tracking-widest">
-                  SYSTEM GLITCH DETECTED
-                </span>
-                <Skull className="w-6 h-6 text-destructive" />
-              </div>
-              <p className="text-center font-mono text-foreground">
-                <span className="text-destructive font-bold">+{sabotageExercise.value}</span>
-                {' '}{sabotageExercise.exercise.name.toUpperCase()}{' '}
-                <span className="text-muted-foreground">ADDED</span>
-              </p>
-              <p className="text-center text-xs text-muted-foreground/60 font-mono mt-2">
-                Chaos is inevitable. Adapt or fail.
+        {/* Sabotage Fullscreen Overlay */}
+        {showSabotageOverlay && sabotageExercise && (
+          <SabotageMode
+            isVisible={showSabotageOverlay}
+            onDismiss={handleSabotageDismiss}
+            addedExercise={{
+              name: sabotageExercise.exercise.name.toUpperCase(),
+              reps: sabotageExercise.value
+            }}
+          />
+        )}
+
+        {/* Sabotage Indicator (after dismissal) */}
+        {sabotageActive && sabotageExercise && !showSabotageOverlay && (
+          <div className="mb-8">
+            <div className="card-brutal p-4 border-destructive/50 bg-destructive/5">
+              <p className="text-center font-mono text-sm text-muted-foreground">
+                <span className="text-destructive font-bold">+{sabotageExercise.value} {sabotageExercise.exercise.name.toUpperCase()}</span>
+                {' '}added to protocol
               </p>
             </div>
           </div>
