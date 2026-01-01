@@ -1,7 +1,7 @@
 // Audio Engine - Industrial sounds, BPM metronome, and voice commands
 // Uses Web Audio API for sound synthesis
 
-export type SoundType = 'shutter' | 'hydraulic' | 'siren' | 'beep' | 'glitch' | 'complete';
+export type SoundType = 'shutter' | 'hydraulic' | 'siren' | 'beep' | 'glitch' | 'complete' | 'accept' | 'progress';
 
 class AudioEngine {
   private audioContext: AudioContext | null = null;
@@ -156,6 +156,65 @@ class AudioEngine {
     });
   }
 
+  // Challenge accepted - epic confirmation sound
+  playAccept() {
+    if (!this.isEnabled) return;
+    const ctx = this.getContext();
+    
+    // Power-up style rising tone
+    const osc1 = ctx.createOscillator();
+    const osc2 = ctx.createOscillator();
+    const gain = ctx.createGain();
+    
+    osc1.connect(gain);
+    osc2.connect(gain);
+    gain.connect(ctx.destination);
+    
+    osc1.type = 'sawtooth';
+    osc2.type = 'square';
+    
+    // Rising sweep
+    osc1.frequency.setValueAtTime(200, ctx.currentTime);
+    osc1.frequency.exponentialRampToValueAtTime(600, ctx.currentTime + 0.15);
+    osc1.frequency.setValueAtTime(800, ctx.currentTime + 0.2);
+    
+    osc2.frequency.setValueAtTime(100, ctx.currentTime);
+    osc2.frequency.exponentialRampToValueAtTime(400, ctx.currentTime + 0.15);
+    osc2.frequency.setValueAtTime(600, ctx.currentTime + 0.2);
+    
+    gain.gain.setValueAtTime(0.25, ctx.currentTime);
+    gain.gain.setValueAtTime(0.3, ctx.currentTime + 0.15);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+    
+    osc1.start(ctx.currentTime);
+    osc2.start(ctx.currentTime);
+    osc1.stop(ctx.currentTime + 0.4);
+    osc2.stop(ctx.currentTime + 0.4);
+  }
+
+  // Progress logged - satisfying click/ding
+  playProgress() {
+    if (!this.isEnabled) return;
+    const ctx = this.getContext();
+    
+    // Quick positive confirmation
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(600, ctx.currentTime);
+    osc.frequency.setValueAtTime(900, ctx.currentTime + 0.05);
+    
+    gain.gain.setValueAtTime(0.25, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+    
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.15);
+  }
+
   // Timer tick sound
   playTick() {
     if (!this.isEnabled) return;
@@ -243,6 +302,12 @@ class AudioEngine {
         break;
       case 'beep':
         this.playTick();
+        break;
+      case 'accept':
+        this.playAccept();
+        break;
+      case 'progress':
+        this.playProgress();
         break;
     }
   }

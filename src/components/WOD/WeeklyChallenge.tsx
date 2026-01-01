@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Trophy, Users, CheckCircle, Target } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
+import { audioEngine } from '@/lib/audioEngine';
 
 interface WeeklyChallengeProps {
   onAccept?: () => void;
@@ -111,6 +112,7 @@ const WeeklyChallenge = ({
 
   const handleAccept = () => {
     setAccepted(true);
+    audioEngine.play('accept');
     onAccept?.();
   };
 
@@ -119,6 +121,14 @@ const WeeklyChallenge = ({
     if (!isNaN(value) && value > 0) {
       const newProgress = localProgress + value;
       setLocalProgress(newProgress);
+      
+      // Play appropriate sound
+      if (newProgress >= challenge.target) {
+        audioEngine.play('complete');
+      } else {
+        audioEngine.play('progress');
+      }
+      
       onLogProgress?.(value);
       setInputValue('');
       setShowInput(false);
