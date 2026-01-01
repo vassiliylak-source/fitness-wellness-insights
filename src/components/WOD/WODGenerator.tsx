@@ -30,6 +30,7 @@ import SecretUnlock from './EasterEggs/SecretUnlock';
 import UnlockProgress from './EasterEggs/UnlockProgress';
 import SabotageMode from './SabotageMode';
 import GhostMode from './GhostMode';
+import WeeklyChallenge from './WeeklyChallenge';
 import GlobalStats from './GlobalStats';
 import { audioEngine } from '@/lib/audioEngine';
 import { useWorkoutSession } from '@/hooks/useWorkoutSession';
@@ -429,6 +430,11 @@ const WODGenerator = () => {
             <History className="w-4 h-4 mr-2" />
             {showChronicle ? 'HIDE CHRONICLE' : 'VIEW CHRONICLE'}
           </Button>
+
+          {/* Weekly Challenge */}
+          <div className="mt-6 max-w-lg mx-auto">
+            <WeeklyChallenge />
+          </div>
         </header>
 
         {/* Chronicle View */}
