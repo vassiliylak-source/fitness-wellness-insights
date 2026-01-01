@@ -1,15 +1,10 @@
-import { useState, useEffect } from 'react';
-import { Trophy, Users, CheckCircle, Target } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { Trophy, Users, CheckCircle, Target, Crown, Medal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { audioEngine } from '@/lib/audioEngine';
-
-interface WeeklyChallengeProps {
-  onAccept?: () => void;
-  isAccepted?: boolean;
-  currentProgress?: number;
-  onLogProgress?: (amount: number) => void;
-}
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface Challenge {
   id: string;
@@ -18,8 +13,13 @@ interface Challenge {
   target: number;
   unit: string;
   splitSuggestion: string;
-  participants: number;
   icon: string;
+}
+
+interface LeaderboardEntry {
+  display_name: string;
+  progress: number;
+  completed: boolean;
 }
 
 // Weekly challenges rotate based on week number
@@ -31,7 +31,6 @@ const WEEKLY_CHALLENGES: Challenge[] = [
     target: 100,
     unit: 'push-ups',
     splitSuggestion: 'Split into 10 sets of 10',
-    participants: 2439,
     icon: '💪'
   },
   {
@@ -41,7 +40,6 @@ const WEEKLY_CHALLENGES: Challenge[] = [
     target: 200,
     unit: 'squats',
     splitSuggestion: 'Split into 20 sets of 10',
-    participants: 1876,
     icon: '🦵'
   },
   {
@@ -51,7 +49,6 @@ const WEEKLY_CHALLENGES: Challenge[] = [
     target: 50,
     unit: 'burpees',
     splitSuggestion: 'Split into 5 sets of 10',
-    participants: 987,
     icon: '🔥'
   },
   {
@@ -61,7 +58,6 @@ const WEEKLY_CHALLENGES: Challenge[] = [
     target: 600,
     unit: 'seconds',
     splitSuggestion: 'Split into 10 sets of 1 minute',
-    participants: 1543,
     icon: '🧱'
   },
   {
@@ -71,67 +67,159 @@ const WEEKLY_CHALLENGES: Challenge[] = [
     target: 150,
     unit: 'lunges',
     splitSuggestion: 'Split into 15 sets of 10',
-    participants: 1234,
     icon: '🏃'
   }
 ];
 
-const getWeeklyChallenge = (): Challenge => {
+const getWeekInfo = () => {
   const now = new Date();
   const startOfYear = new Date(now.getFullYear(), 0, 1);
   const weekNumber = Math.floor((now.getTime() - startOfYear.getTime()) / (7 * 24 * 60 * 60 * 1000));
+  return { weekNumber, year: now.getFullYear() };
+};
+
+const getWeeklyChallenge = (): Challenge => {
+  const { weekNumber } = getWeekInfo();
   return WEEKLY_CHALLENGES[weekNumber % WEEKLY_CHALLENGES.length];
 };
 
-const WeeklyChallenge = ({ 
-  onAccept, 
-  isAccepted = false, 
-  currentProgress = 0,
-  onLogProgress 
-}: WeeklyChallengeProps) => {
+const WeeklyChallenge = () => {
+  const { user } = useAuth();
   const [challenge] = useState<Challenge>(getWeeklyChallenge);
-  const [localProgress, setLocalProgress] = useState(currentProgress);
+  const [localProgress, setLocalProgress] = useState(0);
   const [showInput, setShowInput] = useState(false);
   const [inputValue, setInputValue] = useState('');
-  const [accepted, setAccepted] = useState(isAccepted);
+  const [accepted, setAccepted] = useState(false);
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+  const [participantCount, setParticipantCount] = useState(0);
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [userRank, setUserRank] = useState<number | null>(null);
 
-  // Simulate growing participants (random increase)
-  const [participants, setParticipants] = useState(challenge.participants);
+  const { weekNumber, year } = getWeekInfo();
+
+  // Fetch leaderboard and user progress
+  const fetchData = useCallback(async () => {
+    // Fetch leaderboard
+    const { data: leaderboardData } = await supabase
+      .from('weekly_challenge_participations')
+      .select('display_name, progress, completed_at')
+      .eq('challenge_id', challenge.id)
+      .eq('week_number', weekNumber)
+      .eq('year', year)
+      .order('progress', { ascending: false })
+      .limit(10);
+
+    if (leaderboardData) {
+      setLeaderboard(leaderboardData.map(entry => ({
+        display_name: entry.display_name || 'Anonymous Warrior',
+        progress: entry.progress,
+        completed: entry.completed_at !== null
+      })));
+    }
+
+    // Count total participants
+    const { count } = await supabase
+      .from('weekly_challenge_participations')
+      .select('*', { count: 'exact', head: true })
+      .eq('challenge_id', challenge.id)
+      .eq('week_number', weekNumber)
+      .eq('year', year);
+
+    setParticipantCount(count || 0);
+
+    // Fetch user's own participation
+    if (user) {
+      const { data: userParticipation } = await supabase
+        .from('weekly_challenge_participations')
+        .select('progress')
+        .eq('user_id', user.id)
+        .eq('challenge_id', challenge.id)
+        .eq('week_number', weekNumber)
+        .eq('year', year)
+        .maybeSingle();
+
+      if (userParticipation) {
+        setAccepted(true);
+        setLocalProgress(userParticipation.progress);
+
+        // Find user rank
+        const { count: rankCount } = await supabase
+          .from('weekly_challenge_participations')
+          .select('*', { count: 'exact', head: true })
+          .eq('challenge_id', challenge.id)
+          .eq('week_number', weekNumber)
+          .eq('year', year)
+          .gt('progress', userParticipation.progress);
+
+        setUserRank((rankCount || 0) + 1);
+      }
+    }
+  }, [challenge.id, weekNumber, year, user]);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (Math.random() < 0.3) {
-        setParticipants(prev => prev + Math.floor(Math.random() * 3));
-      }
-    }, 10000);
-    return () => clearInterval(interval);
-  }, []);
+    fetchData();
+  }, [fetchData]);
 
   const progressPercent = Math.min((localProgress / challenge.target) * 100, 100);
   const isCompleted = localProgress >= challenge.target;
 
-  const handleAccept = () => {
-    setAccepted(true);
-    audioEngine.play('accept');
-    onAccept?.();
+  const handleAccept = async () => {
+    if (!user) return;
+
+    const displayName = user.email?.split('@')[0] || 'Warrior';
+    
+    const { error } = await supabase
+      .from('weekly_challenge_participations')
+      .insert({
+        user_id: user.id,
+        session_id: user.id,
+        challenge_id: challenge.id,
+        week_number: weekNumber,
+        year: year,
+        progress: 0,
+        target: challenge.target,
+        display_name: displayName
+      });
+
+    if (!error) {
+      setAccepted(true);
+      audioEngine.play('accept');
+      fetchData();
+    }
   };
 
-  const handleLogProgress = () => {
+  const handleLogProgress = async () => {
+    if (!user) return;
+    
     const value = parseInt(inputValue);
     if (!isNaN(value) && value > 0) {
       const newProgress = localProgress + value;
-      setLocalProgress(newProgress);
+      const nowCompleted = newProgress >= challenge.target;
       
-      // Play appropriate sound
-      if (newProgress >= challenge.target) {
-        audioEngine.play('complete');
-      } else {
-        audioEngine.play('progress');
+      const { error } = await supabase
+        .from('weekly_challenge_participations')
+        .update({ 
+          progress: newProgress,
+          completed_at: nowCompleted ? new Date().toISOString() : null
+        })
+        .eq('user_id', user.id)
+        .eq('challenge_id', challenge.id)
+        .eq('week_number', weekNumber)
+        .eq('year', year);
+
+      if (!error) {
+        setLocalProgress(newProgress);
+        
+        if (nowCompleted) {
+          audioEngine.play('complete');
+        } else {
+          audioEngine.play('progress');
+        }
+        
+        setInputValue('');
+        setShowInput(false);
+        fetchData();
       }
-      
-      onLogProgress?.(value);
-      setInputValue('');
-      setShowInput(false);
     }
   };
 
@@ -142,6 +230,13 @@ const WeeklyChallenge = ({
       return `${mins}:${secs.toString().padStart(2, '0')}`;
     }
     return value.toString();
+  };
+
+  const getRankIcon = (rank: number) => {
+    if (rank === 1) return <Crown className="w-4 h-4 text-yellow-500" />;
+    if (rank === 2) return <Medal className="w-4 h-4 text-gray-400" />;
+    if (rank === 3) return <Medal className="w-4 h-4 text-amber-600" />;
+    return <span className="w-4 text-center font-mono text-xs text-muted-foreground">{rank}</span>;
   };
 
   return (
@@ -182,12 +277,19 @@ const WeeklyChallenge = ({
           💡 {challenge.splitSuggestion}
         </p>
 
-        {/* Social Proof */}
-        <div className="flex items-center gap-2 text-muted-foreground font-mono text-xs mb-4">
-          <Users className="w-4 h-4" />
-          <span>
-            <span className="text-primary font-bold">{participants.toLocaleString()}</span> warriors have accepted this challenge
-          </span>
+        {/* Social Proof & User Rank */}
+        <div className="flex items-center justify-between text-muted-foreground font-mono text-xs mb-4">
+          <div className="flex items-center gap-2">
+            <Users className="w-4 h-4" />
+            <span>
+              <span className="text-primary font-bold">{participantCount.toLocaleString()}</span> warriors
+            </span>
+          </div>
+          {userRank && (
+            <div className="flex items-center gap-2 text-primary">
+              <span>Your rank: #{userRank}</span>
+            </div>
+          )}
         </div>
 
         {/* Progress (if accepted) */}
@@ -207,15 +309,61 @@ const WeeklyChallenge = ({
           </div>
         )}
 
+        {/* Leaderboard Toggle */}
+        <button
+          onClick={() => setShowLeaderboard(!showLeaderboard)}
+          className="w-full text-left text-xs font-mono text-muted-foreground hover:text-primary transition-colors mb-4 flex items-center gap-2"
+        >
+          <Crown className="w-3 h-3" />
+          {showLeaderboard ? '▼ HIDE LEADERBOARD' : '▶ VIEW TOP 10'}
+        </button>
+
+        {/* Leaderboard */}
+        {showLeaderboard && (
+          <div className="mb-4 bg-background/50 border border-border/50 p-3 space-y-2">
+            <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-mono mb-2">
+              TOP PERFORMERS
+            </div>
+            {leaderboard.length === 0 ? (
+              <p className="text-xs font-mono text-muted-foreground text-center py-4">
+                No participants yet. Be the first!
+              </p>
+            ) : (
+              leaderboard.map((entry, index) => (
+                <div 
+                  key={index}
+                  className={`flex items-center justify-between py-1.5 px-2 ${
+                    index === 0 ? 'bg-yellow-500/10 border border-yellow-500/20' : ''
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    {getRankIcon(index + 1)}
+                    <span className="font-mono text-xs text-foreground">
+                      {entry.display_name}
+                    </span>
+                    {entry.completed && (
+                      <CheckCircle className="w-3 h-3 text-green-500" />
+                    )}
+                  </div>
+                  <span className="font-mono text-xs text-primary font-bold">
+                    {formatUnit(entry.progress)}
+                  </span>
+                </div>
+              ))
+            )}
+          </div>
+        )}
+
         {/* Actions */}
         <div className="flex flex-wrap gap-3">
           {!accepted ? (
             <Button
               onClick={handleAccept}
               className="flex-1 font-mono uppercase text-xs bg-primary hover:bg-primary/90"
+              disabled={!user}
             >
               <Target className="w-4 h-4 mr-2" />
-              Accept Challenge
+              {user ? 'Accept Challenge' : 'Sign in to Accept'}
             </Button>
           ) : (
             <>

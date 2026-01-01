@@ -35,6 +35,51 @@ export type Database = {
         }
         Relationships: []
       }
+      weekly_challenge_participations: {
+        Row: {
+          challenge_id: string
+          completed_at: string | null
+          created_at: string
+          display_name: string | null
+          id: string
+          progress: number
+          session_id: string
+          target: number
+          updated_at: string
+          user_id: string
+          week_number: number
+          year: number
+        }
+        Insert: {
+          challenge_id: string
+          completed_at?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          progress?: number
+          session_id: string
+          target: number
+          updated_at?: string
+          user_id: string
+          week_number: number
+          year: number
+        }
+        Update: {
+          challenge_id?: string
+          completed_at?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          progress?: number
+          session_id?: string
+          target?: number
+          updated_at?: string
+          user_id?: string
+          week_number?: number
+          year?: number
+        }
+        Relationships: []
+      }
       workout_global_stats: {
         Row: {
           average_time: number
