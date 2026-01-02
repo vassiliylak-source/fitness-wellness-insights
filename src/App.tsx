@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider } from "./contexts/AuthContext";
+import { ChaosEngineProvider } from "./contexts/ChaosEngineContext";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
@@ -36,7 +37,9 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <AuthProvider>
-              <AppRoutes />
+              <ChaosEngineProvider>
+                <AppRoutes />
+              </ChaosEngineProvider>
             </AuthProvider>
           </BrowserRouter>
         </TooltipProvider>
