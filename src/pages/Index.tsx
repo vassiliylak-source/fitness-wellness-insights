@@ -4,26 +4,60 @@ import VaultDisplay from '@/components/ChaosEngine/VaultDisplay';
 import StakingInterface from '@/components/ChaosEngine/StakingInterface';
 import IntegrityChecks from '@/components/ChaosEngine/IntegrityChecks';
 import LockedTimer from '@/components/ChaosEngine/LockedTimer';
+import ProtocolSelector from '@/components/ChaosEngine/ProtocolSelector';
+import WorkoutDisplay from '@/components/ChaosEngine/WorkoutDisplay';
+import SPStore from '@/components/ChaosEngine/SPStore';
 import { useChaosEngine } from '@/contexts/ChaosEngineContext';
 import { useState, useCallback } from 'react';
-import { Skull, Zap, Terminal } from 'lucide-react';
+import { Skull, Terminal, Settings, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { generateStruggleWorkout, ProtocolType, calculateSPEarned } from '@/lib/struggleEngine';
+import { GeneratedExercise } from '@/constants/wod';
+import { toast } from '@/hooks/use-toast';
 
 const Index = () => {
   const { isStaked, canGenerate, recordGeneration, completeProtocol, vault } = useChaosEngine();
   const [integrityPassed, setIntegrityPassed] = useState(false);
   const [showTimer, setShowTimer] = useState(false);
   const [workoutGenerated, setWorkoutGenerated] = useState(false);
+  const [selectedProtocol, setSelectedProtocol] = useState<ProtocolType>('GRAVITY');
+  const [showStore, setShowStore] = useState(false);
+  
+  // Workout state
+  const [exercises, setExercises] = useState<GeneratedExercise[]>([]);
+  const [criticalOverload, setCriticalOverload] = useState<GeneratedExercise | null>(null);
+  const [targetTime, setTargetTime] = useState(180);
+  const [protocolName, setProtocolName] = useState('');
 
   const handleGenerate = useCallback(() => {
     const { canGen } = canGenerate();
-    if (!canGen) return;
+    if (!canGen) {
+      toast({
+        title: 'GENERATION LIMIT',
+        description: 'Daily protocol limit reached. Upgrade to PRO for unlimited.',
+        variant: 'destructive',
+      });
+      return;
+    }
     
     recordGeneration();
+    
+    // Generate workout using struggle engine
+    const workout = generateStruggleWorkout(selectedProtocol);
+    setExercises(workout.exercises);
+    setCriticalOverload(workout.criticalOverload);
+    setTargetTime(workout.targetTime);
+    setProtocolName(workout.protocol.name);
+    
     setWorkoutGenerated(true);
     setIntegrityPassed(false);
     setShowTimer(false);
-  }, [canGenerate, recordGeneration]);
+    
+    toast({
+      title: 'PROTOCOL COMPILED',
+      description: `${workout.protocol.name} — Target: ${Math.floor(workout.targetTime / 60)}:${(workout.targetTime % 60).toString().padStart(2, '0')}`,
+    });
+  }, [canGenerate, recordGeneration, selectedProtocol]);
 
   const handleIntegrityComplete = useCallback(() => {
     setIntegrityPassed(true);
@@ -33,13 +67,19 @@ const Index = () => {
     setShowTimer(true);
   }, []);
 
-  const handleTimerComplete = useCallback((time: number, beatTarget: boolean) => {
-    const spEarned = beatTarget ? 50 : 25;
+  const handleTimerComplete = useCallback((actualTime: number, beatTarget: boolean) => {
+    const spEarned = calculateSPEarned(actualTime, targetTime, selectedProtocol);
     completeProtocol(spEarned);
+    
+    toast({
+      title: beatTarget ? 'PROTOCOL COMPLETE' : 'PROTOCOL SURVIVED',
+      description: `+${spEarned} SP earned. ${beatTarget ? 'Target beaten.' : 'Keep pushing.'}`,
+    });
+    
     setShowTimer(false);
     setWorkoutGenerated(false);
     setIntegrityPassed(false);
-  }, [completeProtocol]);
+  }, [completeProtocol, targetTime, selectedProtocol]);
 
   const handleTimerAbort = useCallback(() => {
     setShowTimer(false);
@@ -61,7 +101,7 @@ const Index = () => {
         <LiveLossFeed />
 
         {/* Main Terminal */}
-        <main className="max-w-2xl mx-auto px-4 py-8 space-y-8">
+        <main className="max-w-2xl mx-auto px-4 py-8 space-y-6">
           {/* Header */}
           <header className="text-center space-y-4">
             <div className="flex items-center justify-center gap-2">
@@ -88,54 +128,89 @@ const Index = () => {
           {/* Staking Interface (if not staked) */}
           {!isStaked && <StakingInterface />}
 
-          {/* Main Terminal Content */}
+          {/* Main Terminal Content - Protocol Selection & Generation */}
           {isStaked && !workoutGenerated && (
-            <div className="card-terminal p-6 space-y-6">
-              <div className="text-center">
-                <div className="text-xs text-muted-foreground uppercase tracking-widest mb-4">
-                  // PROTOCOL GENERATOR
-                </div>
-                <Button
-                  onClick={handleGenerate}
-                  disabled={remaining <= 0}
-                  className="btn-terminal text-lg px-12 py-6"
-                >
-                  <Skull className="w-5 h-5 mr-3" />
-                  INITIATE SEQUENCE
-                </Button>
-                <div className="text-xs text-muted-foreground mt-4">
-                  {remaining > 0 ? `${remaining} generations remaining today` : 'Daily limit reached'}
+            <div className="space-y-4">
+              {/* Protocol Selector */}
+              <div className="card-terminal p-6">
+                <ProtocolSelector
+                  selected={selectedProtocol}
+                  onSelect={setSelectedProtocol}
+                />
+              </div>
+
+              {/* Generate Button */}
+              <div className="card-terminal p-6">
+                <div className="text-center">
+                  <div className="text-xs text-muted-foreground uppercase tracking-widest mb-4">
+                    // PROTOCOL GENERATOR
+                  </div>
+                  <Button
+                    onClick={handleGenerate}
+                    disabled={remaining <= 0}
+                    className="btn-terminal text-lg px-12 py-6"
+                  >
+                    <Skull className="w-5 h-5 mr-3" />
+                    INITIATE SEQUENCE
+                  </Button>
+                  <div className="text-xs text-muted-foreground mt-4">
+                    {remaining > 0 ? `${remaining} generations remaining today` : 'Daily limit reached'}
+                  </div>
                 </div>
               </div>
+
+              {/* SP Store Toggle */}
+              <button
+                onClick={() => setShowStore(!showStore)}
+                className="w-full flex items-center justify-between p-3 border border-border hover:border-energy/50 transition-colors"
+              >
+                <div className="flex items-center gap-2">
+                  <Settings className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-xs uppercase tracking-widest text-muted-foreground">
+                    SURVIVAL STORE
+                  </span>
+                </div>
+                {showStore ? (
+                  <ChevronUp className="w-4 h-4 text-muted-foreground" />
+                ) : (
+                  <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                )}
+              </button>
+              
+              {showStore && <SPStore />}
             </div>
           )}
 
-          {/* Workout Generated - Integrity Checks */}
+          {/* Workout Generated - Show Workout + Integrity Checks */}
           {workoutGenerated && !showTimer && (
-            <div className="card-terminal p-6 space-y-6 animate-fade-in">
-              <div className="text-center mb-6">
-                <div className="text-2xl font-bold text-primary terminal-glow">
-                  [PROTOCOL COMPILED]
-                </div>
-                <div className="text-xs text-muted-foreground mt-2">
-                  Complete integrity verification to proceed
-                </div>
+            <div className="space-y-4 animate-fade-in">
+              {/* Workout Display */}
+              <div className="card-terminal p-6">
+                <WorkoutDisplay
+                  exercises={exercises}
+                  criticalOverload={criticalOverload}
+                  protocolName={protocolName}
+                  targetTime={targetTime}
+                />
               </div>
 
-              <IntegrityChecks 
-                onAllChecked={handleIntegrityComplete}
-                disabled={showTimer}
-              />
+              {/* Integrity Checks */}
+              <div className="card-terminal p-6">
+                <IntegrityChecks 
+                  onAllChecked={handleIntegrityComplete}
+                  disabled={showTimer}
+                />
 
-              {integrityPassed && (
-                <Button
-                  onClick={handleStartTimer}
-                  className="btn-terminal w-full animate-fade-in"
-                >
-                  <Zap className="w-4 h-4 mr-2" />
-                  ENGAGE EXECUTION TERMINAL
-                </Button>
-              )}
+                {integrityPassed && (
+                  <Button
+                    onClick={handleStartTimer}
+                    className="btn-terminal w-full mt-6 animate-fade-in"
+                  >
+                    <Skull className="w-4 h-4 mr-2" />
+                    ENGAGE EXECUTION TERMINAL
+                  </Button>
+                )}
+              </div>
             </div>
           )}
 
@@ -143,7 +218,7 @@ const Index = () => {
           {showTimer && (
             <div className="card-terminal p-6 animate-fade-in">
               <LockedTimer
-                targetTime={180}
+                targetTime={targetTime}
                 onComplete={handleTimerComplete}
                 onAbort={handleTimerAbort}
               />
@@ -151,10 +226,10 @@ const Index = () => {
           )}
 
           {/* Footer */}
-          <footer className="text-center text-xs text-muted-foreground space-y-2 pt-8">
+          <footer className="text-center text-xs text-muted-foreground space-y-2 pt-8 border-t border-border">
             <p>Evolution is not optional. Discipline is the only currency.</p>
             <p className="text-primary/40">
-              SP: {vault.sweatPoints} | Streak: {vault.streakDays} days
+              SP: {vault.sweatPoints} | Streak: {vault.streakDays} days | Tier: {vault.tier.toUpperCase()}
             </p>
           </footer>
         </main>
