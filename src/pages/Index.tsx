@@ -7,9 +7,12 @@ import LockedTimer from '@/components/ChaosEngine/LockedTimer';
 import ProtocolSelector from '@/components/ChaosEngine/ProtocolSelector';
 import WorkoutDisplay from '@/components/ChaosEngine/WorkoutDisplay';
 import SPStore from '@/components/ChaosEngine/SPStore';
+import SyndicateExplorer from '@/components/Syndicate/SyndicateExplorer';
+import SyndicateTicker from '@/components/Syndicate/SyndicateTicker';
 import { useChaosEngine } from '@/contexts/ChaosEngineContext';
+import { useSyndicate } from '@/contexts/SyndicateContext';
 import { useState, useCallback } from 'react';
-import { Skull, Terminal, Settings, ChevronDown, ChevronUp } from 'lucide-react';
+import { Skull, Terminal, Settings, ChevronDown, ChevronUp, Users, Swords } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { generateStruggleWorkout, ProtocolType, calculateSPEarned } from '@/lib/struggleEngine';
 import { GeneratedExercise } from '@/constants/wod';
@@ -17,11 +20,13 @@ import { toast } from '@/hooks/use-toast';
 
 const Index = () => {
   const { isStaked, canGenerate, recordGeneration, completeProtocol, vault } = useChaosEngine();
+  const { mySyndicate } = useSyndicate();
   const [integrityPassed, setIntegrityPassed] = useState(false);
   const [showTimer, setShowTimer] = useState(false);
   const [workoutGenerated, setWorkoutGenerated] = useState(false);
   const [selectedProtocol, setSelectedProtocol] = useState<ProtocolType>('GRAVITY');
   const [showStore, setShowStore] = useState(false);
+  const [showSyndicates, setShowSyndicates] = useState(false);
   
   // Workout state
   const [exercises, setExercises] = useState<GeneratedExercise[]>([]);
@@ -92,13 +97,16 @@ const Index = () => {
   return (
     <>
       <Helmet>
-        <title>CHAOS ENGINE v4.0 | Biological Evolution Terminal</title>
-        <meta name="description" content="Discipline contract system. Stake capital, execute protocols, or face the Weakness Tax. Evolution is not optional." />
+        <title>CHAOS ENGINE v5.0 | The Syndicate Era</title>
+        <meta name="description" content="Discipline contract system. Stake capital, join syndicates, execute protocols. Your failure enriches your peers. Evolution is not optional." />
       </Helmet>
       
       <div className="min-h-screen bg-background scanlines">
         {/* Live Loss Feed */}
         <LiveLossFeed />
+        
+        {/* Syndicate Ticker */}
+        <SyndicateTicker />
 
         {/* Main Terminal */}
         <main className="max-w-2xl mx-auto px-4 py-8 space-y-6">
@@ -107,7 +115,7 @@ const Index = () => {
             <div className="flex items-center justify-center gap-2">
               <Terminal className="w-5 h-5 text-primary" />
               <span className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
-                BIOLOGICAL EVOLUTION TERMINAL
+                THE SYNDICATE ERA
               </span>
             </div>
             
@@ -116,9 +124,9 @@ const Index = () => {
             </h1>
             
             <p className="text-xs text-muted-foreground max-w-md mx-auto">
-              v4.0 — Loss Aversion Protocol Active
+              v5.0 — Collective Discipline Protocol
               <br />
-              <span className="text-secondary">Discipline is the only currency.</span>
+              <span className="text-secondary">Your weakness enriches the strong.</span>
             </p>
           </header>
 
@@ -126,10 +134,26 @@ const Index = () => {
           <VaultDisplay />
 
           {/* Staking Interface (if not staked) */}
-          {!isStaked && <StakingInterface />}
+          {!isStaked && (
+            <div className="space-y-4">
+              <StakingInterface />
+              
+              {/* Enter Arena CTA */}
+              <div className="text-center">
+                <p className="text-xs text-muted-foreground mb-2">or</p>
+                <Button
+                  onClick={() => setShowSyndicates(true)}
+                  className="btn-terminal"
+                >
+                  <Swords className="w-4 h-4 mr-2" />
+                  ENTER THE ARENA
+                </Button>
+              </div>
+            </div>
+          )}
 
           {/* Main Terminal Content - Protocol Selection & Generation */}
-          {isStaked && !workoutGenerated && (
+          {isStaked && !workoutGenerated && !showSyndicates && (
             <div className="space-y-4">
               {/* Protocol Selector */}
               <div className="card-terminal p-6">
@@ -151,13 +175,36 @@ const Index = () => {
                     className="btn-terminal text-lg px-12 py-6"
                   >
                     <Skull className="w-5 h-5 mr-3" />
-                    INITIATE SEQUENCE
+                    ENTER THE ARENA
                   </Button>
                   <div className="text-xs text-muted-foreground mt-4">
                     {remaining > 0 ? `${remaining} generations remaining today` : 'Daily limit reached'}
                   </div>
                 </div>
               </div>
+
+              {/* Syndicate Section Toggle */}
+              <button
+                onClick={() => setShowSyndicates(!showSyndicates)}
+                className="w-full flex items-center justify-between p-4 border border-secondary/30 hover:border-secondary/60 bg-secondary/5 transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <Users className="w-5 h-5 text-secondary" />
+                  <div className="text-left">
+                    <span className="text-sm font-bold text-secondary uppercase">
+                      SYNDICATE EXPLORER
+                    </span>
+                    <p className="text-xs text-muted-foreground">
+                      {mySyndicate ? `Active in ${mySyndicate.name}` : 'Join a pact • Profit from the weak'}
+                    </p>
+                  </div>
+                </div>
+                {showSyndicates ? (
+                  <ChevronUp className="w-5 h-5 text-secondary" />
+                ) : (
+                  <ChevronDown className="w-5 h-5 text-secondary" />
+                )}
+              </button>
 
               {/* SP Store Toggle */}
               <button
@@ -178,6 +225,19 @@ const Index = () => {
               </button>
               
               {showStore && <SPStore />}
+            </div>
+          )}
+
+          {/* Syndicate Explorer Panel */}
+          {showSyndicates && !workoutGenerated && (
+            <div className="space-y-4">
+              <button
+                onClick={() => setShowSyndicates(false)}
+                className="text-xs text-muted-foreground hover:text-primary transition-colors"
+              >
+                ← Back to Protocol Generator
+              </button>
+              <SyndicateExplorer />
             </div>
           )}
 
@@ -227,7 +287,7 @@ const Index = () => {
 
           {/* Footer */}
           <footer className="text-center text-xs text-muted-foreground space-y-2 pt-8 border-t border-border">
-            <p>Evolution is not optional. Discipline is the only currency.</p>
+            <p>Evolution is not optional. Your weakness enriches the strong.</p>
             <p className="text-primary/40">
               SP: {vault.sweatPoints} | Streak: {vault.streakDays} days | Tier: {vault.tier.toUpperCase()}
             </p>
