@@ -7,6 +7,7 @@ import { ThemeProvider } from "next-themes";
 import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ChaosEngineProvider } from "./contexts/ChaosEngineContext";
+import { SyndicateProvider } from "./contexts/SyndicateContext";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
@@ -38,7 +39,9 @@ const App = () => (
           <BrowserRouter>
             <AuthProvider>
               <ChaosEngineProvider>
-                <AppRoutes />
+                <SyndicateProvider>
+                  <AppRoutes />
+                </SyndicateProvider>
               </ChaosEngineProvider>
             </AuthProvider>
           </BrowserRouter>
