@@ -10,21 +10,21 @@ interface IntegrityChecksProps {
 const CHECKS = [
   {
     id: 'physiological',
-    label: 'Physiological readiness confirmed.',
+    label: 'Физиологическая готовность подтверждена.',
     icon: Activity,
-    description: 'Body temperature optimal. Heart rate baseline established.',
+    description: 'Температура тела оптимальна. Базовый пульс зафиксирован.',
   },
   {
     id: 'environmental',
-    label: 'Environmental resistance cleared.',
+    label: 'Сопротивление среды устранено.',
     icon: MapPin,
-    description: 'Training zone secured. Obstructions removed.',
+    description: 'Зона тренировки зачищена. Препятствия удалены.',
   },
   {
     id: 'financial',
-    label: 'Financial stake acknowledged.',
+    label: 'Финансовая ставка признана.',
     icon: DollarSign,
-    description: 'At-risk capital recognized. Failure penalty understood.',
+    description: 'Капитал под угрозой. Цена провала понята.',
   },
 ];
 
@@ -59,7 +59,7 @@ const IntegrityChecks = ({ onAllChecked, disabled }: IntegrityChecksProps) => {
     if (check.id === 'financial' && isStaked) {
       return {
         ...check,
-        description: `$${vault.atRiskCapital.toFixed(2)} at risk. Failure results in deduction.`,
+        description: `$${vault.atRiskCapital.toFixed(2)} под угрозой. Провал = потеря.`,
       };
     }
     return check;
@@ -69,7 +69,7 @@ const IntegrityChecks = ({ onAllChecked, disabled }: IntegrityChecksProps) => {
     <div className="space-y-3">
       <div className="flex items-center gap-2 mb-4">
         <span className="text-xs uppercase tracking-widest text-muted-foreground">
-          // INTEGRITY VERIFICATION
+          // ВЕРИФИКАЦИЯ ЦЕЛОСТНОСТИ
         </span>
       </div>
 
@@ -116,7 +116,7 @@ const IntegrityChecks = ({ onAllChecked, disabled }: IntegrityChecksProps) => {
       {allChecked && (
         <div className="text-center pt-4 animate-fade-in">
           <span className="text-sm text-primary terminal-glow uppercase tracking-widest">
-            ▸ ALL SYSTEMS NOMINAL ◂
+            ▸ ВСЕ СИСТЕМЫ В НОРМЕ ◂
           </span>
         </div>
       )}
