@@ -8,31 +8,31 @@ interface PactConfirmationProps {
 }
 
 const PACT_TEXT = [
-  '> ИНИЦИАЦИЯ ПАКТ-ПРОТОКОЛА...',
-  '> ЗАГРУЗКА УСЛОВИЙ КОНТРАКТА...',
+  '> INITIATING PACT PROTOCOL...',
+  '> LOADING CONTRACT TERMS...',
   '',
   '═══════════════════════════════════════',
-  '           ПАКТ СИНДИКАТА            ',
+  '          THE SYNDICATE PACT           ',
   '═══════════════════════════════════════',
   '',
-  'Я, нижеподписавшийся, настоящим признаю:',
+  'I, the undersigned, hereby acknowledge:',
   '',
-  '  ▸ Мой депозит входит в общий пул',
-  '  ▸ Невыполнение ежедневного протокола',
-  '    ведёт к немедленной элиминации',
-  '  ▸ Мои потери обогащают выживших',
-  '  ▸ Выживание даёт мне долю',
-  '    от накопленного налога на слабость',
-  '',
-  '═══════════════════════════════════════',
-  '',
-  '"Я признаю, что мой провал обогатит',
-  ' моих соперников. Я принимаю условия',
-  ' охоты."',
+  '  ▸ My deposit enters the communal pool',
+  '  ▸ Failure to complete daily protocol',
+  '    results in immediate elimination',
+  '  ▸ My losses enrich the survivors',
+  '  ▸ Survival grants me a share of',
+  '    the accumulated weakness tax',
   '',
   '═══════════════════════════════════════',
   '',
-  '> ОЖИДАНИЕ ПОДТВЕРЖДЕНИЯ...',
+  '"I acknowledge that my failure will',
+  ' enrich my peers. I accept the terms',
+  ' of the hunt."',
+  '',
+  '═══════════════════════════════════════',
+  '',
+  '> AWAITING CONFIRMATION...',
 ];
 
 const PactConfirmation = ({ onConfirm, onCancel }: PactConfirmationProps) => {
@@ -108,7 +108,7 @@ const PactConfirmation = ({ onConfirm, onCancel }: PactConfirmationProps) => {
                 {agreed && <Check className="w-4 h-4 text-primary-foreground" />}
               </div>
               <span className="text-sm text-foreground">
-                Я принимаю условия охоты. Моя слабость обогащает сильных.
+                I accept the terms of the hunt. My weakness enriches the strong.
               </span>
             </button>
 
@@ -119,7 +119,7 @@ const PactConfirmation = ({ onConfirm, onCancel }: PactConfirmationProps) => {
                 variant="outline"
                 className="flex-1 border-border hover:border-destructive hover:text-destructive"
               >
-                ОТСТУПИТЬ
+                RETREAT
               </Button>
               <Button
                 onClick={onConfirm}
@@ -127,7 +127,7 @@ const PactConfirmation = ({ onConfirm, onCancel }: PactConfirmationProps) => {
                 className="flex-1 btn-terminal"
               >
                 <Skull className="w-4 h-4 mr-2" />
-                ВОЙТИ В АРЕНУ
+                ENTER THE ARENA
               </Button>
             </div>
           </div>

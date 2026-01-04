@@ -63,7 +63,7 @@ const LockedTimer = ({ targetTime, onComplete, onAbort }: LockedTimerProps) => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       if (isRunning && isStaked) {
         e.preventDefault();
-        e.returnValue = 'Обнаружен выход. Будет применён налог на слабость.';
+        e.returnValue = 'Abort detected. Weakness Tax will be applied.';
         triggerPenaltyWarning();
       }
     };
@@ -94,7 +94,7 @@ const LockedTimer = ({ targetTime, onComplete, onAbort }: LockedTimerProps) => {
         }
         // Apply penalty
         const taxAmount = vault.depositAmount <= 20 ? 2 : 5;
-        applyWeaknessTax(taxAmount, 'Отмена таймера');
+        applyWeaknessTax(taxAmount, 'Timer Abandonment');
         setShowPenaltyWarning(false);
         onAbort();
       }
@@ -134,10 +134,10 @@ const LockedTimer = ({ targetTime, onComplete, onAbort }: LockedTimerProps) => {
           <div className="text-center space-y-6 p-8 max-w-md animate-shake">
             <Skull className="w-20 h-20 text-destructive mx-auto animate-warning-pulse" />
             <h2 className="text-3xl font-bold text-destructive uppercase danger-glow">
-              ОБНАРУЖЕН ВЫХОД
+              ABORT DETECTED
             </h2>
             <p className="text-lg text-foreground">
-              Налог на слабость будет применён через:
+              Weakness Tax will be applied in:
             </p>
             <div className="text-6xl font-bold text-destructive danger-glow">
               {penaltyCountdown}
@@ -146,7 +146,7 @@ const LockedTimer = ({ targetTime, onComplete, onAbort }: LockedTimerProps) => {
               onClick={dismissPenaltyWarning}
               className="btn-terminal w-full"
             >
-              ПРОДОЛЖИТЬ ПРОТОКОЛ
+              RESUME PROTOCOL
             </Button>
           </div>
         </div>
@@ -155,7 +155,7 @@ const LockedTimer = ({ targetTime, onComplete, onAbort }: LockedTimerProps) => {
       {/* Timer Display */}
       <div className="text-center space-y-4">
         <div className="text-xs uppercase tracking-widest text-muted-foreground">
-          ТАЙМЕР ИСПОЛНЕНИЯ
+          EXECUTION TIMER
         </div>
         
         <div className={`timer-display ${isOverTarget ? 'text-destructive danger-glow' : 'text-primary terminal-glow'}`}>
@@ -164,13 +164,13 @@ const LockedTimer = ({ targetTime, onComplete, onAbort }: LockedTimerProps) => {
 
         {/* Target comparison */}
         <div className="flex items-center justify-center gap-4 text-sm">
-          <span className="text-muted-foreground">ЦЕЛЬ:</span>
+          <span className="text-muted-foreground">TARGET:</span>
           <span className={elapsed <= targetTime ? 'text-primary' : 'text-destructive'}>
             {formatTime(targetTime)}
           </span>
           {isOverTarget && (
             <span className="text-destructive animate-warning-pulse">
-              +{formatTime(elapsed - targetTime)} СВЕРХ
+              +{formatTime(elapsed - targetTime)} OVER
             </span>
           )}
         </div>
@@ -191,7 +191,7 @@ const LockedTimer = ({ targetTime, onComplete, onAbort }: LockedTimerProps) => {
         <div className="flex items-center gap-2 p-3 bg-muted/30 border border-border">
           <AlertTriangle className="w-4 h-4 text-energy" />
           <span className="text-xs text-energy uppercase">
-            Финиш откроется на {formatTime(minimumTime)} ({Math.round((minimumTime / targetTime) * 100)}% минимум)
+            Finish unlocks at {formatTime(minimumTime)} ({Math.round((minimumTime / targetTime) * 100)}% minimum)
           </span>
         </div>
       )}
@@ -204,7 +204,7 @@ const LockedTimer = ({ targetTime, onComplete, onAbort }: LockedTimerProps) => {
             className="btn-terminal flex-1"
           >
             <Play className="w-4 h-4 mr-2" />
-            СТАРТ
+            INITIATE SEQUENCE
           </Button>
         ) : (
           <Button
@@ -213,7 +213,7 @@ const LockedTimer = ({ targetTime, onComplete, onAbort }: LockedTimerProps) => {
             className={`flex-1 ${minTimeReached ? 'btn-terminal' : 'btn-danger opacity-50'}`}
           >
             <Square className="w-4 h-4 mr-2" />
-            {minTimeReached ? 'FINISH' : `ЗАБЛОКИРОВАНО (${formatTime(minimumTime - elapsed)})`}
+            {minTimeReached ? 'PROTOCOL COMPLETE' : `LOCKED (${formatTime(minimumTime - elapsed)})`}
           </Button>
         )}
       </div>

@@ -12,13 +12,13 @@ const SyndicateTicker = () => {
           <span key={idx} className="flex items-center gap-2 whitespace-nowrap">
             <span className="text-secondary">▸</span>
             <span className="text-primary font-bold">{result.syndicateName}</span>
-            <span className="text-muted-foreground">закрылся.</span>
-            <span className="text-primary">{result.survivors} Выживших</span>
-            <span className="text-muted-foreground">разделили</span>
+            <span className="text-muted-foreground">just closed.</span>
+            <span className="text-primary">{result.survivors} Survivors</span>
+            <span className="text-muted-foreground">split</span>
             <span className="text-energy font-bold">${result.payoutPerSurvivor * result.survivors}</span>
-            <span className="text-muted-foreground">от</span>
-            <span className="text-destructive font-bold">{result.failed} Провалившихся</span>
-            <span className="text-muted-foreground">членов.</span>
+            <span className="text-muted-foreground">from</span>
+            <span className="text-destructive font-bold">{result.failed} Failed</span>
+            <span className="text-muted-foreground">members.</span>
           </span>
         ))}
         {/* Duplicate for seamless loop */}
@@ -26,13 +26,13 @@ const SyndicateTicker = () => {
           <span key={`dup-${idx}`} className="flex items-center gap-2 whitespace-nowrap">
             <span className="text-secondary">▸</span>
             <span className="text-primary font-bold">{result.syndicateName}</span>
-            <span className="text-muted-foreground">закрылся.</span>
-            <span className="text-primary">{result.survivors} Выживших</span>
-            <span className="text-muted-foreground">разделили</span>
+            <span className="text-muted-foreground">just closed.</span>
+            <span className="text-primary">{result.survivors} Survivors</span>
+            <span className="text-muted-foreground">split</span>
             <span className="text-energy font-bold">${result.payoutPerSurvivor * result.survivors}</span>
-            <span className="text-muted-foreground">от</span>
-            <span className="text-destructive font-bold">{result.failed} Провалившихся</span>
-            <span className="text-muted-foreground">членов.</span>
+            <span className="text-muted-foreground">from</span>
+            <span className="text-destructive font-bold">{result.failed} Failed</span>
+            <span className="text-muted-foreground">members.</span>
           </span>
         ))}
       </div>

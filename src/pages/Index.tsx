@@ -38,8 +38,8 @@ const Index = () => {
     const { canGen } = canGenerate();
     if (!canGen) {
       toast({
-        title: 'ЛИМИТ ГЕНЕРАЦИИ',
-        description: 'Дневной лимит исчерпан. Обнови до PRO для безлимита.',
+        title: 'GENERATION LIMIT',
+        description: 'Daily protocol limit reached. Upgrade to PRO for unlimited.',
         variant: 'destructive',
       });
       return;
@@ -59,8 +59,8 @@ const Index = () => {
     setShowTimer(false);
     
     toast({
-      title: 'ПРОТОКОЛ СКОМПИЛИРОВАН',
-      description: `${workout.protocol.name} — Цель: ${Math.floor(workout.targetTime / 60)}:${(workout.targetTime % 60).toString().padStart(2, '0')}`,
+      title: 'PROTOCOL COMPILED',
+      description: `${workout.protocol.name} — Target: ${Math.floor(workout.targetTime / 60)}:${(workout.targetTime % 60).toString().padStart(2, '0')}`,
     });
   }, [canGenerate, recordGeneration, selectedProtocol]);
 
@@ -77,8 +77,8 @@ const Index = () => {
     completeProtocol(spEarned);
     
     toast({
-      title: beatTarget ? 'ПРОТОКОЛ ВЫПОЛНЕН' : 'ПРОТОКОЛ ПЕРЕЖИТ',
-      description: `+${spEarned} SP заработано. ${beatTarget ? 'Цель побита.' : 'Продолжай давить.'}`,
+      title: beatTarget ? 'PROTOCOL COMPLETE' : 'PROTOCOL SURVIVED',
+      description: `+${spEarned} SP earned. ${beatTarget ? 'Target beaten.' : 'Keep pushing.'}`,
     });
     
     setShowTimer(false);
@@ -97,8 +97,8 @@ const Index = () => {
   return (
     <>
       <Helmet>
-        <title>CHAOS ENGINE | Твоя дисциплина теперь имеет рыночную стоимость</title>
-        <meta name="description" content="Ты перестал прогрессировать, потому что цена твоего отказа равна нулю. Депозит сгорит при слабости. Синдикат из 10 гладиаторов. Чужие деньги станут твоими." />
+        <title>CHAOS ENGINE v5.0 | The Syndicate Era</title>
+        <meta name="description" content="Discipline contract system. Stake capital, join syndicates, execute protocols. Your failure enriches your peers. Evolution is not optional." />
       </Helmet>
       
       <div className="min-h-screen bg-background scanlines">
@@ -115,7 +115,7 @@ const Index = () => {
             <div className="flex items-center justify-center gap-2">
               <Terminal className="w-5 h-5 text-primary" />
               <span className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
-                ЭРА СИНДИКАТОВ
+                THE SYNDICATE ERA
               </span>
             </div>
             
@@ -124,13 +124,9 @@ const Index = () => {
             </h1>
             
             <p className="text-xs text-muted-foreground max-w-md mx-auto">
-              v5.0 — Твоя дисциплина теперь имеет рыночную стоимость
+              v5.0 — Collective Discipline Protocol
               <br />
-              <span className="text-secondary">Твоя слабость обогащает сильных.</span>
-            </p>
-            
-            <p className="text-xs text-muted-foreground/60 max-w-sm mx-auto">
-              Мы не обещаем, что будет легко. Мы гарантируем, что у тебя не будет выбора.
+              <span className="text-secondary">Your weakness enriches the strong.</span>
             </p>
           </header>
 
@@ -144,13 +140,13 @@ const Index = () => {
               
               {/* Enter Arena CTA */}
               <div className="text-center">
-                <p className="text-xs text-muted-foreground mb-2">или</p>
+                <p className="text-xs text-muted-foreground mb-2">or</p>
                 <Button
                   onClick={() => setShowSyndicates(true)}
                   className="btn-terminal"
                 >
                   <Swords className="w-4 h-4 mr-2" />
-                  ВОЙТИ В АРЕНУ
+                  ENTER THE ARENA
                 </Button>
               </div>
             </div>
@@ -171,7 +167,7 @@ const Index = () => {
               <div className="card-terminal p-6">
                 <div className="text-center">
                   <div className="text-xs text-muted-foreground uppercase tracking-widest mb-4">
-                    // ГЕНЕРАТОР ПРОТОКОЛОВ
+                    // PROTOCOL GENERATOR
                   </div>
                   <Button
                     onClick={handleGenerate}
@@ -179,10 +175,10 @@ const Index = () => {
                     className="btn-terminal text-lg px-12 py-6"
                   >
                     <Skull className="w-5 h-5 mr-3" />
-                    INITIATE PROTOCOL
+                    ENTER THE ARENA
                   </Button>
                   <div className="text-xs text-muted-foreground mt-4">
-                    {remaining > 0 ? `${remaining} генераций осталось сегодня` : 'Дневной лимит исчерпан'}
+                    {remaining > 0 ? `${remaining} generations remaining today` : 'Daily limit reached'}
                   </div>
                 </div>
               </div>
@@ -196,10 +192,10 @@ const Index = () => {
                   <Users className="w-5 h-5 text-secondary" />
                   <div className="text-left">
                     <span className="text-sm font-bold text-secondary uppercase">
-                      ПРИСОЕДИНИТЬСЯ К ПАКТУ
+                      SYNDICATE EXPLORER
                     </span>
                     <p className="text-xs text-muted-foreground">
-                      {mySyndicate ? `Активен в ${mySyndicate.name}` : '10 гладиаторов • Деньги слабых — твои'}
+                      {mySyndicate ? `Active in ${mySyndicate.name}` : 'Join a pact • Profit from the weak'}
                     </p>
                   </div>
                 </div>
@@ -218,7 +214,7 @@ const Index = () => {
                 <div className="flex items-center gap-2">
                   <Settings className="w-4 h-4 text-muted-foreground" />
                   <span className="text-xs uppercase tracking-widest text-muted-foreground">
-                    МАГАЗИН ВЫЖИВАНИЯ
+                    SURVIVAL STORE
                   </span>
                 </div>
                 {showStore ? (
@@ -239,7 +235,7 @@ const Index = () => {
                 onClick={() => setShowSyndicates(false)}
                 className="text-xs text-muted-foreground hover:text-primary transition-colors"
               >
-                ← Назад к генератору протоколов
+                ← Back to Protocol Generator
               </button>
               <SyndicateExplorer />
             </div>
@@ -271,7 +267,7 @@ const Index = () => {
                     className="btn-terminal w-full mt-6 animate-fade-in"
                   >
                     <Skull className="w-4 h-4 mr-2" />
-                    ЗАПУСТИТЬ ТЕРМИНАЛ ИСПОЛНЕНИЯ
+                    ENGAGE EXECUTION TERMINAL
                   </Button>
                 )}
               </div>
@@ -291,9 +287,9 @@ const Index = () => {
 
           {/* Footer */}
           <footer className="text-center text-xs text-muted-foreground space-y-2 pt-8 border-t border-border">
-            <p>Ты получаешь либо тело, о котором мечтал, либо деньги тех, кто оказался слабее.</p>
+            <p>Evolution is not optional. Your weakness enriches the strong.</p>
             <p className="text-primary/40">
-              SP: {vault.sweatPoints} | Серия: {vault.streakDays} дней | Уровень: {vault.tier.toUpperCase()}
+              SP: {vault.sweatPoints} | Streak: {vault.streakDays} days | Tier: {vault.tier.toUpperCase()}
             </p>
           </footer>
         </main>
