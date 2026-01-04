@@ -4,9 +4,9 @@ import { Shield, AlertTriangle, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const STAKE_OPTIONS = [
-  { amount: 10, label: '$10', description: '$2 per failure' },
-  { amount: 20, label: '$20', description: '$2 per failure' },
-  { amount: 50, label: '$50', description: '$5 per failure' },
+  { amount: 10, label: '$10', description: '$2 за провал' },
+  { amount: 20, label: '$20', description: '$2 за провал' },
+  { amount: 50, label: '$50', description: '$5 за провал' },
 ];
 
 const StakingInterface = () => {
@@ -21,7 +21,7 @@ const StakingInterface = () => {
   };
 
   if (isStaked) {
-    return null; // Vault display handles staked state
+    return null;
   }
 
   return (
@@ -31,11 +31,11 @@ const StakingInterface = () => {
         <div className="flex items-center justify-center gap-2">
           <Shield className="w-6 h-6 text-secondary" />
           <h2 className="text-xl font-bold text-secondary uppercase tracking-wider">
-            STAKE YOUR DEPOSIT
+            ПОСТАВЬ ШКУРУ НА КОНУ
           </h2>
         </div>
         <p className="text-xs text-muted-foreground max-w-md mx-auto">
-          Lock capital to initiate 30-day discipline contract. Failure to complete daily protocol results in automatic deduction.
+          Внеси депозит. Это твои деньги, и они сгорят, если ты проявишь слабость.
         </p>
       </div>
 
@@ -62,26 +62,26 @@ const StakingInterface = () => {
         <div className="space-y-4 animate-fade-in">
           <div className="p-4 bg-muted/30 border border-border">
             <h3 className="text-xs uppercase tracking-widest text-muted-foreground mb-3">
-              CONTRACT TERMS
+              УСЛОВИЯ КОНТРАКТА
             </h3>
             <ul className="space-y-2 text-sm">
               <li className="flex items-start gap-2">
                 <span className="text-primary mt-0.5">▸</span>
-                <span>30-day commitment cycle</span>
+                <span>30-дневный цикл дисциплины</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-primary mt-0.5">▸</span>
-                <span>Daily protocol completion required</span>
+                <span>Ежедневное выполнение протокола обязательно</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-destructive mt-0.5">▸</span>
                 <span className="text-destructive">
-                  ${selectedAmount <= 20 ? '2.00' : '5.00'} Weakness Tax per missed day
+                  ${selectedAmount <= 20 ? '2.00' : '5.00'} Налог на слабость за каждый пропуск
                 </span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-primary mt-0.5">▸</span>
-                <span>Remaining capital unlocked after 30 days</span>
+                <span>Остаток капитала разблокируется через 30 дней</span>
               </li>
             </ul>
           </div>
@@ -97,7 +97,7 @@ const StakingInterface = () => {
               {agreed && <Lock className="w-3 h-3 text-primary-foreground" />}
             </div>
             <span className="text-sm text-foreground flex-1">
-              I accept the discipline contract. Weakness will be taxed.
+              Я принимаю контракт дисциплины. Слабость будет облагаться налогом.
             </span>
           </label>
 
@@ -108,12 +108,12 @@ const StakingInterface = () => {
             className="w-full btn-terminal"
           >
             <Lock className="w-4 h-4 mr-2" />
-            LOCK ${selectedAmount}.00 — INITIATE CONTRACT
+            ЗАБЛОКИРОВАТЬ ${selectedAmount}.00 — ВОЙТИ В АРЕНУ
           </Button>
 
           <div className="flex items-center gap-2 text-xs text-muted-foreground justify-center">
             <AlertTriangle className="w-3 h-3" />
-            <span>Simulated payment — no real money involved</span>
+            <span>Симуляция платежа — реальные деньги не задействованы</span>
           </div>
         </div>
       )}

@@ -7,22 +7,22 @@ import { toast } from '@/hooks/use-toast';
 const STORE_ITEMS = [
   {
     id: 'rest_day_pass',
-    name: 'REST DAY PASS',
-    description: 'Pause streak for 24h without penalty',
+    name: 'ПРОПУСК ДНЯ ОТДЫХА',
+    description: 'Пауза серии на 24ч без штрафа',
     cost: 100,
     icon: Calendar,
   },
   {
     id: 'protocol_archive',
-    name: 'PROTOCOL ARCHIVE',
-    description: 'Access to previous workout logs',
+    name: 'АРХИВ ПРОТОКОЛОВ',
+    description: 'Доступ к истории тренировок',
     cost: 50,
     icon: Archive,
   },
   {
     id: 'reroll_token',
-    name: 'REROLL TOKEN',
-    description: 'One free exercise reroll (Free tier)',
+    name: 'ТОКЕН ПЕРЕГЕНЕРАЦИИ',
+    description: 'Одна бесплатная замена упражнения',
     cost: 10,
     icon: Zap,
   },
@@ -36,13 +36,13 @@ const SPStore = () => {
     if (purchaseWithSP(cost)) {
       setPurchasedItems(prev => new Set([...prev, itemId]));
       toast({
-        title: 'ACQUISITION COMPLETE',
-        description: `${itemName} added to inventory`,
+        title: 'ПОКУПКА ЗАВЕРШЕНА',
+        description: `${itemName} добавлен в инвентарь`,
       });
     } else {
       toast({
-        title: 'INSUFFICIENT SP',
-        description: 'Complete more protocols to earn Sweat Points',
+        title: 'НЕДОСТАТОЧНО SP',
+        description: 'Выполняй протоколы, чтобы заработать Sweat Points',
         variant: 'destructive',
       });
     }
@@ -55,7 +55,7 @@ const SPStore = () => {
         <div className="flex items-center gap-2">
           <ShoppingBag className="w-5 h-5 text-energy" />
           <span className="text-xs uppercase tracking-widest text-muted-foreground">
-            SURVIVAL STORE
+            МАГАЗИН ВЫЖИВАНИЯ
           </span>
         </div>
         <div className="flex items-center gap-1 text-energy">
@@ -94,7 +94,7 @@ const SPStore = () => {
               {isPurchased ? (
                 <div className="flex items-center gap-1 text-primary text-xs">
                   <Check className="w-4 h-4" />
-                  OWNED
+                  ЕСТЬ
                 </div>
               ) : (
                 <Button
@@ -115,7 +115,7 @@ const SPStore = () => {
       {/* Empty state */}
       {vault.sweatPoints === 0 && (
         <p className="text-xs text-muted-foreground text-center pt-2">
-          Complete protocols to earn Sweat Points
+          Выполняй протоколы, чтобы заработать Sweat Points
         </p>
       )}
     </div>
