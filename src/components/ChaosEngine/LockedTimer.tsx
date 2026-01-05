@@ -2,18 +2,13 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { AlertTriangle, Play, Square, Skull } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useChaosEngine } from '@/contexts/ChaosEngineContext';
+import { formatTime } from '@/utils/formatTime';
 
 interface LockedTimerProps {
   targetTime: number;
   onComplete: (time: number, beatTarget: boolean) => void;
   onAbort: () => void;
 }
-
-const formatTime = (seconds: number): string => {
-  const mins = Math.floor(seconds / 60);
-  const secs = seconds % 60;
-  return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-};
 
 const LockedTimer = ({ targetTime, onComplete, onAbort }: LockedTimerProps) => {
   const { applyWeaknessTax, isStaked, vault } = useChaosEngine();

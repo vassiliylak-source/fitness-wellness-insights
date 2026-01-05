@@ -1,15 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 
-// Struggle Weight constants from the spec
-export const STRUGGLE_WEIGHTS: Record<string, number> = {
-  'Burpee Overs': 1.0,
-  'KB Swings': 0.5,
-  'Push-Ups': 0.4,
-  'Air Squats': 0.3,
-  'Mountain Climbers': 0.15,
-  'Plank Hold': 0.02, // per second
-  // Add more as needed, default to 0.3 for unlisted
-};
+// Note: STRUGGLE_WEIGHTS is now consolidated in @/lib/struggleEngine.ts
 
 export interface UserVault {
   depositAmount: number;      // Total staked
