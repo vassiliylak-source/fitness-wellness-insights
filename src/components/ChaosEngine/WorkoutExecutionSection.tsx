@@ -30,21 +30,9 @@ const WorkoutExecutionSection = ({
   onTimerComplete,
   onTimerAbort,
 }: WorkoutExecutionSectionProps) => {
-  if (showTimer) {
-    return (
-      <div className="card-terminal p-6 animate-fade-in">
-        <LockedTimer
-          targetTime={targetTime}
-          onComplete={onTimerComplete}
-          onAbort={onTimerAbort}
-        />
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-4 animate-fade-in">
-      {/* Workout Display */}
+      {/* Workout Display - Always visible so user knows what's next */}
       <div className="card-terminal p-6">
         <WorkoutDisplay
           exercises={exercises}
@@ -54,23 +42,34 @@ const WorkoutExecutionSection = ({
         />
       </div>
 
-      {/* Integrity Checks */}
-      <div className="card-terminal p-6">
-        <IntegrityChecks 
-          onAllChecked={onIntegrityComplete}
-          disabled={showTimer}
-        />
+      {/* Timer Section */}
+      {showTimer ? (
+        <div className="card-terminal p-6 animate-fade-in">
+          <LockedTimer
+            targetTime={targetTime}
+            onComplete={onTimerComplete}
+            onAbort={onTimerAbort}
+          />
+        </div>
+      ) : (
+        /* Integrity Checks */
+        <div className="card-terminal p-6">
+          <IntegrityChecks 
+            onAllChecked={onIntegrityComplete}
+            disabled={showTimer}
+          />
 
-        {integrityPassed && (
-          <Button
-            onClick={onStartTimer}
-            className="btn-terminal w-full mt-6 animate-fade-in"
-          >
-            <Skull className="w-4 h-4 mr-2" />
-            ENGAGE EXECUTION TERMINAL
-          </Button>
-        )}
-      </div>
+          {integrityPassed && (
+            <Button
+              onClick={onStartTimer}
+              className="btn-terminal w-full mt-6 animate-fade-in"
+            >
+              <Skull className="w-4 h-4 mr-2" />
+              ENGAGE EXECUTION TERMINAL
+            </Button>
+          )}
+        </div>
+      )}
     </div>
   );
 };
