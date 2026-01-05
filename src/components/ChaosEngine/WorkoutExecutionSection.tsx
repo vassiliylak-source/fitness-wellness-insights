@@ -42,32 +42,32 @@ const WorkoutExecutionSection = ({
         />
       </div>
 
+      {/* Integrity Checks - Hidden but mounted to preserve state */}
+      <div className={`card-terminal p-6 ${showTimer ? 'hidden' : ''}`}>
+        <IntegrityChecks 
+          onAllChecked={onIntegrityComplete}
+          disabled={showTimer}
+        />
+
+        {integrityPassed && !showTimer && (
+          <Button
+            onClick={onStartTimer}
+            className="btn-terminal w-full mt-6 animate-fade-in"
+          >
+            <Skull className="w-4 h-4 mr-2" />
+            ENGAGE EXECUTION TERMINAL
+          </Button>
+        )}
+      </div>
+
       {/* Timer Section */}
-      {showTimer ? (
+      {showTimer && (
         <div className="card-terminal p-6 animate-fade-in">
           <LockedTimer
             targetTime={targetTime}
             onComplete={onTimerComplete}
             onAbort={onTimerAbort}
           />
-        </div>
-      ) : (
-        /* Integrity Checks */
-        <div className="card-terminal p-6">
-          <IntegrityChecks 
-            onAllChecked={onIntegrityComplete}
-            disabled={showTimer}
-          />
-
-          {integrityPassed && (
-            <Button
-              onClick={onStartTimer}
-              className="btn-terminal w-full mt-6 animate-fade-in"
-            >
-              <Skull className="w-4 h-4 mr-2" />
-              ENGAGE EXECUTION TERMINAL
-            </Button>
-          )}
         </div>
       )}
     </div>

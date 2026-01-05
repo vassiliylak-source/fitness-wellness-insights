@@ -76,21 +76,24 @@ export const useWorkoutState = () => {
   }, []);
 
   const handleTimerComplete = useCallback((actualTime: number, beatTarget: boolean) => {
-    const spEarned = calculateSPEarned(actualTime, state.targetTime, state.selectedProtocol);
-    completeProtocol(spEarned);
-    
-    toast({
-      title: beatTarget ? 'PROTOCOL COMPLETE' : 'PROTOCOL SURVIVED',
-      description: `+${spEarned} SP earned. ${beatTarget ? 'Target beaten.' : 'Keep pushing.'}`,
+    // Use setState callback to access current state values, avoiding stale closures
+    setState(prev => {
+      const spEarned = calculateSPEarned(actualTime, prev.targetTime, prev.selectedProtocol);
+      completeProtocol(spEarned);
+      
+      toast({
+        title: beatTarget ? 'PROTOCOL COMPLETE' : 'PROTOCOL SURVIVED',
+        description: `+${spEarned} SP earned. ${beatTarget ? 'Target beaten.' : 'Keep pushing.'}`,
+      });
+      
+      return {
+        ...prev,
+        showTimer: false,
+        workoutGenerated: false,
+        integrityPassed: false,
+      };
     });
-    
-    setState(prev => ({
-      ...prev,
-      showTimer: false,
-      workoutGenerated: false,
-      integrityPassed: false,
-    }));
-  }, [completeProtocol, state.targetTime, state.selectedProtocol]);
+  }, [completeProtocol]);
 
   const handleTimerAbort = useCallback(() => {
     setState(prev => ({
