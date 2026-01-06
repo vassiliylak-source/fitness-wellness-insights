@@ -35,6 +35,60 @@ export type Database = {
         }
         Relationships: []
       }
+      user_vaults: {
+        Row: {
+          at_risk_capital: number
+          created_at: string
+          cycle_end_date: string | null
+          cycle_start_date: string | null
+          deposit_amount: number
+          generations_today: number
+          id: string
+          last_completion_date: string | null
+          last_gen_date: string | null
+          streak_days: number
+          sweat_points: number
+          tier: string
+          updated_at: string
+          user_id: string
+          weakness_taxes: number
+        }
+        Insert: {
+          at_risk_capital?: number
+          created_at?: string
+          cycle_end_date?: string | null
+          cycle_start_date?: string | null
+          deposit_amount?: number
+          generations_today?: number
+          id?: string
+          last_completion_date?: string | null
+          last_gen_date?: string | null
+          streak_days?: number
+          sweat_points?: number
+          tier?: string
+          updated_at?: string
+          user_id: string
+          weakness_taxes?: number
+        }
+        Update: {
+          at_risk_capital?: number
+          created_at?: string
+          cycle_end_date?: string | null
+          cycle_start_date?: string | null
+          deposit_amount?: number
+          generations_today?: number
+          id?: string
+          last_completion_date?: string | null
+          last_gen_date?: string | null
+          streak_days?: number
+          sweat_points?: number
+          tier?: string
+          updated_at?: string
+          user_id?: string
+          weakness_taxes?: number
+        }
+        Relationships: []
+      }
       weekly_challenge_participations: {
         Row: {
           challenge_id: string

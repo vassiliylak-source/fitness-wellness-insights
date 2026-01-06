@@ -23,6 +23,8 @@ const Auth = () => {
 
   useEffect(() => {
     if (user) {
+      // Dispatch event to show terminal and navigate
+      window.dispatchEvent(new CustomEvent('enter-arena'));
       navigate('/');
     }
   }, [user, navigate]);
@@ -57,12 +59,21 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4 scanlines">
       {/* Background effects */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-primary/5 to-transparent" />
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-destructive/5 rounded-full blur-3xl" />
       </div>
+
+      {/* Back button */}
+      <button 
+        onClick={() => navigate('/')}
+        className="absolute top-6 left-6 text-xs text-muted-foreground hover:text-primary transition-colors font-mono z-20"
+      >
+        ← BACK TO LANDING
+      </button>
 
       <Card className="w-full max-w-md relative z-10 bg-card/90 backdrop-blur border-primary/20">
         <CardHeader className="text-center">

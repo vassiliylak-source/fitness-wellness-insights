@@ -1,16 +1,16 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-
-// Note: STRUGGLE_WEIGHTS is now consolidated in @/lib/struggleEngine.ts
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 
 export interface UserVault {
-  depositAmount: number;      // Total staked
-  atRiskCapital: number;      // Current remaining
-  weaknessTaxes: number;      // Total deducted
-  streakDays: number;         // Current streak
+  depositAmount: number;
+  atRiskCapital: number;
+  weaknessTaxes: number;
+  streakDays: number;
   cycleStartDate: string | null;
   cycleEndDate: string | null;
   lastCompletionDate: string | null;
-  sweatPoints: number;        // SP currency
+  sweatPoints: number;
   tier: 'free' | 'pro';
   generationsToday: number;
   lastGenDate: string | null;
@@ -37,6 +37,7 @@ interface ChaosEngineContextType {
   isStaked: boolean;
   isInCycle: boolean;
   daysRemaining: number;
+  isLoading: boolean;
 }
 
 const STORAGE_KEY = 'chaos_engine_vault';
@@ -66,10 +67,8 @@ export const useChaosEngine = () => {
   return context;
 };
 
-// Generate anonymous user IDs for the feed
 const generateAnonId = () => `User_${Math.floor(Math.random() * 9000) + 100}`;
 
-// Simulated global feed data
 const generateFakeFeedItem = (): LiveLossFeed => {
   const reasons = [
     'Protocol Abort',
@@ -86,26 +85,116 @@ const generateFakeFeedItem = (): LiveLossFeed => {
   };
 };
 
-export const ChaosEngineProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [vault, setVault] = useState<UserVault>(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    return stored ? JSON.parse(stored) : defaultVault;
-  });
+// Convert vault to database format
+const vaultToDb = (vault: UserVault, userId: string) => ({
+  user_id: userId,
+  deposit_amount: vault.depositAmount,
+  at_risk_capital: vault.atRiskCapital,
+  weakness_taxes: vault.weaknessTaxes,
+  streak_days: vault.streakDays,
+  cycle_start_date: vault.cycleStartDate,
+  cycle_end_date: vault.cycleEndDate,
+  last_completion_date: vault.lastCompletionDate,
+  sweat_points: vault.sweatPoints,
+  tier: vault.tier,
+  generations_today: vault.generationsToday,
+  last_gen_date: vault.lastGenDate,
+});
 
+// Convert database record to vault format
+const dbToVault = (record: any): UserVault => ({
+  depositAmount: Number(record.deposit_amount) || 0,
+  atRiskCapital: Number(record.at_risk_capital) || 0,
+  weaknessTaxes: Number(record.weakness_taxes) || 0,
+  streakDays: record.streak_days || 0,
+  cycleStartDate: record.cycle_start_date,
+  cycleEndDate: record.cycle_end_date,
+  lastCompletionDate: record.last_completion_date,
+  sweatPoints: record.sweat_points || 0,
+  tier: record.tier || 'free',
+  generationsToday: record.generations_today || 0,
+  lastGenDate: record.last_gen_date,
+});
+
+export const ChaosEngineProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { user } = useAuth();
+  const [vault, setVault] = useState<UserVault>(defaultVault);
+  const [isLoading, setIsLoading] = useState(true);
   const [liveFeed, setLiveFeed] = useState<LiveLossFeed[]>(() => {
     const stored = localStorage.getItem(FEED_STORAGE_KEY);
     return stored ? JSON.parse(stored) : [];
   });
 
-  // Persist vault changes
+  // Load vault from database for authenticated users, localStorage for guests
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(vault));
-  }, [vault]);
+    const loadVault = async () => {
+      setIsLoading(true);
+      
+      if (user) {
+        // Authenticated user: load from database
+        const { data, error } = await supabase
+          .from('user_vaults')
+          .select('*')
+          .eq('user_id', user.id)
+          .maybeSingle();
+
+        if (data) {
+          setVault(dbToVault(data));
+        } else {
+          // No vault exists, use default
+          setVault(defaultVault);
+        }
+      } else {
+        // Guest: load from localStorage
+        const stored = localStorage.getItem(STORAGE_KEY);
+        setVault(stored ? JSON.parse(stored) : defaultVault);
+      }
+      
+      setIsLoading(false);
+    };
+
+    loadVault();
+  }, [user]);
+
+  // Save vault changes
+  useEffect(() => {
+    if (isLoading) return;
+
+    const saveVault = async () => {
+      if (user) {
+        // Authenticated user: save to database
+        const dbData = vaultToDb(vault, user.id);
+        
+        const { data: existing } = await supabase
+          .from('user_vaults')
+          .select('id')
+          .eq('user_id', user.id)
+          .maybeSingle();
+
+        if (existing) {
+          await supabase
+            .from('user_vaults')
+            .update(dbData)
+            .eq('user_id', user.id);
+        } else if (vault.depositAmount > 0) {
+          // Only insert if there's actual data to save
+          await supabase
+            .from('user_vaults')
+            .insert(dbData);
+        }
+      } else {
+        // Guest: save to localStorage
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(vault));
+      }
+    };
+
+    saveVault();
+  }, [vault, user, isLoading]);
 
   // Simulate live feed updates
   useEffect(() => {
     const interval = setInterval(() => {
-      if (Math.random() < 0.3) { // 30% chance every 10 seconds
+      if (Math.random() < 0.3) {
         const newItem = generateFakeFeedItem();
         setLiveFeed(prev => {
           const updated = [newItem, ...prev].slice(0, 20);
@@ -144,7 +233,6 @@ export const ChaosEngineProvider: React.FC<{ children: React.ReactNode }> = ({ c
       };
     });
 
-    // Add to feed
     const feedItem: LiveLossFeed = {
       id: Math.random().toString(36).substr(2, 9),
       userId: 'You',
@@ -219,10 +307,18 @@ export const ChaosEngineProvider: React.FC<{ children: React.ReactNode }> = ({ c
     return true;
   }, [vault.sweatPoints]);
 
-  const resetVault = useCallback(() => {
+  const resetVault = useCallback(async () => {
     setVault(defaultVault);
-    localStorage.removeItem(STORAGE_KEY);
-  }, []);
+    
+    if (user) {
+      await supabase
+        .from('user_vaults')
+        .delete()
+        .eq('user_id', user.id);
+    } else {
+      localStorage.removeItem(STORAGE_KEY);
+    }
+  }, [user]);
 
   const isStaked = vault.depositAmount > 0 && vault.cycleStartDate !== null;
   
@@ -248,6 +344,7 @@ export const ChaosEngineProvider: React.FC<{ children: React.ReactNode }> = ({ c
       isStaked,
       isInCycle,
       daysRemaining,
+      isLoading,
     }}>
       {children}
     </ChaosEngineContext.Provider>
