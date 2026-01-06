@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import LiveLossFeed from '@/components/ChaosEngine/LiveLossFeed';
 import VaultDisplay from '@/components/ChaosEngine/VaultDisplay';
@@ -10,16 +11,21 @@ import SectionToggles from '@/components/ChaosEngine/SectionToggles';
 import WorkoutExecutionSection from '@/components/ChaosEngine/WorkoutExecutionSection';
 import SyndicateExplorer from '@/components/Syndicate/SyndicateExplorer';
 import SyndicateTicker from '@/components/Syndicate/SyndicateTicker';
+import AuthNavBar from '@/components/ChaosEngine/AuthNavBar';
+import LandingPage from '@/components/Landing/LandingPage';
 import { useChaosEngine } from '@/contexts/ChaosEngineContext';
 import { useWorkoutState } from '@/hooks/useWorkoutState';
-import { useState } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
+import { useState as useLocalState } from 'react';
 import { Swords } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const Index = () => {
+  const { user, loading: authLoading } = useAuth();
   const { isStaked, canGenerate } = useChaosEngine();
   const [showStore, setShowStore] = useState(false);
   const [showSyndicates, setShowSyndicates] = useState(false);
+  const [showTerminal, setShowTerminal] = useState(false);
 
   const {
     exercises,
@@ -40,6 +46,36 @@ const Index = () => {
 
   const { remaining } = canGenerate();
 
+  // Listen for enter-arena event from landing page
+  useEffect(() => {
+    const handleEnterArena = () => {
+      setShowTerminal(true);
+    };
+    window.addEventListener('enter-arena', handleEnterArena);
+    return () => window.removeEventListener('enter-arena', handleEnterArena);
+  }, []);
+
+  // If user is staked, show terminal directly
+  useEffect(() => {
+    if (isStaked) {
+      setShowTerminal(true);
+    }
+  }, [isStaked]);
+
+  // Show loading while auth is initializing
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-primary font-mono animate-pulse">INITIALIZING...</div>
+      </div>
+    );
+  }
+
+  // Show landing page if not authenticated or not entered terminal
+  if (!user || !showTerminal) {
+    return <LandingPage />;
+  }
+
   return (
     <>
       <Helmet>
@@ -56,6 +92,9 @@ const Index = () => {
 
         {/* Main Terminal */}
         <main className="max-w-2xl mx-auto px-4 py-8 space-y-6">
+          {/* Auth Navigation */}
+          <AuthNavBar />
+
           {/* Header */}
           <TerminalHeader />
 
