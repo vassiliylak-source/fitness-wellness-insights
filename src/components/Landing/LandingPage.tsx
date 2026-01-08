@@ -24,18 +24,18 @@ const LandingPage = () => {
   const features = [
     {
       icon: Lock,
-      title: 'STAKE CAPITAL',
-      description: 'Lock your deposit. Fail your protocol, lose your stake. Simulated discipline without real risk.',
+      title: 'STAKE YOUR DEPOSIT',
+      description: 'Lock capital to initiate 30-day discipline contract. Failure to complete daily protocol results in automatic deduction.',
     },
     {
       icon: Users,
-      title: 'JOIN SYNDICATES',
-      description: 'Form pacts with other operators. Your failure enriches survivors. Evolution through competition.',
+      title: 'SYNDICATE EXPLORER',
+      description: 'Join a pact. Survive together or profit from the weak. Your failure enriches survivors.',
     },
     {
       icon: Zap,
-      title: 'EXECUTE PROTOCOLS',
-      description: 'AI-generated workouts. Integrity checks. Locked timers. No shortcuts, no mercy.',
+      title: 'NO-MERCY AI WORKOUTS',
+      description: 'AI-generated protocols. Integrity checks. Locked timers. No shortcuts, no excuses, no mercy.',
     },
   ];
 
@@ -90,16 +90,20 @@ const LandingPage = () => {
               CHAOS ENGINE
             </h1>
             <p className="text-lg md:text-xl text-secondary font-mono">
-              Discipline Contract System
+              No-Mercy AI Workouts
             </p>
           </div>
 
           {/* Tagline */}
-          <p className="text-muted-foreground max-w-xl mx-auto leading-relaxed">
-            Stake your commitment. Execute your protocols. 
-            <span className="text-destructive"> Your failure enriches your peers.</span>
-            {' '}Evolution is not optional.
-          </p>
+          <div className="space-y-2">
+            <p className="text-muted-foreground max-w-xl mx-auto leading-relaxed">
+              Collective Discipline Protocol.
+              <span className="text-destructive font-semibold"> Your weakness enriches the strong.</span>
+            </p>
+            <p className="text-sm text-muted-foreground/70 max-w-md mx-auto">
+              Evolution is not optional.
+            </p>
+          </div>
 
           {/* CTA */}
           <div className="pt-4">
