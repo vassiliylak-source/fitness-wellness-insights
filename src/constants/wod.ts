@@ -10,6 +10,7 @@ export interface Exercise {
   measureType: 'reps' | 'seconds'; // Fixed: proper measurement type
   sufferingCoefficient: number; // 1-10 scale, higher = harder
   description: string;
+  instructions: string; // How to perform the exercise
   icon: string;
   estimatedSecondsPerRep?: number; // For time calculation
 }
@@ -56,6 +57,7 @@ export const EXERCISES: Exercise[] = [
     measureType: 'reps',
     sufferingCoefficient: 9,
     description: 'High heart rate spike',
+    instructions: 'Start standing. Drop into a squat, place hands on floor. Jump feet back to plank. Do a push-up. Jump feet forward to hands. Explosively jump up with hands overhead. Land softly and repeat.',
     icon: '🔥',
     estimatedSecondsPerRep: 4
   },
@@ -69,6 +71,7 @@ export const EXERCISES: Exercise[] = [
     measureType: 'reps',
     sufferingCoefficient: 3,
     description: 'Active warm-up',
+    instructions: 'Stand with feet together, arms at sides. Jump while spreading legs shoulder-width and raising arms overhead. Jump back to starting position. Keep a steady rhythm.',
     icon: '⭐',
     estimatedSecondsPerRep: 1
   },
@@ -82,6 +85,7 @@ export const EXERCISES: Exercise[] = [
     measureType: 'reps',
     sufferingCoefficient: 5,
     description: 'Cardio acceleration',
+    instructions: 'Run in place, driving knees up toward chest. Each knee lift counts as one rep. Pump arms in opposition to legs. Stay on balls of feet, maintain quick pace.',
     icon: '🦵',
     estimatedSecondsPerRep: 0.8
   },
@@ -95,6 +99,7 @@ export const EXERCISES: Exercise[] = [
     measureType: 'reps',
     sufferingCoefficient: 7,
     description: 'Final burner',
+    instructions: 'Start in plank position, hands under shoulders. Drive one knee toward chest, then quickly switch legs. Each knee drive counts as one rep. Keep hips low and core tight.',
     icon: '⛰️',
     estimatedSecondsPerRep: 1.2
   },
@@ -108,6 +113,7 @@ export const EXERCISES: Exercise[] = [
     measureType: 'reps',
     sufferingCoefficient: 8,
     description: 'Explosive power',
+    instructions: 'Stand facing a sturdy box or platform. Swing arms back, then explosively jump onto the box, landing softly with both feet. Stand fully, then step or jump down. Reset and repeat.',
     icon: '📦',
     estimatedSecondsPerRep: 3
   },
@@ -121,6 +127,7 @@ export const EXERCISES: Exercise[] = [
     measureType: 'seconds',
     sufferingCoefficient: 4,
     description: 'Steady state cardio',
+    instructions: 'Hold rope handles at hip height. Swing rope overhead and jump as it passes under feet. Keep jumps low (1-2 inches). Stay on balls of feet, wrists do the work.',
     icon: '🪢'
   },
   
@@ -135,6 +142,7 @@ export const EXERCISES: Exercise[] = [
     measureType: 'reps',
     sufferingCoefficient: 5,
     description: 'Leg foundation',
+    instructions: 'Stand with feet shoulder-width apart. Push hips back and bend knees, lowering until thighs are parallel to floor. Keep chest up and weight in heels. Stand back up fully.',
     icon: '🏋️',
     estimatedSecondsPerRep: 2
   },
@@ -148,6 +156,7 @@ export const EXERCISES: Exercise[] = [
     measureType: 'reps',
     sufferingCoefficient: 6,
     description: 'Upper body staple',
+    instructions: 'Start in plank with hands slightly wider than shoulders. Lower chest to floor by bending elbows (keep body straight). Push back up to start. Modify on knees if needed.',
     icon: '💪',
     estimatedSecondsPerRep: 2.5
   },
@@ -161,6 +170,7 @@ export const EXERCISES: Exercise[] = [
     measureType: 'reps',
     sufferingCoefficient: 6,
     description: 'Total leg engagement',
+    instructions: 'Step forward with one leg, lowering until both knees are at 90°. Push through front heel to step forward with back leg. Alternate legs. Each step counts as one rep.',
     icon: '🦿',
     estimatedSecondsPerRep: 2
   },
@@ -174,6 +184,7 @@ export const EXERCISES: Exercise[] = [
     measureType: 'reps',
     sufferingCoefficient: 5,
     description: 'Arm definition',
+    instructions: 'Place hands on edge of bench, fingers forward. Extend legs out. Lower body by bending elbows to 90°, keeping back close to bench. Push back up. Keep shoulders down.',
     icon: '🪑',
     estimatedSecondsPerRep: 2
   },
@@ -187,6 +198,7 @@ export const EXERCISES: Exercise[] = [
     measureType: 'reps',
     sufferingCoefficient: 9,
     description: 'Back dominance',
+    instructions: 'Hang from bar with overhand grip, hands wider than shoulders. Pull body up until chin clears bar. Lower with control. Modify with resistance band or jumping pull-ups.',
     icon: '🧗',
     estimatedSecondsPerRep: 4
   },
@@ -200,6 +212,7 @@ export const EXERCISES: Exercise[] = [
     measureType: 'reps',
     sufferingCoefficient: 7,
     description: 'Posterior chain blast',
+    instructions: 'Stand with feet wider than shoulders, kettlebell between feet. Hinge at hips, grab bell. Swing back between legs, then thrust hips forward explosively to swing bell to chest height. Control the descent.',
     icon: '🔔',
     estimatedSecondsPerRep: 2
   },
@@ -213,6 +226,7 @@ export const EXERCISES: Exercise[] = [
     measureType: 'reps',
     sufferingCoefficient: 6,
     description: 'Loaded squat pattern',
+    instructions: 'Hold kettlebell by horns at chest level. Feet shoulder-width, toes slightly out. Squat down keeping chest up and elbows between knees. Stand back up fully.',
     icon: '🏆',
     estimatedSecondsPerRep: 3
   },
@@ -226,6 +240,7 @@ export const EXERCISES: Exercise[] = [
     measureType: 'reps',
     sufferingCoefficient: 8,
     description: 'Full body compound',
+    instructions: 'Start with kettlebell on floor. Clean it to rack position at shoulder (bell resting on forearm). Press overhead until arm is straight. Lower to rack, then to floor. Alternate sides.',
     icon: '🎯',
     estimatedSecondsPerRep: 4
   },
@@ -239,6 +254,7 @@ export const EXERCISES: Exercise[] = [
     measureType: 'reps',
     sufferingCoefficient: 8,
     description: 'Hip hinge mastery',
+    instructions: 'Stand with feet hip-width, bar over mid-foot. Hinge at hips, grip bar outside knees. Keep back flat, drive through heels to stand, pulling bar up legs. Hinge back down with control.',
     icon: '🔩',
     estimatedSecondsPerRep: 4
   },
@@ -252,6 +268,7 @@ export const EXERCISES: Exercise[] = [
     measureType: 'reps',
     sufferingCoefficient: 10,
     description: 'Maximum suffering',
+    instructions: 'Hold weights at shoulders (front rack). Squat down fully. Explosively stand and press weights overhead in one fluid motion. Lower weights back to shoulders as you descend into next squat.',
     icon: '🚀',
     estimatedSecondsPerRep: 4
   },
@@ -264,9 +281,10 @@ export const EXERCISES: Exercise[] = [
     equipment: [], 
     minValue: 30, 
     maxValue: 90,
-    measureType: 'seconds', // FIXED: Planks are measured in seconds
+    measureType: 'seconds',
     sufferingCoefficient: 4,
     description: 'Active recovery. Do not drop.',
+    instructions: 'Support body on forearms and toes. Keep body in straight line from head to heels. Engage core, squeeze glutes. Do not let hips sag or pike up. Breathe steadily.',
     icon: '📏'
   },
   { 
@@ -279,6 +297,7 @@ export const EXERCISES: Exercise[] = [
     measureType: 'reps',
     sufferingCoefficient: 4,
     description: 'Classic core work',
+    instructions: 'Lie on back, knees bent, feet flat. Hands behind head or crossed on chest. Curl torso up toward knees using abs. Lower back down with control. Avoid pulling on neck.',
     icon: '🎭',
     estimatedSecondsPerRep: 2
   },
@@ -292,6 +311,7 @@ export const EXERCISES: Exercise[] = [
     measureType: 'reps',
     sufferingCoefficient: 6,
     description: 'Advanced core activation',
+    instructions: 'Lie flat on back, arms extended overhead. Simultaneously lift legs and torso, reaching hands toward toes to form a V shape. Lower back down with control. Keep legs straight.',
     icon: '✌️',
     estimatedSecondsPerRep: 3
   },
@@ -305,6 +325,7 @@ export const EXERCISES: Exercise[] = [
     measureType: 'reps',
     sufferingCoefficient: 5,
     description: 'Rotational power',
+    instructions: 'Sit with knees bent, feet off floor, torso leaned back 45°. Rotate torso side to side, touching floor beside hip each time. Each touch counts as one rep. Keep core tight.',
     icon: '🌀',
     estimatedSecondsPerRep: 1.5
   },
@@ -318,6 +339,7 @@ export const EXERCISES: Exercise[] = [
     measureType: 'reps',
     sufferingCoefficient: 5,
     description: 'Lower ab focus',
+    instructions: 'Lie on back, legs straight, hands under hips for support. Raise legs together until perpendicular to floor. Lower slowly, stopping just before touching ground. Keep lower back pressed down.',
     icon: '🦶',
     estimatedSecondsPerRep: 2.5
   },
@@ -328,9 +350,10 @@ export const EXERCISES: Exercise[] = [
     equipment: [], 
     minValue: 20, 
     maxValue: 60,
-    measureType: 'seconds', // Time-based
+    measureType: 'seconds',
     sufferingCoefficient: 6,
     description: 'Gymnastic core tension',
+    instructions: 'Lie on back. Press lower back into floor. Raise shoulders and legs slightly off ground, arms extended. Create a banana shape. Hold position, breathing steadily. Do not let back arch.',
     icon: '🥄'
   },
   
@@ -345,6 +368,7 @@ export const EXERCISES: Exercise[] = [
     measureType: 'seconds',
     sufferingCoefficient: 5,
     description: 'Isometric leg burn',
+    instructions: 'Stand with back against wall. Slide down until thighs are parallel to floor, knees at 90°. Keep back flat against wall. Hold position. Do not rest hands on thighs.',
     icon: '🧱'
   },
   { 
@@ -357,6 +381,7 @@ export const EXERCISES: Exercise[] = [
     measureType: 'seconds',
     sufferingCoefficient: 3,
     description: 'Posterior chain activation',
+    instructions: 'Lie face down, arms extended overhead. Simultaneously lift arms, chest, and legs off floor. Squeeze glutes and back muscles. Hold position, breathing steadily. Keep neck neutral.',
     icon: '🦸'
   },
 ];

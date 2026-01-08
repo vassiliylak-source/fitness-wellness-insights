@@ -1,6 +1,7 @@
+import { useState } from 'react';
 import { GeneratedExercise } from '@/constants/wod';
 import { getStruggleWeight } from '@/lib/struggleEngine';
-import { Skull } from 'lucide-react';
+import { Skull, ChevronDown, ChevronUp, Info } from 'lucide-react';
 
 const formatTime = (seconds: number): string => {
   const mins = Math.floor(seconds / 60);
@@ -21,6 +22,12 @@ const WorkoutDisplay = ({
   protocolName,
   targetTime 
 }: WorkoutDisplayProps) => {
+  const [expandedExercise, setExpandedExercise] = useState<string | null>(null);
+
+  const toggleInstructions = (exerciseId: string) => {
+    setExpandedExercise(expandedExercise === exerciseId ? null : exerciseId);
+  };
+
   return (
     <div className="space-y-4">
       {/* Protocol Header */}
@@ -42,6 +49,7 @@ const WorkoutDisplay = ({
           const weight = getStruggleWeight(item.exercise.name);
           const isHighIntensity = weight >= 0.5;
           const isTimeBased = item.format === 'seconds';
+          const isExpanded = expandedExercise === item.exercise.id;
 
           return (
             <div
@@ -64,17 +72,50 @@ const WorkoutDisplay = ({
                   </div>
                 </div>
 
-                <div className="text-right">
-                  <div className={`text-2xl font-bold ${
-                    isHighIntensity ? 'text-destructive' : 'text-primary'
-                  }`}>
-                    {isTimeBased ? formatTime(item.value) : item.value}
+                <div className="flex items-center gap-3">
+                  <div className="text-right">
+                    <div className={`text-2xl font-bold ${
+                      isHighIntensity ? 'text-destructive' : 'text-primary'
+                    }`}>
+                      {isTimeBased ? formatTime(item.value) : item.value}
+                    </div>
+                    <div className="text-[10px] text-muted-foreground uppercase">
+                      {isTimeBased ? 'HOLD' : 'REPS'}
+                    </div>
                   </div>
-                  <div className="text-[10px] text-muted-foreground uppercase">
-                    {isTimeBased ? 'HOLD' : 'REPS'}
-                  </div>
+                  
+                  {/* How-to button */}
+                  <button
+                    onClick={() => toggleInstructions(item.exercise.id)}
+                    className={`p-2 border transition-all ${
+                      isExpanded 
+                        ? 'border-primary bg-primary/10 text-primary' 
+                        : 'border-border text-muted-foreground hover:border-primary/50 hover:text-primary'
+                    }`}
+                    aria-label="Show instructions"
+                  >
+                    {isExpanded ? (
+                      <ChevronUp className="w-4 h-4" />
+                    ) : (
+                      <Info className="w-4 h-4" />
+                    )}
+                  </button>
                 </div>
               </div>
+
+              {/* Expandable Instructions */}
+              {isExpanded && (
+                <div className="mt-3 pt-3 border-t border-border/50 animate-fade-in">
+                  <div className="flex items-start gap-2">
+                    <div className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
+                      HOW TO:
+                    </div>
+                  </div>
+                  <p className="text-sm text-foreground/90 leading-relaxed">
+                    {item.exercise.instructions}
+                  </p>
+                </div>
+              )}
             </div>
           );
         })}
@@ -102,6 +143,13 @@ const WorkoutDisplay = ({
                 ? formatTime(criticalOverload.value) 
                 : criticalOverload.value}
             </div>
+          </div>
+
+          {/* Critical Overload Instructions - Always visible */}
+          <div className="mt-3 pt-3 border-t border-destructive/30">
+            <p className="text-xs text-foreground/70 leading-relaxed">
+              {criticalOverload.exercise.instructions}
+            </p>
           </div>
         </div>
       )}
