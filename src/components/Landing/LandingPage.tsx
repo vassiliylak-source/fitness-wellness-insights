@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { Terminal, Skull, Shield, Users, Zap, ChevronRight, Lock } from 'lucide-react';
+import { Terminal, Skull, Shield, Users, Zap, ChevronRight, Lock, Linkedin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import ExternalLink from '@/components/common/ExternalLink';
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -162,11 +163,20 @@ const LandingPage = () => {
           </div>
         </div>
 
-        {/* Disclaimer */}
-        <p className="text-center text-xs text-muted-foreground mt-16 max-w-md mx-auto">
-          This is a discipline training simulation. No real money is at stake. 
-          Push your limits safely.
-        </p>
+        {/* Disclaimer & Contact */}
+        <div className="mt-16 text-center space-y-4">
+          <p className="text-xs text-muted-foreground max-w-md mx-auto">
+            This is a discipline training simulation. No real money is at stake. 
+            Push your limits safely.
+          </p>
+          
+          <ExternalLink href="https://www.linkedin.com/in/vassiliy-lakhonin/">
+            <Button variant="ghost" size="sm" className="font-mono text-xs text-muted-foreground hover:text-primary">
+              <Linkedin className="w-4 h-4 mr-2" />
+              CONTACT US
+            </Button>
+          </ExternalLink>
+        </div>
       </main>
     </div>
   );
