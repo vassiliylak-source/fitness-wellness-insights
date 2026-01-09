@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { GeneratedExercise } from '@/constants/wod';
 import { getStruggleWeight } from '@/lib/struggleEngine';
-import { Skull, ChevronDown, ChevronUp, Info } from 'lucide-react';
+import { Skull, ChevronUp, Info, Play } from 'lucide-react';
 
 const formatTime = (seconds: number): string => {
   const mins = Math.floor(seconds / 60);
@@ -103,17 +103,39 @@ const WorkoutDisplay = ({
                 </div>
               </div>
 
-              {/* Expandable Instructions */}
+              {/* Expandable Instructions with Video */}
               {isExpanded && (
-                <div className="mt-3 pt-3 border-t border-border/50 animate-fade-in">
-                  <div className="flex items-start gap-2">
-                    <div className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
-                      HOW TO:
+                <div className="mt-3 pt-3 border-t border-border/50 animate-fade-in space-y-3">
+                  {/* Video Demo */}
+                  {item.exercise.videoUrl && (
+                    <div className="relative aspect-video w-full max-w-md mx-auto bg-black/50 rounded overflow-hidden">
+                      <iframe
+                        src={item.exercise.videoUrl}
+                        title={`${item.exercise.name} demonstration`}
+                        className="absolute inset-0 w-full h-full"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
                     </div>
+                  )}
+                  
+                  {/* Text Instructions */}
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className="text-xs text-muted-foreground uppercase tracking-wider">
+                        HOW TO:
+                      </div>
+                      {item.exercise.videoUrl && (
+                        <div className="flex items-center gap-1 text-xs text-primary">
+                          <Play className="w-3 h-3" />
+                          <span>VIDEO ABOVE</span>
+                        </div>
+                      )}
+                    </div>
+                    <p className="text-sm text-foreground/90 leading-relaxed">
+                      {item.exercise.instructions}
+                    </p>
                   </div>
-                  <p className="text-sm text-foreground/90 leading-relaxed">
-                    {item.exercise.instructions}
-                  </p>
                 </div>
               )}
             </div>
