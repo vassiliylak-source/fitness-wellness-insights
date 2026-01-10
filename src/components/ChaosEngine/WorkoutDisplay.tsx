@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { GeneratedExercise } from '@/constants/wod';
-import { getStruggleWeight } from '@/lib/struggleEngine';
-import { Skull, ChevronUp, Info, Play } from 'lucide-react';
+import { getStruggleWeight, PROTOCOLS, ProtocolType } from '@/lib/struggleEngine';
+import { Skull, ChevronUp, Info, Play, Heart, Zap } from 'lucide-react';
 
 const formatTime = (seconds: number): string => {
   const mins = Math.floor(seconds / 60);
@@ -16,6 +16,13 @@ interface WorkoutDisplayProps {
   targetTime: number;
 }
 
+// Extract protocol key from protocol name
+const getProtocolKey = (protocolName: string): ProtocolType => {
+  if (protocolName.includes('OMEGA')) return 'OMEGA';
+  if (protocolName.includes('BALLISTIC')) return 'BALLISTIC';
+  return 'GRAVITY';
+};
+
 const WorkoutDisplay = ({ 
   exercises, 
   criticalOverload, 
@@ -27,6 +34,9 @@ const WorkoutDisplay = ({
   const toggleInstructions = (exerciseId: string) => {
     setExpandedExercise(expandedExercise === exerciseId ? null : exerciseId);
   };
+
+  const protocolKey = getProtocolKey(protocolName);
+  const protocol = PROTOCOLS[protocolKey];
 
   return (
     <div className="space-y-4">
@@ -40,6 +50,33 @@ const WorkoutDisplay = ({
         </div>
         <div className="text-sm text-muted-foreground mt-1">
           TARGET: <span className="text-foreground">{formatTime(targetTime)}</span>
+        </div>
+        
+        {/* Focus Tags */}
+        <div className="flex items-center justify-center gap-2 mt-3">
+          {protocol.primaryFocus.map((focus) => (
+            <span 
+              key={focus}
+              className="px-2 py-0.5 text-[10px] uppercase tracking-wider bg-primary/10 text-primary border border-primary/30"
+            >
+              {focus}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* Health Benefits Card */}
+      <div className="bg-accent/5 border border-accent/20 p-4 space-y-2">
+        <div className="flex items-center gap-2 text-accent">
+          <Heart className="w-4 h-4" />
+          <span className="text-xs uppercase tracking-widest font-bold">Why This Matters</span>
+        </div>
+        <p className="text-sm text-foreground/80 leading-relaxed">
+          {protocol.healthBenefit}
+        </p>
+        <div className="flex items-center gap-1 text-xs text-muted-foreground mt-2">
+          <Zap className="w-3 h-3" />
+          <span>Complete this protocol to unlock its full benefits</span>
         </div>
       </div>
 
