@@ -171,9 +171,12 @@ export type Database = {
           feeling: string | null
           id: string
           package_type: string
+          proof_photo_url: string | null
           session_id: string
           target_time: number
           user_id: string
+          verification_checks_passed: number | null
+          verification_checks_total: number | null
           workout_hash: string
         }
         Insert: {
@@ -185,9 +188,12 @@ export type Database = {
           feeling?: string | null
           id?: string
           package_type: string
+          proof_photo_url?: string | null
           session_id: string
           target_time: number
           user_id: string
+          verification_checks_passed?: number | null
+          verification_checks_total?: number | null
           workout_hash: string
         }
         Update: {
@@ -199,9 +205,12 @@ export type Database = {
           feeling?: string | null
           id?: string
           package_type?: string
+          proof_photo_url?: string | null
           session_id?: string
           target_time?: number
           user_id?: string
+          verification_checks_passed?: number | null
+          verification_checks_total?: number | null
           workout_hash?: string
         }
         Relationships: []

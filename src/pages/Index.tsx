@@ -35,6 +35,7 @@ const Index = () => {
     workoutGenerated,
     integrityPassed,
     showTimer,
+    showProofCapture,
     selectedProtocol,
     setSelectedProtocol,
     handleGenerate,
@@ -42,6 +43,8 @@ const Index = () => {
     handleStartTimer,
     handleTimerComplete,
     handleTimerAbort,
+    handleProofSubmitted,
+    handleProofSkipped,
   } = useWorkoutState();
 
   const { remaining } = canGenerate();
@@ -163,10 +166,13 @@ const Index = () => {
               targetTime={targetTime}
               integrityPassed={integrityPassed}
               showTimer={showTimer}
+              showProofCapture={showProofCapture}
               onIntegrityComplete={handleIntegrityComplete}
               onStartTimer={handleStartTimer}
               onTimerComplete={handleTimerComplete}
               onTimerAbort={handleTimerAbort}
+              onProofSubmitted={handleProofSubmitted}
+              onProofSkipped={handleProofSkipped}
             />
           )}
 

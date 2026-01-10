@@ -3,7 +3,13 @@ import { Button } from '@/components/ui/button';
 import WorkoutDisplay from './WorkoutDisplay';
 import IntegrityChecks from './IntegrityChecks';
 import LockedTimer from './LockedTimer';
+import PostWorkoutProof from './PostWorkoutProof';
 import { GeneratedExercise } from '@/constants/wod';
+
+interface VerificationStats {
+  passed: number;
+  total: number;
+}
 
 interface WorkoutExecutionSectionProps {
   exercises: GeneratedExercise[];
@@ -12,10 +18,13 @@ interface WorkoutExecutionSectionProps {
   targetTime: number;
   integrityPassed: boolean;
   showTimer: boolean;
+  showProofCapture: boolean;
   onIntegrityComplete: () => void;
   onStartTimer: () => void;
-  onTimerComplete: (time: number, beatTarget: boolean) => void;
+  onTimerComplete: (time: number, beatTarget: boolean, verificationStats?: VerificationStats) => void;
   onTimerAbort: () => void;
+  onProofSubmitted: (photoUrl: string | null) => void;
+  onProofSkipped: () => void;
 }
 
 const WorkoutExecutionSection = ({
@@ -25,11 +34,26 @@ const WorkoutExecutionSection = ({
   targetTime,
   integrityPassed,
   showTimer,
+  showProofCapture,
   onIntegrityComplete,
   onStartTimer,
   onTimerComplete,
   onTimerAbort,
+  onProofSubmitted,
+  onProofSkipped,
 }: WorkoutExecutionSectionProps) => {
+  // Show proof capture screen after timer completion
+  if (showProofCapture) {
+    return (
+      <div className="card-terminal p-6 animate-fade-in">
+        <PostWorkoutProof
+          onProofSubmitted={onProofSubmitted}
+          onSkip={onProofSkipped}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4 animate-fade-in">
       {/* Workout Display - Always visible so user knows what's next */}

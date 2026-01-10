@@ -3,10 +3,11 @@ import { AlertTriangle, Play, Square, Skull } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useChaosEngine } from '@/contexts/ChaosEngineContext';
 import { formatTime } from '@/utils/formatTime';
+import VerificationCheck from './VerificationCheck';
 
 interface LockedTimerProps {
   targetTime: number;
-  onComplete: (time: number, beatTarget: boolean) => void;
+  onComplete: (time: number, beatTarget: boolean, verificationStats?: { passed: number; total: number }) => void;
   onAbort: () => void;
 }
 
@@ -18,15 +19,44 @@ const LockedTimer = ({ targetTime, onComplete, onAbort }: LockedTimerProps) => {
   const [penaltyCountdown, setPenaltyCountdown] = useState(10);
   const [isLocked, setIsLocked] = useState(true);
   const [minTimeReached, setMinTimeReached] = useState(false);
+  
+  // Verification check state
+  const [showVerification, setShowVerification] = useState(false);
+  const [verificationCheckNumber, setVerificationCheckNumber] = useState(0);
+  const [verificationsPassed, setVerificationsPassed] = useState(0);
+  const [verificationsTotal, setVerificationsTotal] = useState(0);
+  const [scheduledChecks, setScheduledChecks] = useState<number[]>([]);
+  const [pausedForVerification, setPausedForVerification] = useState(false);
+  
   const penaltyTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Minimum time before finish becomes available (30% of target)
   const minimumTime = Math.floor(targetTime * 0.3);
 
+  // Schedule random verification checks when workout starts
+  useEffect(() => {
+    if (isRunning && scheduledChecks.length === 0 && elapsed === 0) {
+      // Schedule 1-3 random checks during the workout
+      const numChecks = Math.floor(Math.random() * 2) + 1; // 1-2 checks
+      const checks: number[] = [];
+      
+      for (let i = 0; i < numChecks; i++) {
+        // Schedule checks between 20% and 80% of target time
+        const minCheckTime = Math.floor(targetTime * 0.2);
+        const maxCheckTime = Math.floor(targetTime * 0.8);
+        const checkTime = minCheckTime + Math.floor(Math.random() * (maxCheckTime - minCheckTime));
+        checks.push(checkTime);
+      }
+      
+      setScheduledChecks(checks.sort((a, b) => a - b));
+      setVerificationsTotal(numChecks);
+    }
+  }, [isRunning, targetTime, scheduledChecks.length, elapsed]);
+
   // Timer logic
   useEffect(() => {
-    if (isRunning) {
+    if (isRunning && !pausedForVerification) {
       intervalRef.current = setInterval(() => {
         setElapsed(prev => prev + 1);
       }, 1000);
@@ -37,7 +67,25 @@ const LockedTimer = ({ targetTime, onComplete, onAbort }: LockedTimerProps) => {
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [isRunning]);
+  }, [isRunning, pausedForVerification]);
+
+  // Check for scheduled verification times
+  useEffect(() => {
+    if (!isRunning || pausedForVerification) return;
+    
+    const nextCheck = scheduledChecks.find(checkTime => 
+      elapsed >= checkTime && elapsed < checkTime + 2
+    );
+    
+    if (nextCheck !== undefined) {
+      // Remove this check from scheduled
+      setScheduledChecks(prev => prev.filter(t => t !== nextCheck));
+      // Trigger verification
+      setVerificationCheckNumber(prev => prev + 1);
+      setShowVerification(true);
+      setPausedForVerification(true);
+    }
+  }, [elapsed, scheduledChecks, isRunning, pausedForVerification]);
 
   // Check if minimum time reached
   useEffect(() => {
@@ -71,6 +119,24 @@ const LockedTimer = ({ targetTime, onComplete, onAbort }: LockedTimerProps) => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
   }, [isRunning, isStaked]);
+
+  const handleVerificationSuccess = useCallback(() => {
+    setVerificationsPassed(prev => prev + 1);
+    setTimeout(() => {
+      setShowVerification(false);
+      setPausedForVerification(false);
+    }, 1500);
+  }, []);
+
+  const handleVerificationFailed = useCallback(() => {
+    setShowVerification(false);
+    setPausedForVerification(false);
+    // Apply penalty for failed verification if staked
+    if (isStaked) {
+      const taxAmount = vault.depositAmount <= 20 ? 1 : 2;
+      applyWeaknessTax(taxAmount, 'Failed Integrity Check');
+    }
+  }, [isStaked, vault.depositAmount, applyWeaknessTax]);
 
   const triggerPenaltyWarning = useCallback(() => {
     if (showPenaltyWarning) return;
@@ -108,6 +174,10 @@ const LockedTimer = ({ targetTime, onComplete, onAbort }: LockedTimerProps) => {
     setElapsed(0);
     setIsLocked(true);
     setMinTimeReached(false);
+    setScheduledChecks([]);
+    setVerificationsPassed(0);
+    setVerificationsTotal(0);
+    setVerificationCheckNumber(0);
   };
 
   const handleFinish = () => {
@@ -115,7 +185,10 @@ const LockedTimer = ({ targetTime, onComplete, onAbort }: LockedTimerProps) => {
     
     setIsRunning(false);
     const beatTarget = elapsed < targetTime;
-    onComplete(elapsed, beatTarget);
+    onComplete(elapsed, beatTarget, { 
+      passed: verificationsPassed, 
+      total: verificationsTotal 
+    });
   };
 
   const isOverTarget = elapsed > targetTime;
@@ -123,6 +196,15 @@ const LockedTimer = ({ targetTime, onComplete, onAbort }: LockedTimerProps) => {
 
   return (
     <div className="space-y-6">
+      {/* Verification Check Overlay */}
+      {showVerification && (
+        <VerificationCheck
+          onVerified={handleVerificationSuccess}
+          onFailed={handleVerificationFailed}
+          checkNumber={verificationCheckNumber}
+        />
+      )}
+
       {/* Penalty Warning Overlay */}
       {showPenaltyWarning && (
         <div className="fixed inset-0 z-50 bg-background/95 flex items-center justify-center scanlines">
@@ -151,6 +233,9 @@ const LockedTimer = ({ targetTime, onComplete, onAbort }: LockedTimerProps) => {
       <div className="text-center space-y-4">
         <div className="text-xs uppercase tracking-widest text-muted-foreground">
           EXECUTION TIMER
+          {pausedForVerification && (
+            <span className="ml-2 text-energy animate-pulse">• PAUSED FOR CHECK</span>
+          )}
         </div>
         
         <div className={`timer-display ${isOverTarget ? 'text-destructive danger-glow' : 'text-primary terminal-glow'}`}>
@@ -169,6 +254,16 @@ const LockedTimer = ({ targetTime, onComplete, onAbort }: LockedTimerProps) => {
             </span>
           )}
         </div>
+
+        {/* Verification status */}
+        {verificationsTotal > 0 && (
+          <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
+            <span>INTEGRITY CHECKS:</span>
+            <span className={verificationsPassed === verificationsTotal ? 'text-primary' : 'text-energy'}>
+              {verificationsPassed}/{verificationsTotal} PASSED
+            </span>
+          </div>
+        )}
 
         {/* Progress bar */}
         <div className="h-1 bg-muted overflow-hidden">
@@ -204,8 +299,8 @@ const LockedTimer = ({ targetTime, onComplete, onAbort }: LockedTimerProps) => {
         ) : (
           <Button
             onClick={handleFinish}
-            disabled={!minTimeReached}
-            className={`flex-1 ${minTimeReached ? 'btn-terminal' : 'btn-danger opacity-50'}`}
+            disabled={!minTimeReached || pausedForVerification}
+            className={`flex-1 ${minTimeReached && !pausedForVerification ? 'btn-terminal' : 'btn-danger opacity-50'}`}
           >
             <Square className="w-4 h-4 mr-2" />
             {minTimeReached ? 'PROTOCOL COMPLETE' : `LOCKED (${formatTime(minimumTime - elapsed)})`}

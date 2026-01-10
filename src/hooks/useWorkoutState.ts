@@ -4,6 +4,11 @@ import { generateStruggleWorkout, ProtocolType, calculateSPEarned } from '@/lib/
 import { GeneratedExercise } from '@/constants/wod';
 import { toast } from '@/hooks/use-toast';
 
+interface VerificationStats {
+  passed: number;
+  total: number;
+}
+
 interface WorkoutState {
   exercises: GeneratedExercise[];
   criticalOverload: GeneratedExercise | null;
@@ -12,7 +17,13 @@ interface WorkoutState {
   workoutGenerated: boolean;
   integrityPassed: boolean;
   showTimer: boolean;
+  showProofCapture: boolean;
   selectedProtocol: ProtocolType;
+  pendingCompletion: {
+    actualTime: number;
+    beatTarget: boolean;
+    verificationStats: VerificationStats;
+  } | null;
 }
 
 const initialState: WorkoutState = {
@@ -23,7 +34,9 @@ const initialState: WorkoutState = {
   workoutGenerated: false,
   integrityPassed: false,
   showTimer: false,
+  showProofCapture: false,
   selectedProtocol: 'GRAVITY',
+  pendingCompletion: null,
 };
 
 export const useWorkoutState = () => {
@@ -59,6 +72,8 @@ export const useWorkoutState = () => {
       workoutGenerated: true,
       integrityPassed: false,
       showTimer: false,
+      showProofCapture: false,
+      pendingCompletion: null,
     }));
     
     toast({
@@ -75,22 +90,76 @@ export const useWorkoutState = () => {
     setState(prev => ({ ...prev, showTimer: true }));
   }, []);
 
-  const handleTimerComplete = useCallback((actualTime: number, beatTarget: boolean) => {
-    // Use setState callback to access current state values, avoiding stale closures
+  const handleTimerComplete = useCallback((
+    actualTime: number, 
+    beatTarget: boolean, 
+    verificationStats?: VerificationStats
+  ) => {
+    // Store completion data and show proof capture
+    setState(prev => ({
+      ...prev,
+      showTimer: false,
+      showProofCapture: true,
+      pendingCompletion: {
+        actualTime,
+        beatTarget,
+        verificationStats: verificationStats || { passed: 0, total: 0 },
+      },
+    }));
+  }, []);
+
+  const handleProofSubmitted = useCallback((photoUrl: string | null) => {
     setState(prev => {
+      if (!prev.pendingCompletion) return prev;
+      
+      const { actualTime, beatTarget, verificationStats } = prev.pendingCompletion;
       const spEarned = calculateSPEarned(actualTime, prev.targetTime, prev.selectedProtocol);
-      completeProtocol(spEarned);
+      
+      // Bonus SP for verified workouts
+      const verificationBonus = verificationStats.passed === verificationStats.total && verificationStats.total > 0 ? 5 : 0;
+      const photoBonus = photoUrl ? 10 : 0;
+      const totalSP = spEarned + verificationBonus + photoBonus;
+      
+      completeProtocol(totalSP);
+      
+      const bonusText = [];
+      if (verificationBonus > 0) bonusText.push(`+${verificationBonus} integrity`);
+      if (photoBonus > 0) bonusText.push(`+${photoBonus} proof`);
       
       toast({
         title: beatTarget ? 'PROTOCOL COMPLETE' : 'PROTOCOL SURVIVED',
-        description: `+${spEarned} SP earned. ${beatTarget ? 'Target beaten.' : 'Keep pushing.'}`,
+        description: `+${totalSP} SP earned. ${bonusText.length > 0 ? `(${bonusText.join(', ')})` : ''} ${beatTarget ? 'Target beaten.' : 'Keep pushing.'}`,
       });
       
       return {
-        ...prev,
-        showTimer: false,
-        workoutGenerated: false,
-        integrityPassed: false,
+        ...initialState,
+        selectedProtocol: prev.selectedProtocol,
+      };
+    });
+  }, [completeProtocol]);
+
+  const handleProofSkipped = useCallback(() => {
+    setState(prev => {
+      if (!prev.pendingCompletion) return prev;
+      
+      const { actualTime, beatTarget, verificationStats } = prev.pendingCompletion;
+      const spEarned = calculateSPEarned(actualTime, prev.targetTime, prev.selectedProtocol);
+      
+      // Reduced SP for unverified workouts
+      const verificationPenalty = verificationStats.passed < verificationStats.total ? 5 : 0;
+      const totalSP = Math.max(spEarned - verificationPenalty, 1);
+      
+      completeProtocol(totalSP);
+      
+      toast({
+        title: 'WORKOUT UNVERIFIED',
+        description: `+${totalSP} SP earned. No proof submitted.`,
+        variant: 'destructive',
+      });
+      
+      return {
+        ...initialState,
+        selectedProtocol: prev.selectedProtocol,
       };
     });
   }, [completeProtocol]);
@@ -99,8 +168,10 @@ export const useWorkoutState = () => {
     setState(prev => ({
       ...prev,
       showTimer: false,
+      showProofCapture: false,
       workoutGenerated: false,
       integrityPassed: false,
+      pendingCompletion: null,
     }));
   }, []);
 
@@ -116,6 +187,8 @@ export const useWorkoutState = () => {
     handleStartTimer,
     handleTimerComplete,
     handleTimerAbort,
+    handleProofSubmitted,
+    handleProofSkipped,
     resetWorkout,
   };
 };
