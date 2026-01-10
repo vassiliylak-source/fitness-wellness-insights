@@ -35,11 +35,29 @@ export const getStruggleWeight = (exerciseName: string): number => {
   return STRUGGLE_WEIGHTS[exerciseName] ?? 0.3; // Default to 0.3
 };
 
-// Protocol types with struggle allocations
+// Protocol types with struggle allocations and health benefits
 export const PROTOCOLS = {
-  GRAVITY: { name: 'PROTOCOL: GRAVITY', struggleTarget: 50, tier: 'free' },
-  OMEGA: { name: 'PROTOCOL: OMEGA', struggleTarget: 100, tier: 'pro' },
-  BALLISTIC: { name: 'PROTOCOL: BALLISTIC', struggleTarget: 75, tier: 'pro' },
+  GRAVITY: { 
+    name: 'PROTOCOL: GRAVITY', 
+    struggleTarget: 50, 
+    tier: 'free',
+    healthBenefit: 'Improves cardiovascular endurance and burns 150-250 calories. Boosts metabolism for hours after workout.',
+    primaryFocus: ['Cardio', 'Fat Burn'],
+  },
+  OMEGA: { 
+    name: 'PROTOCOL: OMEGA', 
+    struggleTarget: 100, 
+    tier: 'pro',
+    healthBenefit: 'High-intensity protocol that maximizes calorie burn (300-450 cal) and triggers EPOC — your body continues burning calories for up to 24 hours.',
+    primaryFocus: ['HIIT', 'Endurance', 'Mental Toughness'],
+  },
+  BALLISTIC: { 
+    name: 'PROTOCOL: BALLISTIC', 
+    struggleTarget: 75, 
+    tier: 'pro',
+    healthBenefit: 'Explosive power training builds fast-twitch muscle fibers, improves athletic performance, and enhances bone density.',
+    primaryFocus: ['Power', 'Strength', 'Coordination'],
+  },
 } as const;
 
 export type ProtocolType = keyof typeof PROTOCOLS;
