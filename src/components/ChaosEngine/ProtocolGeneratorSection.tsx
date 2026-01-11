@@ -2,6 +2,7 @@ import { Skull } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ProtocolSelector from './ProtocolSelector';
 import { ProtocolType } from '@/lib/struggleEngine';
+import { audioEngine } from '@/lib/audioEngine';
 
 interface ProtocolGeneratorSectionProps {
   selectedProtocol: ProtocolType;
@@ -16,6 +17,11 @@ const ProtocolGeneratorSection = ({
   onGenerate,
   remaining,
 }: ProtocolGeneratorSectionProps) => {
+  const handleGenerate = () => {
+    audioEngine.playSiren();
+    onGenerate();
+  };
+
   return (
     <>
       {/* Protocol Selector */}
@@ -33,7 +39,7 @@ const ProtocolGeneratorSection = ({
             // PROTOCOL GENERATOR
           </div>
           <Button
-            onClick={onGenerate}
+            onClick={handleGenerate}
             disabled={remaining <= 0}
             className="btn-terminal text-lg px-12 py-6"
           >

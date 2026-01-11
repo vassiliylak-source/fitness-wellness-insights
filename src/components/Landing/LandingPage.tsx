@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Terminal, Skull, Shield, Users, Zap, ChevronRight, Lock, Linkedin, Target, Flame, TrendingUp, Clock, Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ExternalLink from '@/components/common/ExternalLink';
+import { audioEngine } from '@/lib/audioEngine';
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -22,12 +23,20 @@ const LandingPage = () => {
   }, []);
 
   const handleEnterArena = () => {
+    audioEngine.playAccept();
     if (user) {
       window.location.hash = 'terminal';
       window.dispatchEvent(new CustomEvent('enter-arena'));
     } else {
       navigate('/auth');
     }
+  };
+
+  const handleFeatureHover = (idx: number) => {
+    if (hoveredFeature !== idx) {
+      audioEngine.playTick();
+    }
+    setHoveredFeature(idx);
   };
 
   const features = [
@@ -219,7 +228,7 @@ const LandingPage = () => {
               className={`group relative p-6 border border-primary/20 bg-background/50 backdrop-blur-sm transition-all duration-500 hover:border-primary/50 hover:bg-primary/5 cursor-pointer ${
                 hoveredFeature === idx ? 'border-primary/50 bg-primary/5 scale-[1.02]' : ''
               }`}
-              onMouseEnter={() => setHoveredFeature(idx)}
+              onMouseEnter={() => handleFeatureHover(idx)}
               onMouseLeave={() => setHoveredFeature(null)}
             >
               {/* Corner accents */}
