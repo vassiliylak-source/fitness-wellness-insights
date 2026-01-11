@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { useChaosEngine } from '@/contexts/ChaosEngineContext';
 import { formatTime } from '@/utils/formatTime';
 import VerificationCheck from './VerificationCheck';
+import { audioEngine } from '@/lib/audioEngine';
 
 interface LockedTimerProps {
   targetTime: number;
@@ -89,11 +90,12 @@ const LockedTimer = ({ targetTime, onComplete, onAbort }: LockedTimerProps) => {
 
   // Check if minimum time reached
   useEffect(() => {
-    if (elapsed >= minimumTime) {
+    if (elapsed >= minimumTime && !minTimeReached) {
       setMinTimeReached(true);
       setIsLocked(false);
+      audioEngine.playProgress(); // Sound when timer unlocks
     }
-  }, [elapsed, minimumTime]);
+  }, [elapsed, minimumTime, minTimeReached]);
 
   // Handle visibility change (user switching tabs/apps)
   useEffect(() => {
@@ -141,6 +143,7 @@ const LockedTimer = ({ targetTime, onComplete, onAbort }: LockedTimerProps) => {
   const triggerPenaltyWarning = useCallback(() => {
     if (showPenaltyWarning) return;
     
+    audioEngine.playSiren(); // Play siren for penalty warning
     setShowPenaltyWarning(true);
     setPenaltyCountdown(10);
 
@@ -148,12 +151,14 @@ const LockedTimer = ({ targetTime, onComplete, onAbort }: LockedTimerProps) => {
     penaltyTimeoutRef.current = setInterval(() => {
       count -= 1;
       setPenaltyCountdown(count);
+      audioEngine.playTick(); // Tick sound for countdown
       
       if (count <= 0) {
         if (penaltyTimeoutRef.current) {
           clearInterval(penaltyTimeoutRef.current);
         }
         // Apply penalty
+        audioEngine.playGlitch(); // Glitch sound for penalty applied
         const taxAmount = vault.depositAmount <= 20 ? 2 : 5;
         applyWeaknessTax(taxAmount, 'Timer Abandonment');
         setShowPenaltyWarning(false);
@@ -170,6 +175,7 @@ const LockedTimer = ({ targetTime, onComplete, onAbort }: LockedTimerProps) => {
   }, []);
 
   const handleStart = () => {
+    audioEngine.playHydraulic(); // Industrial start sound
     setIsRunning(true);
     setElapsed(0);
     setIsLocked(true);
@@ -183,6 +189,7 @@ const LockedTimer = ({ targetTime, onComplete, onAbort }: LockedTimerProps) => {
   const handleFinish = () => {
     if (!minTimeReached) return;
     
+    audioEngine.playComplete(); // Completion fanfare
     setIsRunning(false);
     const beatTarget = elapsed < targetTime;
     onComplete(elapsed, beatTarget, { 

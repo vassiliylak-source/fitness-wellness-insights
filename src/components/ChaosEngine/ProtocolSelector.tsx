@@ -1,6 +1,7 @@
 import { PROTOCOLS, ProtocolType } from '@/lib/struggleEngine';
 import { useChaosEngine } from '@/contexts/ChaosEngineContext';
 import { Lock, Zap, Skull, Target } from 'lucide-react';
+import { audioEngine } from '@/lib/audioEngine';
 
 interface ProtocolSelectorProps {
   selected: ProtocolType;
@@ -29,6 +30,15 @@ const ProtocolSelector = ({ selected, onSelect }: ProtocolSelectorProps) => {
   const { vault } = useChaosEngine();
   const isPro = vault.tier === 'pro';
 
+  const handleSelect = (key: ProtocolType, isLocked: boolean) => {
+    if (isLocked) {
+      audioEngine.playGlitch(); // Locked protocol click
+      return;
+    }
+    audioEngine.playShutter(); // Protocol switch sound
+    onSelect(key);
+  };
+
   return (
     <div className="space-y-3">
       <div className="text-xs uppercase tracking-widest text-muted-foreground">
@@ -46,7 +56,7 @@ const ProtocolSelector = ({ selected, onSelect }: ProtocolSelectorProps) => {
           return (
             <button
               key={key}
-              onClick={() => !isLocked && onSelect(key)}
+              onClick={() => handleSelect(key, isLocked)}
               disabled={isLocked}
               className={`package-card text-left ${isLocked ? 'locked' : ''} ${
                 isSelected ? 'border-primary pulse-terminal' : ''

@@ -3,6 +3,7 @@ import { Camera, Upload, Check, X, Loader2, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { audioEngine } from '@/lib/audioEngine';
 
 interface PostWorkoutProofProps {
   onProofSubmitted: (photoUrl: string | null) => void;
@@ -47,6 +48,8 @@ const PostWorkoutProof = ({ onProofSubmitted, onSkip }: PostWorkoutProofProps) =
 
   const capturePhoto = useCallback(() => {
     if (!videoRef.current) return;
+    
+    audioEngine.playShutter();
     
     const canvas = document.createElement('canvas');
     canvas.width = videoRef.current.videoWidth;
@@ -113,9 +116,11 @@ const PostWorkoutProof = ({ onProofSubmitted, onSkip }: PostWorkoutProofProps) =
         .from('workout-proofs')
         .getPublicUrl(data.path);
       
+      audioEngine.playComplete();
       onProofSubmitted(urlData.publicUrl);
     } catch (err) {
       console.error('Upload error:', err);
+      audioEngine.playGlitch();
       setError('Failed to upload photo. Completing without proof.');
       // Still allow completion without proof
       setTimeout(() => onProofSubmitted(null), 2000);

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Check, Activity, MapPin, DollarSign } from 'lucide-react';
 import { useChaosEngine } from '@/contexts/ChaosEngineContext';
+import { audioEngine } from '@/lib/audioEngine';
 
 interface IntegrityChecksProps {
   onAllChecked: () => void;
@@ -40,6 +41,7 @@ const IntegrityChecks = ({ onAllChecked, disabled }: IntegrityChecksProps) => {
       if (newSet.has(id)) {
         newSet.delete(id);
       } else {
+        audioEngine.playProgress(); // Sound when checking an item
         newSet.add(id);
       }
       return newSet;
@@ -50,6 +52,7 @@ const IntegrityChecks = ({ onAllChecked, disabled }: IntegrityChecksProps) => {
 
   useEffect(() => {
     if (allChecked) {
+      audioEngine.playAccept(); // Accept sound when all checks complete
       onAllChecked();
     }
   }, [allChecked, onAllChecked]);

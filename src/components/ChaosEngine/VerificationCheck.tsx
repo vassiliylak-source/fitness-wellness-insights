@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { AlertTriangle, Check, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { audioEngine } from '@/lib/audioEngine';
 
 interface VerificationCheckProps {
   onVerified: () => void;
@@ -22,6 +23,11 @@ const VerificationCheck = ({ onVerified, onFailed, checkNumber }: VerificationCh
   
   const prompt = VERIFICATION_PROMPTS[checkNumber % VERIFICATION_PROMPTS.length];
 
+  // Play siren when check appears
+  useEffect(() => {
+    audioEngine.playSiren();
+  }, []);
+
   useEffect(() => {
     if (isVerified) return;
     
@@ -40,6 +46,7 @@ const VerificationCheck = ({ onVerified, onFailed, checkNumber }: VerificationCh
   }, [isVerified, onFailed]);
 
   const handleVerify = useCallback(() => {
+    audioEngine.playAccept();
     setIsVerified(true);
     onVerified();
   }, [onVerified]);

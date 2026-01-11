@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useChaosEngine } from '@/contexts/ChaosEngineContext';
 import { Shield, AlertTriangle, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { audioEngine } from '@/lib/audioEngine';
 
 const STAKE_OPTIONS = [
   { amount: 10, label: '$10', description: '$2 per failure' },
@@ -16,8 +17,19 @@ const StakingInterface = () => {
 
   const handleStake = () => {
     if (selectedAmount && agreed) {
+      audioEngine.playHydraulic();
       stakeDeposit(selectedAmount);
     }
+  };
+
+  const handleSelectAmount = (amount: number) => {
+    audioEngine.playShutter();
+    setSelectedAmount(amount);
+  };
+
+  const handleAgreeToggle = () => {
+    audioEngine.playTick();
+    setAgreed(!agreed);
   };
 
   if (isStaked) {
@@ -44,7 +56,7 @@ const StakingInterface = () => {
         {STAKE_OPTIONS.map((option) => (
           <button
             key={option.amount}
-            onClick={() => setSelectedAmount(option.amount)}
+            onClick={() => handleSelectAmount(option.amount)}
             className={`p-4 border transition-all ${
               selectedAmount === option.amount
                 ? 'border-secondary bg-secondary/10'
@@ -92,7 +104,7 @@ const StakingInterface = () => {
               className={`w-5 h-5 border flex items-center justify-center transition-all ${
                 agreed ? 'border-primary bg-primary' : 'border-border'
               }`}
-              onClick={() => setAgreed(!agreed)}
+              onClick={handleAgreeToggle}
             >
               {agreed && <Lock className="w-3 h-3 text-primary-foreground" />}
             </div>
